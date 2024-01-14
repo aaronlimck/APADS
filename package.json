@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --fix",
-    "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)"
+    "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
+    "build-css": "tailwindcss build -i ./app/globals.css -o ./public/globals.css --watch"
   },
   "dependencies": {
+    "lucide-react": "^0.309.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18"
