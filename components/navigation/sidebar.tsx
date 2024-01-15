@@ -31,7 +31,10 @@ export default function SidebarContainer({
   classname?: string;
   children: React.ReactNode;
 }) {
-  const storedExpanded = localStorage.getItem("sidebarExpanded");
+  const storedExpanded =
+    typeof window !== "undefined"
+      ? localStorage.getItem("sidebarExpanded")
+      : null;
   const initialExpanded = storedExpanded ? JSON.parse(storedExpanded) : false;
   const [expanded, setExpanded] = React.useState<boolean>(
     initialExpanded || false

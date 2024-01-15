@@ -4,7 +4,10 @@ import MobileNav from "./mobileNav";
 import React, { useEffect } from "react";
 
 export default function Navbar() {
-  const storedExpanded = localStorage.getItem("mobileNavExpanded");
+  const storedExpanded =
+    typeof window !== "undefined"
+      ? localStorage.getItem("mobileNavExpanded")
+      : null;
   const initialExpanded = storedExpanded ? JSON.parse(storedExpanded) : false;
   const [expanded, setExpanded] = React.useState<boolean>(
     initialExpanded || false

@@ -11,7 +11,7 @@ export default function HRLayout({ children }: { children: React.ReactNode }) {
       </SidebarContainer>
       <div className="w-full">
         <Navbar />
-        {children}
+        <div className="max-w-6xl mx-auto w-full">{children}</div>
       </div>
     </div>
   );
