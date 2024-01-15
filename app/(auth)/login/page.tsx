@@ -16,7 +16,7 @@ export default function LoginPage() {
             <div className="grid gap-2">
               <Input
                 type="email"
-                className="h-9 py-1 transition-colors"
+                className="transition-colors"
                 placeholder="Email"
                 autoCapitalize="none"
                 autoComplete="email"
@@ -24,7 +24,7 @@ export default function LoginPage() {
               />
               <Input
                 type="password"
-                className="h-9 py-1 transition-colors"
+                className="transition-colors"
                 placeholder="Enter your password"
               />
               <Button size="sm">Sign In</Button>
