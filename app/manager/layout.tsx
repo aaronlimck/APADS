@@ -1,6 +1,6 @@
 import React from "react";
 import ManagerNavItems from "@/components/navigation/managerNavItems";
-import SidebarContainer from "@/components/navigation/sidebarContainer";
+import SidebarContainer from "@/components/navigation/sidebar";
 
 export default function HRLayout({ children }: { children: React.ReactNode }) {
   return (

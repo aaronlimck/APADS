@@ -1,18 +1,32 @@
-import { FileIcon, HomeIcon, WorkflowIcon } from "lucide-react";
-import NavItem from "./navItem";
+import {
+  FileIcon,
+  HomeIcon,
+  SettingsIcon,
+  UserIcon,
+  WorkflowIcon
+} from "lucide-react";
+import { SidebarItem } from "./sidebar";
 
 export default function HRNavItems() {
   return (
     <div className="space-y-1">
-      <NavItem href="/hr" icon={<HomeIcon size={20} />}>
-        Home
-      </NavItem>
-      <NavItem href="/hr/templates" icon={<FileIcon size={20} />}>
-        Templates
-      </NavItem>
-      <NavItem href="/hr/workflows" icon={<WorkflowIcon size={20} />}>
-        Workflows
-      </NavItem>
+      <SidebarItem icon={<HomeIcon size={20} />} href="/hr" text="Home" />
+      <SidebarItem
+        icon={<UserIcon size={20} />}
+        href="/hr/directory"
+        text="Directory"
+      />
+      <SidebarItem
+        icon={<FileIcon size={20} />}
+        href="/hr/templates"
+        text="Templates"
+      />
+      <SidebarItem
+        icon={<WorkflowIcon size={20} />}
+        href="/hr/workflows"
+        text="Workflows"
+      />
+      <SidebarItem icon={<SettingsIcon size={20} />} href="#" text="Settings" />
     </div>
   );
 }
