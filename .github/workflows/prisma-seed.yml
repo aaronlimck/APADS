@@ -1,5 +1,4 @@
 name: Prisma Seeding on Staging
-
 on:
   push:
     branches:
@@ -9,6 +8,9 @@ jobs:
   prisma-seed:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql://aaron.lim.2021:lyZErJ3jnDe2@ep-cold-silence-a1rnvgz1-pooler.ap-southeast-1.aws.neon.tech/staging?sslmode=require
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
