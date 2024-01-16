@@ -61,9 +61,9 @@ export default function SidebarContainer({
             onClick={() => setExpanded((current) => !current)}
           >
             {expanded ? (
-              <PanelLeftCloseIcon size={20} />
+              <PanelLeftCloseIcon className="text-gray-600" size={20} />
             ) : (
-              <PanelRightCloseIcon size={20} />
+              <PanelRightCloseIcon className="text-gray-600" size={20} />
             )}
           </button>
         </div>

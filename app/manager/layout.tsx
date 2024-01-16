@@ -1,14 +1,23 @@
-import React from "react";
 import ManagerNavItems from "@/components/navigation/managerNavItems";
-import SidebarContainer from "@/components/navigation/sidebar";
+import Navbar from "@/components/navigation/navbar";
+import dynamic from "next/dynamic";
+import React from "react";
+
+const SidebarWithNoSSR = dynamic(
+  () => import("@/components/navigation/sidebar"),
+  { ssr: false }
+);
 
 export default function HRLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
-      <SidebarContainer>
+      <SidebarWithNoSSR>
         <ManagerNavItems />
-      </SidebarContainer>
-      <div className="w-full bg-red-100">{children}</div>
+      </SidebarWithNoSSR>
+      <div className="w-full">
+        <Navbar />
+        <div className="max-w-6xl mx-auto w-full">{children}</div>
+      </div>
     </div>
   );
 }

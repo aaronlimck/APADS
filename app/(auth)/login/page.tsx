@@ -1,7 +1,14 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { getServerSession } from "next-auth";
+import LoginForm from "./form";
+import { authConfig } from "@/lib/auth.config";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await getServerSession(authConfig);
+  if (session) {
+    redirect("/");
+  }
+
   return (
     <div className="h-screen w-full flex justify-center items-center">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
@@ -12,24 +19,7 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="grid gap-6">
-          <form>
-            <div className="grid gap-2">
-              <Input
-                type="email"
-                className="transition-colors"
-                placeholder="Email"
-                autoCapitalize="none"
-                autoComplete="email"
-                autoCorrect="off"
-              />
-              <Input
-                type="password"
-                className="transition-colors"
-                placeholder="Enter your password"
-              />
-              <Button size="sm">Sign In</Button>
-            </div>
-          </form>
+          <LoginForm />
         </div>
       </div>
     </div>
