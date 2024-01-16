@@ -23,6 +23,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Run Prisma Generate
+        run: npx prisma generate
+
+      - name: Run Prisma DB Push
+        run: npx prisma db push --force-reset --accept-data-loss    
+
       - name: Run Prisma Seeding
         run: npx prisma db seed
 
