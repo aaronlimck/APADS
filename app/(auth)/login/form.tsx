@@ -2,9 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent } from "react";
+import { toast } from "sonner";
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/"; // Default to homepage
+  const router = useRouter();
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -16,9 +22,14 @@ export default function LoginForm() {
 
     const response = await signIn("credentials", {
       ...payload,
-      callbackUrl: "/"
+      redirect: false
     });
-    console.log(response);
+
+    if (response && response.status === 200 && response.ok)
+      router.replace(callbackUrl);
+
+    if (response && response.status === 401)
+      toast.error("Invalid email or password");
   };
 
   return (

@@ -4,9 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "./prisma";
 
 declare module "next-auth" {
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
   interface Session {
     user: {
       role: string | undefined | null;
@@ -24,7 +21,6 @@ declare module "next-auth/jwt" {
 export const authConfig: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. "Sign in with...")
       name: "credentials",
       credentials: {
         email: {},
