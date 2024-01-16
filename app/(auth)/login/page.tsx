@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
-import LoginForm from "./form";
 import { authConfig } from "@/lib/auth.config";
+import LoginForm from "./form";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {

@@ -2,13 +2,18 @@
   "name": "fyp-collectives",
   "version": "0.1.0",
   "private": true,
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test": "vitest",
     "lint": "next lint --fix",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
-    "build-css": "tailwindcss build -i ./app/globals.css -o ./public/globals.css --watch"
+    "build-css": "tailwindcss build -i ./app/globals.css -o ./public/globals.css --watch",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.8.1",
@@ -26,20 +31,26 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@testing-library/react": "^14.1.2",
     "@types/bcrypt": "^5.0.2",
-    "@types/node": "^20",
+    "@types/node": "^20.11.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.0.1",
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "husky": "^8.0.3",
+    "jsdom": "^23.2.0",
     "postcss": "^8",
     "prettier": "^3.1.1",
     "prisma": "^5.8.1",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "vite-tsconfig-paths": "^4.2.3",
+    "vitest": "^1.2.0"
   }
 }
