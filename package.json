@@ -13,7 +13,7 @@
     "lint": "next lint --fix",
     "format:staged": "prettier --write $(git diff --staged --name-only --diff-filter d | xargs)",
     "build-css": "tailwindcss build -i ./app/globals.css -o ./public/globals.css --watch",
-    "prisma:generate": "prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.8.1",
