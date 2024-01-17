@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -11,11 +10,13 @@ import {
 export function StaffTable() {
   const staffs = [
     {
+      id:"1",
       name: "John",
       email: "johndoe@example.com",
       department: "Logistics",
       Role: "Clerk",
-      Manager: "Tom"
+      Manager: "Tom",
+      
     }
   ];
 
@@ -52,7 +53,7 @@ export function StaffTable() {
       </TableHeader>
       <TableBody>
         {staffs.map((staff) => (
-          <TableRow>
+          <TableRow key={staff.id}>
             <TableCell>{staff.name}</TableCell>
             <TableCell className="px-0 md:px-4">
               <span className="hidden md:block">{staff.email}</span>
