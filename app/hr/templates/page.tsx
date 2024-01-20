@@ -63,7 +63,7 @@ function FormCard({ form }: { form: Form }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 justify-between">
-          <span className="truncate font-bold">{form.name}</span>
+          <span className="truncate font-bold pb-1">{form.name}</span>
           {form.published && <Badge>Published</Badge>}
           {!form.published && <Badge variant={"destructive"}>Draft</Badge>}
         </CardTitle>
