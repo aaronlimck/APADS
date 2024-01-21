@@ -1,4 +1,7 @@
 import { MoreHorizontalIcon } from "lucide-react";
+import Image from "next/image";
+import Badge from "../ui/badge";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import {
   Table,
   TableBody,
@@ -7,29 +10,21 @@ import {
   TableHeader,
   TableRow
 } from "../ui/table";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card"
-import Image from "next/image";
 
 export function StaffTable() {
   const staffs = [
     {
       id: "1",
-      name: "John",
-      email: "johndoe@example.com",
+      name: "Toni Kross",
+      email: "tonikross@example.com",
       department: "Logistics",
-      role: "Clerk",
+      role: "Product Designer",
       manager: "Tom"
     },
     {
       id: "2",
-      name: "John",
-      email: "johndoe@example.com",
+      name: "Wade Warren",
+      email: "wadewarren@example.com",
       department: "Logistics",
       role: "Clerk",
       manager: "Tom"
@@ -50,7 +45,7 @@ export function StaffTable() {
               <TableHead>Role</TableHead>
               <TableHead>Manager</TableHead>
               <TableHead>
-                <MoreHorizontalIcon />
+                <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -72,30 +67,44 @@ export function StaffTable() {
           </TableBody>
         </Table>
       </div>
-      <div className="sm:hidden">
-        
-        <div className="w-full grid grid-cols-1 min-w-[540px]:grid-cols-2">
-              {staffs.map((staff)=>(
-          <div className="m-2" key={staff.id}>
-          <Card>
-          <CardHeader>
-            <div className="relative h-10 w-10 rounded-full">
-                <Image className="h-10 w-10 rounded-full" src={"https://ui-avatars.com/api/?name=Elon+Musk&length=1"} fill unoptimized alt="avatar"/>
-            </div>
-            <CardTitle>{staff.name}</CardTitle>
-            <CardDescription>Email: {staff.email}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Role: {staff.role}</p>
-            <p>Department: {staff.department}</p>
-            <p>Manager: {staff.manager}</p>
-          </CardContent>
-        </Card>
-        </div>
+      <div className="flex flex-col gap-3 sm:hidden">
+        {staffs.map((staff) => (
+          <Card key={staff.id}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 rounded-full">
+                  <Image
+                    className="h-10 w-10 rounded-full"
+                    src={"https://ui-avatars.com/api/?name=Elon+Musk&length=1"}
+                    fill
+                    unoptimized
+                    alt="avatar"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-base font-medium">{staff.name}</span>
+                  <span className="text-sm text-gray-500">{staff.role}</span>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent>
+              <div className="flex flex-wrap py-3">
+                <Badge color="blue">{staff.department}</Badge>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm">
+                  <span className="font-medium">Email: </span>
+                  <span className="text-gray-800">{staff.email}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-medium">Manager: </span>
+                  <span className="text-gray-800">{staff.manager}</span>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         ))}
-        </div>
-        
-        
       </div>
     </>
   );

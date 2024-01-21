@@ -46,19 +46,32 @@ export default function Navbar() {
               />
             </div>
           </PopoverTrigger>
-          <PopoverContent align="end" className="rounded-xl">
-            <div className="flex flex-col items-center">
-              <div className="relative h-12 w-12">
-                <Image
-                  className="h-12 w-12 rounded-full"
-                  src={`https://ui-avatars.com/api/?name=${userName}&length=1&&background=c7d2fe&color=3730a3`}
-                  alt={userName + " avatar"}
-                  fill
-                  unoptimized
-                />
+          <PopoverContent align="end" className="rounded-xl space-y-4">
+            <div className="flex flex-col items-center space-y-3">
+              <div>
+                <div className="relative h-12 w-12">
+                  <Image
+                    className="h-12 w-12 rounded-full"
+                    src={`https://ui-avatars.com/api/?name=${userName}&length=1&&background=c7d2fe&color=3730a3`}
+                    alt={userName + " avatar"}
+                    fill
+                    unoptimized
+                  />
+                </div>
+                <p className="text-sm text-center font-medium mt-2">
+                  {userName}
+                </p>
               </div>
-              <p className="text-sm font-medium mt-2">{userName}</p>
+
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-xs font-medium rounded-full py-1 px-3"
+              >
+                Edit Profile
+              </Button>
             </div>
+
             <hr className="my-2" />
 
             <Button
