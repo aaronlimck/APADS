@@ -21,10 +21,27 @@ model User {
   email     String   @unique
   name      String?
   password  String
-  role      Role    
+  role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Staff     Staff?
 
   @@index([email])
   @@map("users")
+}
+
+model Staff {
+  user       User       @relation(fields: [userId], references: [id])
+  userId     String     @unique
+  department Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
+  departmentName String  @unique
+
+  @@index([userId])
+}
+
+model Department {
+  name   String   @unique
+  staff  Staff[]  @relation("DepartmentStaff")
+
+  @@index([name])
 }
