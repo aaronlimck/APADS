@@ -1,5 +1,5 @@
 import { StaffTable } from "@/components/directory/staffTable";
-import { Button } from "@/components/ui/button";
+import { CreateModal } from "@/components/directory/createStaff";
 
 export default function DirectoryPage() {
   return (
@@ -8,14 +8,10 @@ export default function DirectoryPage() {
         <h1 className="text-3xl font-semibold tracking-tight select-none">
           Directory
         </h1>
-        <Button
-          size="sm"
-          className="flex items-center font-normal text-sm rounded-full space-x-2"
-        >
-          <span className="text-xl sm:text-base">+</span>
-          <span className="hidden sm:block">New employee</span>
-        </Button>
+        <CreateModal/>
+        
       </div>
+      
 
       {/* <div className="flex">
         <InputSearch></InputSearch>
