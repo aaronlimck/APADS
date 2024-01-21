@@ -2,6 +2,9 @@
 
 import prisma from "@/lib/prisma";
 import { formSchema, formSchemaType } from "@/schemas/form";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/lib/auth.config";
+
 // import { currentUser } from "@clerk/nextjs";
 
 // class UserNotFoundErr extends Error {}
@@ -47,6 +50,9 @@ export async function CreateForm(data: formSchemaType) {
     throw new Error("form not valid");
   }
 
+  const session = await getServerSession(authConfig);
+  console.log(session?.user);
+
   // const user = await currentUser();
   // if (!user) {
   //   throw new UserNotFoundErr();
@@ -85,19 +91,19 @@ export async function GetForms() {
   });
 }
 
-// export async function GetFormById(id: number) {
-//   const user = await currentUser();
-//   if (!user) {
-//     throw new UserNotFoundErr();
-//   }
+export async function GetFormById(id: number) {
+  // const user = await currentUser();
+  // if (!user) {
+  //   throw new UserNotFoundErr();
+  // }
 
-//   return await prisma.form.findUnique({
-//     where: {
-//       userId: user.id,
-//       id
-//     }
-//   });
-// }
+  return await prisma.form.findUnique({
+    where: {
+      userId: "12345678",
+      id
+    }
+  });
+}
 
 // export async function UpdateFormContent(id: number, jsonContent: string) {
 //   const user = await currentUser();

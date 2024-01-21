@@ -22,7 +22,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BiRightArrowAlt } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
+
 export default function TemplatesPage() {
+  
   return (
     <div className="min-h-screen max-w-7xl mx-auto px-4 md:px-6 py-4">
       <h1 className="text-3xl font-semibold tracking-tight select-none">
@@ -98,7 +100,7 @@ function FormCard({ form }: { form: Form }) {
             variant={"secondary"}
             className="w-full mt-2 text-md gap-4"
           >
-            <Link href={`/builder/${form.id}`}>
+            <Link href={`/hr/builder/${form.id}`}>
               Edit form <FaEdit />
             </Link>
           </Button>
