@@ -51,7 +51,7 @@ export async function CreateForm(data: formSchemaType) {
   }
 
   const session = await getServerSession(authConfig);
-  console.log(session?.user);
+  // console.log(session?.user);
 
   // const user = await currentUser();
   // if (!user) {
@@ -62,7 +62,7 @@ export async function CreateForm(data: formSchemaType) {
 
   const form = await prisma.form.create({
     data: {
-      userId: "12345678",
+      userId: "12345678", //to change
       name,
       description
     }
@@ -83,7 +83,7 @@ export async function GetForms() {
 
   return await prisma.form.findMany({
     where: {
-      userId: "12345678"
+      userId: "12345678" //to change
     },
     orderBy: {
       createdAt: "desc"
@@ -99,45 +99,46 @@ export async function GetFormById(id: number) {
 
   return await prisma.form.findUnique({
     where: {
+      // to replace
       userId: "12345678",
       id
     }
   });
 }
 
-// export async function UpdateFormContent(id: number, jsonContent: string) {
-//   const user = await currentUser();
-//   if (!user) {
-//     throw new UserNotFoundErr();
-//   }
+export async function UpdateFormContent(id: number, jsonContent: string) {
+  // const user = await currentUser();
+  // if (!user) {
+  //   throw new UserNotFoundErr();
+  // }
 
-//   return await prisma.form.update({
-//     where: {
-//       userId: user.id,
-//       id
-//     },
-//     data: {
-//       content: jsonContent
-//     }
-//   });
-// }
+  return await prisma.form.update({
+    where: {
+      userId: "12345678", //to change
+      id
+    },
+    data: {
+      content: jsonContent
+    }
+  });
+}
 
-// export async function PublishForm(id: number) {
-//   const user = await currentUser();
-//   if (!user) {
-//     throw new UserNotFoundErr();
-//   }
+export async function PublishForm(id: number) {
+  // const user = await currentUser();
+  // if (!user) {
+  //   throw new UserNotFoundErr();
+  // }
 
-//   return await prisma.form.update({
-//     data: {
-//       published: true
-//     },
-//     where: {
-//       userId: user.id,
-//       id
-//     }
-//   });
-// }
+  return await prisma.form.update({
+    data: {
+      published: true
+    },
+    where: {
+      userId: "12345678", //to change
+      id
+    }
+  });
+}
 
 // export async function GetFormContentByUrl(formUrl: string) {
 //   return await prisma.form.update({

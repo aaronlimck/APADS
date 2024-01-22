@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={`min-h-screen w-full ${inter.className}`}>
         <DesignerContextProvider>
           <Provider>{children}</Provider>
-          <Toaster position="top-right" />
+          <Toaster position="bottom-right" />
         </DesignerContextProvider>
       </body>
     </html>

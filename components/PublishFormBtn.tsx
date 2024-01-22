@@ -1,4 +1,4 @@
-// import { PublishForm } from "@/actions/form";
+import { PublishForm } from "@/actions/form";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { FaSpinner } from "react-icons/fa";
@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
+import { toast } from "sonner";
 
 function PublishFormBtn({ id }: { id: number }) {
   const [loading, startTransition] = useTransition();
@@ -24,15 +24,13 @@ function PublishFormBtn({ id }: { id: number }) {
   async function publishForm() {
     try {
       await PublishForm(id);
-      toast({
-        title: "Success",
+      toast.success("Success", {
         description: "Your form is now available to the public"
       });
       router.refresh();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong"
+      toast.error("Error", {
+        description: "Something went wrong!"
       });
     }
   }
@@ -51,11 +49,6 @@ function PublishFormBtn({ id }: { id: number }) {
           <AlertDialogDescription>
             This action cannot be undone. After publishing you will not be able
             to edit this form. <br />
-            <br />
-            <span className="font-medium">
-              By publishing this form you will make it available to the public
-              and you will be able to collect submissions.
-            </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -18,7 +18,7 @@ import useDesigner from "./hooks/useDesigner";
 import { ImSpinner2 } from "react-icons/im";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { toast } from "./ui/use-toast";
+import { toast } from "sonner";
 import Link from "next/link";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Confetti from "react-confetti";
@@ -85,9 +85,8 @@ function FormBuilder({ form }: { form: Form }) {
                 className="mt-2 w-full"
                 onClick={() => {
                   navigator.clipboard.writeText(shareUrl);
-                  toast({
-                    title: "Copied!",
-                    description: "Link copied to clipboard"
+                  toast("Copied", {
+                    description: "Link copied to clipboard!"
                   });
                 }}
               >
@@ -96,7 +95,7 @@ function FormBuilder({ form }: { form: Form }) {
             </div>
             <div className="flex justify-between">
               <Button variant={"link"} asChild>
-                <Link href={"/"} className="gap-2">
+                <Link href={"/hr"} className="gap-2">
                   <BsArrowLeft />
                   Go back home
                 </Link>
@@ -116,7 +115,7 @@ function FormBuilder({ form }: { form: Form }) {
 
   return (
     <DndContext sensors={sensors}>
-      <main className="flex flex-col w-full">
+      <main className="flex flex-col w-full min-h-screen">
         <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
           <h2 className="truncate font-medium">
             <span className="text-muted-foreground mr-2">Form:</span>
