@@ -77,7 +77,7 @@ export default function Navbar() {
             <Button
               className="font-normal w-full justify-start capitalize"
               variant="ghost"
-              onClick={() => signOut()}
+              onClick={() => signOut({ callbackUrl: "/login" })}
             >
               Sign out
             </Button>

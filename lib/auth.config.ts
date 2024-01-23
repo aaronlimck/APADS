@@ -16,8 +16,6 @@ declare module "next-auth/jwt" {
     role: Role;
   }
 }
-// END OF MODULE AUGMENTATION
-
 export const authConfig: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -54,17 +52,19 @@ export const authConfig: NextAuthOptions = {
       if (user) {
         return {
           ...token,
+          id: user.id,
           // @ts-ignore
           role: user.role
         };
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       return {
         ...session,
         user: {
           ...session.user,
+          id: token.id,
           role: token.role
         }
       };

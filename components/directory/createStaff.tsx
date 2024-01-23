@@ -1,5 +1,10 @@
 "use client";
+import { GetDepartment } from "@/actions/department.actions";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { Combobox } from "../ui/combobox";
 import {
   Dialog,
   DialogContent,
@@ -11,18 +16,11 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useState } from "react";
-import { toast } from "sonner";
-import React from "react";
-import { Combobox } from "../ui/combobox";
-import { GetDepartment } from "@/actions/department";
-import { useEffect } from "react";
-import createUser from "@/actions/user";
-import { useRouter } from "next/navigation";
+import createUser from "@/actions/user.actions";
 
 export function CreateModal() {
   const [departmentNames, setDepartmentNames] = useState<String[]>([]);
-  const router=useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -34,7 +32,6 @@ export function CreateModal() {
         console.error("Error fetching departments:", error);
       }
     };
-
     fetchDepartments();
   }, []);
 
@@ -45,6 +42,7 @@ export function CreateModal() {
     role: "",
     manager: ""
   });
+
   const [formErrors, setFormErrors] = useState({
     name: false,
     email: false,
@@ -62,13 +60,14 @@ export function CreateModal() {
       [id]: value
     }));
   };
+
   const handleDepartmentSelection = (value: string) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       department: value
     }));
   };
-  //hand
+
   const handleAddStaff = async () => {
     const errors = {
       name: !formData.name,
@@ -83,14 +82,15 @@ export function CreateModal() {
       toast.error("Please fill in all fields.");
       return false;
     }
-    try{
-    const data={...formData}
-    const userSuccessful = await createUser(data);
-      if (userSuccessful) {
-        router.refresh();
+
+    try {
+      const userResponse = await createUser(formData);
+      console.log(userResponse);
+      if (userResponse.status === 201) {
+        const userId = userResponse.data;
       }
     } catch (error) {
-      return error
+      console.log(error);
     }
   };
 
@@ -102,6 +102,7 @@ export function CreateModal() {
           <span className="hidden sm:block">New employee</span>
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create Employee</DialogTitle>
@@ -109,11 +110,13 @@ export function CreateModal() {
             Fill in the required details to create a new employee
           </DialogDescription>
         </DialogHeader>
+
         <div className="grid gap-4 py-4">
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="name">Name</Label>
             <Input
               id="name"
+              type="text"
               placeholder="Name"
               className={
                 formErrors.name
@@ -128,6 +131,7 @@ export function CreateModal() {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              type="email"
               placeholder="Email"
               className={
                 formErrors.email
@@ -138,28 +142,11 @@ export function CreateModal() {
             />
           </div>
 
-
           <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="department" >
-              Department
-            </Label>
-            <Combobox
-              dataList={departmentNames}
-              inputPlaceholder="Select an department..."
-              onSelect={(value) => handleDepartmentSelection(value)}
-              className={
-                formErrors.department
-                  ? "border-red-300 bg-red-50 col-span-3"
-                  : "col-span-3"
-              }
-            />
-          </div>
-          <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="role">
-              Role
-            </Label>
+            <Label htmlFor="role">Role</Label>
             <Input
               id="role"
+              type="text"
               placeholder="Staff"
               className={
                 formErrors.role
@@ -169,12 +156,26 @@ export function CreateModal() {
               onChange={handleInputChange}
             />
           </div>
+
           <div className="grid w-full items-center gap-1.5">
-          <Label htmlFor="manager">
-              Manager
-            </Label>
+            <Label htmlFor="department">Department</Label>
+            <Combobox
+              dataList={["hi", "no"]}
+              inputPlaceholder="Select an department..."
+              onSelect={(value) => handleDepartmentSelection(value)}
+              className={
+                formErrors.department
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
+              }
+            />
+          </div>
+
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="manager">Manager</Label>
             <Input
               id="manager"
+              type="text"
               placeholder="Toni Kross"
               className={
                 formErrors.manager
@@ -184,10 +185,8 @@ export function CreateModal() {
               onChange={handleInputChange}
             />
           </div>
-
-          
-          
         </div>
+
         <DialogFooter>
           <Button onClick={() => handleAddStaff()}>Create Employee</Button>
         </DialogFooter>
