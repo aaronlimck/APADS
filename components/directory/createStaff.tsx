@@ -15,8 +15,29 @@ import { useState } from "react";
 import { toast } from "sonner";
 import React from "react";
 import { Combobox } from "../ui/combobox";
+import { GetDepartment } from "@/actions/department";
+import { useEffect } from "react";
+import createUser from "@/actions/user";
+import { useRouter } from "next/navigation";
 
 export function CreateModal() {
+  const [departmentNames, setDepartmentNames] = useState<String[]>([]);
+  const router=useRouter();
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const departmentData = await GetDepartment();
+        const namesArray = departmentData.map((department) => department.name);
+        setDepartmentNames(namesArray);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,7 +65,7 @@ export function CreateModal() {
   const handleDepartmentSelection = (value: string) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      department: value,
+      department: value
     }));
   };
   //hand
@@ -57,19 +78,22 @@ export function CreateModal() {
       manager: !formData.manager
     };
     setFormErrors(errors);
+
     if (Object.values(errors).some((error) => error)) {
       toast.error("Please fill in all fields.");
       return false;
     }
-    // const data={...formData}
-    // const isSuccessful = await AddBrands(data);
-    //   if (isSuccessful) {
-    //     setIsOpen(false);
-    //     router.refresh();
-    //   }
-    // } catch (error) {}
-
+    try{
+    const data={...formData}
+    const userSuccessful = await createUser(data);
+      if (userSuccessful) {
+        router.refresh();
+      }
+    } catch (error) {
+      return error
+    }
   };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -86,69 +110,83 @@ export function CreateModal() {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="name">Name</Label>
             <Input
               id="name"
-              placeholder="John Doe"
+              placeholder="Name"
               className={
-                formErrors.name ? "border-red-300 bg-red-50 col-span-3" : "col-span-3"
+                formErrors.name
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
               }
               onChange={handleInputChange}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="email" className="text-right">
-              Email
-            </Label>
+
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
-              placeholder="johndoe@example.com"
+              placeholder="Email"
               className={
-                formErrors.email ? "border-red-300 bg-red-50 col-span-3" : "col-span-3"
+                formErrors.email
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
               }
               onChange={handleInputChange}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="department" className="text-right">
+
+
+          <div className="grid w-full items-center gap-1.5">
+            <Label htmlFor="department" >
               Department
             </Label>
             <Combobox
-                dataList={["hi","no"]}
-                inputPlaceholder="Select an department..."
-                onSelect={(value) => handleDepartmentSelection(value)}
-                className={
-                  formErrors.department ? "border-red-300 bg-red-50 col-span-3" : "col-span-3"
-                }
-              />
+              dataList={departmentNames}
+              inputPlaceholder="Select an department..."
+              onSelect={(value) => handleDepartmentSelection(value)}
+              className={
+                formErrors.department
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
+              }
+            />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="role" className="text-right">
+          <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="role">
               Role
             </Label>
             <Input
               id="role"
               placeholder="Staff"
-              className="col-span-3"
+              className={
+                formErrors.role
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
+              }
               onChange={handleInputChange}
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="manager" className="text-right">
+          <div className="grid w-full items-center gap-1.5">
+          <Label htmlFor="manager">
               Manager
             </Label>
             <Input
               id="manager"
               placeholder="Toni Kross"
               className={
-                formErrors.manager ? "border-red-300 bg-red-50 col-span-3" : "col-span-3"
+                formErrors.manager
+                  ? "border-red-300 bg-red-50 col-span-3"
+                  : "col-span-3"
               }
               onChange={handleInputChange}
             />
           </div>
+
+          
+          
         </div>
         <DialogFooter>
           <Button onClick={() => handleAddStaff()}>Create Employee</Button>
