@@ -30,7 +30,6 @@ export function CreateModal() {
     const fetchDepartments = async () => {
       try {
         const departmentData = await GetDepartment();
-        console.log(departmentData);
         const namesArray = departmentData.map((department) => department.name);
         setDepartmentNames(namesArray);
       } catch (error) {
@@ -67,7 +66,6 @@ export function CreateModal() {
   };
 
   const handleDepartmentSelection = (value: string) => {
-    console.log(value);
     setFormData((prevFormData) => ({
       ...prevFormData,
       department: value
@@ -102,13 +100,13 @@ export function CreateModal() {
         const userCreated = await getUserById(userId);
         const create = await createStaff(formData, userCreated.data);
         if (create.status !== 201) {
-          console.log("Error creating Staff");
+          toast.error("Error creating Staff")
         }
         setIsOpen(false);
         router.refresh();
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Error creating User, Check if User exists");
     }
   };
 
