@@ -2,8 +2,6 @@ import { StaffTable } from "@/components/directory/staffTable";
 import { CreateModal } from "@/components/directory/createStaff";
 
 export default function DirectoryPage() {
-
-
   return (
     <div className="min-h-screen max-w-7xl mx-auto p-4 md:p-6">
       <div className="flex items-center justify-between">
@@ -13,12 +11,6 @@ export default function DirectoryPage() {
         <CreateModal />
       </div>
 
-      {/* <div className="flex">
-        <InputSearch></InputSearch>
-        <Button className="border bg-white text-black hover:bg-gray-50 ml-4">
-          Filter
-        </Button>
-      </div>  */}
       <div className="my-4">
         <StaffTable />
       </div>

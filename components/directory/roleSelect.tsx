@@ -10,21 +10,19 @@ import {
 export default function RoleSelect({
   data,
   onSelect,
-  className,
+  className
 }: {
   data: string[];
   onSelect: (value: string) => void;
   className: string;
 }) {
   return (
-    <Select onValueChange={(value) => onSelect(value)} >
-      <SelectTrigger className={className} >
-        <SelectValue
-        placeholder="Select a Role"
-        />
+    <Select onValueChange={(value) => onSelect(value)}>
+      <SelectTrigger className={className}>
+        <SelectValue placeholder="Select a Role" />
       </SelectTrigger>
-      <SelectContent >
-        <SelectGroup >
+      <SelectContent>
+        <SelectGroup>
           {data.map((item: any) => (
             <SelectItem key={item} value={item}>
               {item}

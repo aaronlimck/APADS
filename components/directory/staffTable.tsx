@@ -1,4 +1,4 @@
-import { MoreHorizontalIcon } from "lucide-react";
+import { getAllStaffUser } from "@/actions/staff.action";
 import Image from "next/image";
 import Badge from "../ui/badge";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -10,13 +10,9 @@ import {
   TableHeader,
   TableRow
 } from "../ui/table";
-import { getAllStaffUser } from "@/actions/staff.actions";
-
-
 
 export async function StaffTable() {
-
-  const staffs= await getAllStaffUser()
+  const staffs = await getAllStaffUser();
 
   return (
     <>
@@ -31,7 +27,6 @@ export async function StaffTable() {
               <TableHead>Department</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Manager</TableHead>
-             
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -41,15 +36,15 @@ export async function StaffTable() {
                 <TableCell className="px-0 md:px-4">
                   <span className="hidden md:block">{staff.email}</span>
                 </TableCell>
-                <TableCell>{staff.Staff?.departmentName}</TableCell>
+                <TableCell>{staff.staff?.departmentName}</TableCell>
                 <TableCell>{staff.role}</TableCell>
                 <TableCell>Tom</TableCell>
-                
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
       <div className="flex flex-col gap-3 sm:hidden">
         {staffs.map((staff) => (
           <Card key={staff.id}>
@@ -73,7 +68,7 @@ export async function StaffTable() {
 
             <CardContent>
               <div className="flex flex-wrap py-3">
-                <Badge color="blue">{staff.Staff?.departmentName}</Badge>
+                <Badge color="blue">{staff.staff?.departmentName}</Badge>
               </div>
               <div className="space-y-1">
                 <p className="text-sm">

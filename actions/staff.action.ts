@@ -1,16 +1,12 @@
 "use server";
 import prisma from "@/lib/prisma";
 
-export default async function createStaff(userData: any, user: any) {
+export async function createStaff(payload: any) {
   try {
     await prisma.staff.create({
       data: {
-        user: {
-          connect: { id: user.id }, // Use connect with the user's id
-        },
-        department: {
-          connect: { name: userData.department },
-        },
+        userId: payload.id,
+        departmentName: payload.departmentName
       }
     });
     return { status: 201, message: "Staff created" };
@@ -27,18 +23,18 @@ export async function getAllStaffUser() {
   try {
     const usersWithStaff = await prisma.user.findMany({
       include: {
-        Staff: {
+        staff: {
           include: {
-            department: true,
-          },
-        },
-      },
+            department: true
+          }
+        }
+      }
     });
 
     return usersWithStaff;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error;
+      throw new Error();
     } else {
       throw new Error("Error retrieving staff information");
     }

@@ -46,7 +46,10 @@ export default function Navbar() {
               />
             </div>
           </PopoverTrigger>
-          <PopoverContent align="end" className="rounded-xl space-y-4">
+          <PopoverContent
+            align="end"
+            className="max-w-[260px] rounded-xl space-y-4"
+          >
             <div className="flex flex-col items-center space-y-3">
               <div>
                 <div className="relative h-12 w-12">
@@ -67,20 +70,11 @@ export default function Navbar() {
                 size="sm"
                 variant="outline"
                 className="text-xs font-medium rounded-full py-1 px-3"
+                onClick={() => signOut({ callbackUrl: "/login" })}
               >
-                Edit Profile
+                Sign Out
               </Button>
             </div>
-
-            <hr className="my-2" />
-
-            <Button
-              className="font-normal w-full justify-start capitalize"
-              variant="ghost"
-              onClick={() => signOut({ callbackUrl: "/login" })}
-            >
-              Sign out
-            </Button>
           </PopoverContent>
         </Popover>
       </div>

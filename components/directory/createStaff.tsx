@@ -1,5 +1,7 @@
 "use client";
-import { GetDepartment } from "@/actions/department.actions";
+import { GetDepartment } from "@/actions/department.action";
+import { createStaff } from "@/actions/staff.action";
+import { createUser } from "@/actions/user.action";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -16,14 +18,13 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { createUser, getUserById } from "@/actions/user.actions";
-import createStaff from "@/actions/staff.actions";
 import RoleSelect from "./roleSelect";
+import { convertTextToTitleCase } from "@/lib/utils";
 
 export function CreateModal() {
-  const [departmentNames, setDepartmentNames] = useState<String[]>([]);
   const router = useRouter();
-  const data = ["ADMIN", "MANAGER", "STAFF"];
+  const roleData = ["ADMIN", "MANAGER", "STAFF"];
+  const [departmentNames, setDepartmentNames] = useState<String[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -65,16 +66,17 @@ export function CreateModal() {
     }));
   };
 
-  const handleDepartmentSelection = (value: string) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      department: value
-    }));
-  };
   const handleRoleSelection = (value: string) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       role: value
+    }));
+  };
+
+  const handleDepartmentSelection = (value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      department: value
     }));
   };
 
@@ -96,11 +98,13 @@ export function CreateModal() {
     try {
       const userResponse = await createUser(formData);
       if (userResponse.status === 201) {
-        const userId = userResponse.data;
-        const userCreated = await getUserById(userId);
-        const create = await createStaff(formData, userCreated.data);
+        const staffData = {
+          id: userResponse.data.id,
+          departmentName: convertTextToTitleCase(formData.department)
+        };
+        const create = await createStaff(staffData);
         if (create.status !== 201) {
-          toast.error("Error creating Staff")
+          toast.error("Error creating Staff");
         }
         setIsOpen(false);
         router.refresh();
@@ -111,12 +115,10 @@ export function CreateModal() {
   };
 
   return (
-
-    
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          className="flex items-center font-normal text-sm rounded-full space-x-2"
+          className="flex items-center font-normal text-sm capitalize space-x-2"
           onClick={() => setIsOpen(true)}
         >
           <span className="text-xl sm:text-base">+</span>
@@ -130,7 +132,6 @@ export function CreateModal() {
           <DialogDescription>
             Fill in the required details to create a new employee
           </DialogDescription>
-          
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
@@ -167,7 +168,7 @@ export function CreateModal() {
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="role">Role</Label>
             <RoleSelect
-              data={data}
+              data={roleData}
               onSelect={(value) => handleRoleSelection(value)}
               className={
                 formErrors.role
@@ -180,7 +181,7 @@ export function CreateModal() {
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="department">Department</Label>
             <Combobox
-              dataList={departmentNames}
+              dataList={departmentNames as string[]}
               inputPlaceholder="Select an department..."
               onSelect={(value) => handleDepartmentSelection(value)}
               className={

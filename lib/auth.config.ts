@@ -1,7 +1,7 @@
+import { getUserByEmail } from "@/actions/user.action";
 import { Role } from "@prisma/client";
 import { DefaultSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "./prisma";
 
 declare module "next-auth" {
   interface Session {
@@ -27,11 +27,9 @@ export const authConfig: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const existingUser = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
+        const existingUser = await getUserByEmail(credentials.email);
+        if (!existingUser || !existingUser.password) return null;
 
-        if (!existingUser) return null;
         const passwordMatch = credentials.password === existingUser.password;
         if (!passwordMatch) return null;
 

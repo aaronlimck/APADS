@@ -24,15 +24,14 @@ model User {
   role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Staff     Staff?
-
+  staff     Staff?
 
   @@index([email])
   @@map("users")
 }
 
 model Staff {
-  user       User       @relation(fields: [userId], references: [id])
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String     @unique
   department Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
   departmentName String 

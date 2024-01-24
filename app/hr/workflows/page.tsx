@@ -9,7 +9,7 @@ export default function WorkflowPage() {
           Workflows
         </h1>
 
-        <Button className="font-normal capitalize rounded-full space-x-2">
+        <Button className="font-normal capitalize space-x-2">
           <PlusIcon size={16} />
           <span>New workflow</span>
         </Button>
