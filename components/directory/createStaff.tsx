@@ -16,21 +16,21 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import {createUser,getUserById} from "@/actions/user.actions";
+import { createUser, getUserById } from "@/actions/user.actions";
 import createStaff from "@/actions/staff.actions";
-import { Select } from "../ui/select";
 import RoleSelect from "./roleSelect";
-
 
 export function CreateModal() {
   const [departmentNames, setDepartmentNames] = useState<String[]>([]);
   const router = useRouter();
   const data = ["ADMIN", "MANAGER", "STAFF"];
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
         const departmentData = await GetDepartment();
+        console.log(departmentData);
         const namesArray = departmentData.map((department) => department.name);
         setDepartmentNames(namesArray);
       } catch (error) {
@@ -67,7 +67,7 @@ export function CreateModal() {
   };
 
   const handleDepartmentSelection = (value: string) => {
-    console.log(value)
+    console.log(value);
     setFormData((prevFormData) => ({
       ...prevFormData,
       department: value
@@ -99,11 +99,13 @@ export function CreateModal() {
       const userResponse = await createUser(formData);
       if (userResponse.status === 201) {
         const userId = userResponse.data;
-        const userCreated= await getUserById(userId);
-        const create= await createStaff(formData,userCreated.data)
-        if (create.status!==201){
-          console.log("Error creating Staff")
+        const userCreated = await getUserById(userId);
+        const create = await createStaff(formData, userCreated.data);
+        if (create.status !== 201) {
+          console.log("Error creating Staff");
         }
+        setIsOpen(false);
+        router.refresh();
       }
     } catch (error) {
       console.log(error);
@@ -111,9 +113,14 @@ export function CreateModal() {
   };
 
   return (
-    <Dialog>
+
+    
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="flex items-center font-normal text-sm rounded-full space-x-2">
+        <Button
+          className="flex items-center font-normal text-sm rounded-full space-x-2"
+          onClick={() => setIsOpen(true)}
+        >
           <span className="text-xl sm:text-base">+</span>
           <span className="hidden sm:block">New employee</span>
         </Button>
@@ -125,6 +132,7 @@ export function CreateModal() {
           <DialogDescription>
             Fill in the required details to create a new employee
           </DialogDescription>
+          
         </DialogHeader>
 
         <div className="grid gap-4 py-4">

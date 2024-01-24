@@ -10,26 +10,13 @@ import {
   TableHeader,
   TableRow
 } from "../ui/table";
+import { getAllStaffUser } from "@/actions/staff.actions";
 
-export function StaffTable() {
-  const staffs = [
-    {
-      id: "1",
-      name: "Toni Kross",
-      email: "tonikross@example.com",
-      department: "Logistics",
-      role: "Product Designer",
-      manager: "Tom"
-    },
-    {
-      id: "2",
-      name: "Wade Warren",
-      email: "wadewarren@example.com",
-      department: "Logistics",
-      role: "Clerk",
-      manager: "Tom"
-    }
-  ];
+
+
+export async function StaffTable() {
+
+  const staffs= await getAllStaffUser()
 
   return (
     <>
@@ -44,9 +31,7 @@ export function StaffTable() {
               <TableHead>Department</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Manager</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
+             
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,12 +41,10 @@ export function StaffTable() {
                 <TableCell className="px-0 md:px-4">
                   <span className="hidden md:block">{staff.email}</span>
                 </TableCell>
-                <TableCell>{staff.department}</TableCell>
+                <TableCell>{staff.Staff?.departmentName}</TableCell>
                 <TableCell>{staff.role}</TableCell>
-                <TableCell>{staff.manager}</TableCell>
-                <TableCell>
-                  <MoreHorizontalIcon />
-                </TableCell>
+                <TableCell>Tom</TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -90,7 +73,7 @@ export function StaffTable() {
 
             <CardContent>
               <div className="flex flex-wrap py-3">
-                <Badge color="blue">{staff.department}</Badge>
+                <Badge color="blue">{staff.Staff?.departmentName}</Badge>
               </div>
               <div className="space-y-1">
                 <p className="text-sm">
@@ -99,7 +82,7 @@ export function StaffTable() {
                 </p>
                 <p className="text-sm">
                   <span className="font-medium">Manager: </span>
-                  <span className="text-gray-800">{staff.manager}</span>
+                  <span className="text-gray-800">Tom</span>
                 </p>
               </div>
             </CardContent>

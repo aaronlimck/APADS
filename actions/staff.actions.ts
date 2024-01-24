@@ -22,3 +22,25 @@ export default async function createStaff(userData: any, user: any) {
     }
   }
 }
+
+export async function getAllStaffUser() {
+  try {
+    const usersWithStaff = await prisma.user.findMany({
+      include: {
+        Staff: {
+          include: {
+            department: true,
+          },
+        },
+      },
+    });
+
+    return usersWithStaff;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error;
+    } else {
+      throw new Error("Error retrieving staff information");
+    }
+  }
+}
