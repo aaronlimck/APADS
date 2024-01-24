@@ -16,11 +16,16 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import createUser from "@/actions/user.actions";
+import {createUser,getUserById} from "@/actions/user.actions";
+import createStaff from "@/actions/staff.actions";
+import { Select } from "../ui/select";
+import RoleSelect from "./roleSelect";
+
 
 export function CreateModal() {
   const [departmentNames, setDepartmentNames] = useState<String[]>([]);
   const router = useRouter();
+  const data = ["ADMIN", "MANAGER", "STAFF"];
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -62,9 +67,16 @@ export function CreateModal() {
   };
 
   const handleDepartmentSelection = (value: string) => {
+    console.log(value)
     setFormData((prevFormData) => ({
       ...prevFormData,
       department: value
+    }));
+  };
+  const handleRoleSelection = (value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      role: value
     }));
   };
 
@@ -85,9 +97,13 @@ export function CreateModal() {
 
     try {
       const userResponse = await createUser(formData);
-      console.log(userResponse);
       if (userResponse.status === 201) {
         const userId = userResponse.data;
+        const userCreated= await getUserById(userId);
+        const create= await createStaff(formData,userCreated.data)
+        if (create.status!==201){
+          console.log("Error creating Staff")
+        }
       }
     } catch (error) {
       console.log(error);
@@ -144,23 +160,21 @@ export function CreateModal() {
 
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="role">Role</Label>
-            <Input
-              id="role"
-              type="text"
-              placeholder="Staff"
+            <RoleSelect
+              data={data}
+              onSelect={(value) => handleRoleSelection(value)}
               className={
                 formErrors.role
-                  ? "border-red-300 bg-red-50 col-span-3"
+                  ? "border-red-300 bg-red-50 col-span-3 "
                   : "col-span-3"
               }
-              onChange={handleInputChange}
             />
           </div>
 
           <div className="grid w-full items-center gap-1.5">
             <Label htmlFor="department">Department</Label>
             <Combobox
-              dataList={["hi", "no"]}
+              dataList={departmentNames}
               inputPlaceholder="Select an department..."
               onSelect={(value) => handleDepartmentSelection(value)}
               className={

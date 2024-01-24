@@ -35,7 +35,7 @@ model Staff {
   user       User       @relation(fields: [userId], references: [id])
   userId     String     @unique
   department Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
-  departmentName String  @unique
+  departmentName String 
 
   @@index([userId])
 }

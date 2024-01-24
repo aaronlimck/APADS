@@ -8,7 +8,7 @@ import prisma from "@/lib/prisma";
  * @return {Promise<Object>} Resolves to an object with status code (201), message, and user ID.
  * @throws {Error} If there's an error during user creation.
  */
-export default async function createUser(payload: any) {
+export async function createUser(payload: any) {
   try {
     const response = await prisma.user.create({
       data: {
@@ -29,6 +29,27 @@ export default async function createUser(payload: any) {
       throw new Error(error.message);
     } else {
       throw new Error("Error creating new user");
+    }
+  }
+}
+
+export async function getUserById(id:any) {
+  try{
+    const response= await prisma.user.findUnique({
+      where:{
+        id:id
+      }
+    });
+    if (!response){
+      throw new Error("Error finding user")
+    }
+    return { status:201, message:"User found", data:response}
+  }
+  catch (error){
+    if(error instanceof Error){
+      throw new Error(error.message);
+    } else{
+      throw new Error("Error finding user");
     }
   }
 }

@@ -39,8 +39,13 @@ export function Combobox({
   const [value, setValue] = React.useState(initValue || "");
 
   const handleItemSelection = (currentValue: string) => {
+    const capitalizedValue = capitalizeFirstLetter(currentValue);
     setValue(currentValue === value ? "" : currentValue);
-    onSelect(currentValue); // Pass the selected item to the parent component
+    onSelect(capitalizedValue); // Pass the selected item to the parent component
+  };
+
+  const capitalizeFirstLetter = (value: string) => {
+    return value.charAt(0).toUpperCase() + value.slice(1);
   };
 
   return (
@@ -55,7 +60,7 @@ export function Combobox({
           {value ? (
             <span className="capitalize">{value}</span>
           ) : (
-            <span className="text-gray-500">{inputPlaceholder}</span>
+            <span >{inputPlaceholder}</span>
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
