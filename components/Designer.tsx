@@ -9,7 +9,7 @@ import {
   useDroppable
 } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
-import useDesigner from "./hooks/useDesigner";
+import useDesigner from "../hooks/useDesigner";
 import {
   ElementsType,
   FormElementInstance,

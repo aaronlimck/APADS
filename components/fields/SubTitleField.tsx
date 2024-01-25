@@ -9,7 +9,7 @@ import {
   FormElement,
   FormElementInstance
 } from "../TemplateElements";
-import useDesigner from "../hooks/useDesigner";
+import useDesigner from "../../hooks/useDesigner";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 

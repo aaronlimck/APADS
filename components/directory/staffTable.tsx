@@ -1,3 +1,6 @@
+import { getAllStaffUser } from "@/actions/staff.action";
+import Image from "next/image";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import {
   Table,
   TableBody,
@@ -6,82 +9,81 @@ import {
   TableHeader,
   TableRow
 } from "../ui/table";
+import { Badge } from "../ui/badge";
 
-export function StaffTable() {
-  const staffs = [
-    {
-      id:"1",
-      name: "John",
-      email: "johndoe@example.com",
-      department: "Logistics",
-      Role: "Clerk",
-      Manager: "Tom",
-      
-    }
-  ];
+export async function StaffTable() {
+  const staffs = await getAllStaffUser();
 
   return (
-    <Table>
-      <TableHeader className="bg-[#f7f7f8]">
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead className="px-0 md:px-4">
-            <span className="hidden md:block">Email</span>
-          </TableHead>
-          <TableHead>Department</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Manager</TableHead>
-          <TableHead>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-more-horizontal"
-            >
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="19" cy="12" r="1" />
-              <circle cx="5" cy="12" r="1" />
-            </svg>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      <div className="hidden sm:block">
+        <Table>
+          <TableHeader className="bg-[#f7f7f8]">
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead className="px-0 md:px-4">
+                <span className="hidden md:block">Email</span>
+              </TableHead>
+              <TableHead>Department</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Manager</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {staffs.map((staff) => (
+              <TableRow key={staff.id}>
+                <TableCell>{staff.name}</TableCell>
+                <TableCell className="px-0 md:px-4">
+                  <span className="hidden md:block">{staff.email}</span>
+                </TableCell>
+                <TableCell>{staff.staff?.departmentName}</TableCell>
+                <TableCell>{staff.role}</TableCell>
+                <TableCell>Tom</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex flex-col gap-3 sm:hidden">
         {staffs.map((staff) => (
-          <TableRow key={staff.id}>
-            <TableCell>{staff.name}</TableCell>
-            <TableCell className="px-0 md:px-4">
-              <span className="hidden md:block">{staff.email}</span>
-            </TableCell>
-            <TableCell>{staff.department}</TableCell>
-            <TableCell>{staff.Role}</TableCell>
-            <TableCell>{staff.Manager}</TableCell>
-            <TableCell>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-more-horizontal"
-              >
-                <circle cx="12" cy="12" r="1" />
-                <circle cx="19" cy="12" r="1" />
-                <circle cx="5" cy="12" r="1" />
-              </svg>
-            </TableCell>
-          </TableRow>
+          <Card key={staff.id}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 rounded-full">
+                  <Image
+                    className="h-10 w-10 rounded-full"
+                    src={"https://ui-avatars.com/api/?name=Elon+Musk&length=1"}
+                    fill
+                    unoptimized
+                    alt="avatar"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-base font-medium">{staff.name}</span>
+                  <span className="text-sm text-gray-500">{staff.role}</span>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent>
+              <div className="flex flex-wrap py-3">
+                <Badge>{staff.staff?.departmentName}</Badge>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm">
+                  <span className="font-medium">Email: </span>
+                  <span className="text-gray-800">{staff.email}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-medium">Manager: </span>
+                  <span className="text-gray-800">Tom</span>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         ))}
-      </TableBody>
-    </Table>
+      </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
+import { getUserByEmail } from "@/actions/user.action";
 import { Role } from "@prisma/client";
 import { DefaultSession, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "./prisma";
 
 declare module "next-auth" {
   interface Session {
@@ -16,8 +16,6 @@ declare module "next-auth/jwt" {
     role: Role;
   }
 }
-// END OF MODULE AUGMENTATION
-
 export const authConfig: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -29,11 +27,9 @@ export const authConfig: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const existingUser = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        });
+        const existingUser = await getUserByEmail(credentials.email);
+        if (!existingUser || !existingUser.password) return null;
 
-        if (!existingUser) return null;
         const passwordMatch = credentials.password === existingUser.password;
         if (!passwordMatch) return null;
 
@@ -54,17 +50,19 @@ export const authConfig: NextAuthOptions = {
       if (user) {
         return {
           ...token,
+          id: user.id,
           // @ts-ignore
           role: user.role
         };
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       return {
         ...session,
         user: {
           ...session.user,
+          id: token.id,
           role: token.role
         }
       };

@@ -1,5 +1,5 @@
 import React from "react";
-import useDesigner from "./hooks/useDesigner";
+import useDesigner from "../hooks/useDesigner";
 import FormElementsSidebar from "./TemplateElementsSidebar";
 import PropertiesFormSidebar from "./PropertiesFormSidebar";
 

@@ -1,4 +1,10 @@
 "use client";
+import { Template } from "@prisma/client";
+import React, { useEffect, useState } from "react";
+import PreviewDialogBtn from "./PreviewDialogBtn";
+import PublishTemplateBtn from "./PublishTemplateBtn";
+import SaveFormBtn from "./SaveFormBtn";
+import Designer from "./Designer";
 import {
   DndContext,
   MouseSensor,
@@ -6,23 +12,17 @@ import {
   useSensor,
   useSensors
 } from "@dnd-kit/core";
-import { Player } from "@lottiefiles/react-lottie-player";
-import { Template } from "@prisma/client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import Confetti from "react-confetti";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-import { toast } from "sonner";
-import useDesigner from "../hooks/useDesigner";
-import Designer from "./Designer";
 import DragOverlayWrapper from "./DragOverlayWrapper";
-import PreviewDialogBtn from "./PreviewDialogBtn";
-import PublishTemplateBtn from "./PublishTemplateBtn";
-import SaveFormBtn from "./SaveFormBtn";
-import { Button } from "./ui/button";
+import useDesigner from "../hooks/useDesigner";
+import { ImSpinner2 } from "react-icons/im";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
+import Link from "next/link";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import Confetti from "react-confetti";
 
-function FormBuilder({ template }: { template: Template }) {
+export function FormBuilder({ template }: { template: Template }) {
   const { setElements, setSelectedElement } = useDesigner();
   const [isReady, setIsReady] = useState(false);
 
@@ -53,8 +53,7 @@ function FormBuilder({ template }: { template: Template }) {
   if (!isReady) {
     return (
       <div className="flex flex-col items-center justify-center w-full min-h-screen">
-        <Player src="/block_builder.json" className="player" loop autoplay />
-        <div className="text-gray-500 text-sm">Loading builder ...</div>
+        <ImSpinner2 className="animate-spin h-12 w-12" />
       </div>
     );
   }
@@ -139,5 +138,3 @@ function FormBuilder({ template }: { template: Template }) {
     </DndContext>
   );
 }
-
-export default FormBuilder;

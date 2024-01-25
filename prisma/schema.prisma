@@ -18,15 +18,32 @@ enum Role {
 
 model User {
   id        String   @id @default(cuid())
-  email     String   @unique
   name      String?
+  email     String   @unique
   password  String
-  role      Role    
+  role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  staff     Staff?
 
   @@index([email])
   @@map("users")
+}
+
+model Staff {
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String     @unique
+  department     Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
+  departmentName String
+
+  @@index([userId])
+}
+
+model Department {
+  name  String  @unique
+  staff Staff[] @relation("DepartmentStaff")
+
+  @@index([name])
 }
 
 model Template {
@@ -39,19 +56,17 @@ model Template {
   content     String   @default("[]")
 
   FormSubmissions FormSubmissions[]
-
   @@unique([name, userId])
 }
 
 // Work in progress for next sprint 
 model FormSubmissions {
-  id        Int      @id @default(autoincrement())
-//userID    String   //Employee
-// Other relevant fields have to plan
-  createdAt DateTime @default(now())
-  templateId    Int
-  form      Template     @relation(fields: [templateId], references: [id])
+  id         Int      @id @default(autoincrement())
+  //userID    String   //Employee
+  // Other relevant fields have to plan
+  createdAt  DateTime @default(now())
+  templateId Int
+  form       Template @relation(fields: [templateId], references: [id])
 
   content String
 }
-

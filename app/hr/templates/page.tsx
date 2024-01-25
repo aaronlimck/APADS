@@ -24,14 +24,19 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import { FaEdit } from "react-icons/fa";
 
 export default function TemplatesPage() {
-  
+  function TemplateCardSkeleton() {
+    return (
+      <Skeleton className="border-2 border-primary-/20 min-h-[190px] w-full" />
+    );
+  }
+
   return (
-    <div className="min-h-screen max-w-7xl mx-auto px-4 md:px-6 py-4">
+    <div className="min-h-screen max-w-7xl mx-auto p-4 md:p-6">
       <h1 className="text-3xl font-semibold tracking-tight select-none">
         Your Templates
       </h1>
       <Separator className="my-6" />
-      <div className="grid gric-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <CreateTemplateBtn />
         <Suspense
           fallback={[1, 2, 3, 4].map((el) => (
@@ -43,10 +48,6 @@ export default function TemplatesPage() {
       </div>
     </div>
   );
-}
-
-function TemplateCardSkeleton() {
-  return <Skeleton className="border-2 border-primary-/20 h-[190px] w-full" />;
 }
 
 async function TemplateCards() {
@@ -63,11 +64,17 @@ async function TemplateCards() {
 function TemplateCard({ template }: { template: Template }) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 justify-between">
-          <span className="truncate font-bold pb-1">{template.name}</span>
-          {template.published && <Badge>Published</Badge>}
-          {!template.published && <Badge variant={"destructive"}>Draft</Badge>}
+          <span className="truncate font-medium text-lg">{template.name}</span>
+          {template.published && (
+            <Badge className="font-medium">Published</Badge>
+          )}
+          {!template.published && (
+            <Badge className="font-medium" variant={"destructive"}>
+              Draft
+            </Badge>
+          )}
         </CardTitle>
         <CardDescription className="flex items-center justify-between text-muted-foreground text-sm">
           {formatDistance(template.createdAt, new Date(), {
@@ -98,10 +105,11 @@ function TemplateCard({ template }: { template: Template }) {
           <Button
             asChild
             variant={"secondary"}
-            className="w-full mt-2 text-md gap-4"
+            className="w-full mt-2 text-sm gap-2"
           >
             <Link href={`/hr/builder/${template.id}`}>
-              Edit form <FaEdit />
+              Edit
+              <FaEdit />
             </Link>
           </Button>
         )}
