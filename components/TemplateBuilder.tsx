@@ -1,9 +1,9 @@
 "use client";
 
-import { Form } from "@prisma/client";
+import { Template } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import PreviewDialogBtn from "./PreviewDialogBtn";
-import PublishFormBtn from "./PublishFormBtn";
+import PublishTemplateBtn from "./PublishTemplateBtn";
 import SaveFormBtn from "./SaveFormBtn";
 import Designer from "./Designer";
 import {
@@ -23,7 +23,7 @@ import Link from "next/link";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import Confetti from "react-confetti";
 
-function FormBuilder({ form }: { form: Form }) {
+function FormBuilder({ template }: { template: Template }) {
   const { setElements, setSelectedElement } = useDesigner();
   const [isReady, setIsReady] = useState(false);
 
@@ -44,12 +44,12 @@ function FormBuilder({ form }: { form: Form }) {
 
   useEffect(() => {
     if (isReady) return;
-    const elements = JSON.parse(form.content);
+    const elements = JSON.parse(template.content);
     setElements(elements);
     setSelectedElement(null);
     const readyTimeout = setTimeout(() => setIsReady(true), 500);
     return () => clearTimeout(readyTimeout);
-  }, [form, setElements, isReady, setSelectedElement]);
+  }, [template, setElements, isReady, setSelectedElement]);
 
   if (!isReady) {
     return (
@@ -59,9 +59,9 @@ function FormBuilder({ form }: { form: Form }) {
     );
   }
 
-  const shareUrl = `${window.location.origin}/submit/${form.shareURL}`;
+  const shareUrl = "Testing"; //`${window.location.origin}/submit/${template.shareURL}`;
 
-  if (form.published) {
+  if (template.published) {
     return (
       <>
         <Confetti
@@ -101,7 +101,7 @@ function FormBuilder({ form }: { form: Form }) {
                 </Link>
               </Button>
               <Button variant={"link"} asChild>
-                <Link href={`/forms/${form.id}`} className="gap-2">
+                <Link href={`/forms/${template.id}`} className="gap-2">
                   Form details
                   <BsArrowRight />
                 </Link>
@@ -119,14 +119,14 @@ function FormBuilder({ form }: { form: Form }) {
         <nav className="flex justify-between border-b-2 p-4 gap-3 items-center">
           <h2 className="truncate font-medium">
             <span className="text-muted-foreground mr-2">Form:</span>
-            {form.name}
+            {template.name}
           </h2>
           <div className="flex items-center gap-2">
             <PreviewDialogBtn />
-            {!form.published && (
+            {!template.published && (
               <>
-                <SaveFormBtn id={form.id} />
-                <PublishFormBtn id={form.id} />
+                <SaveFormBtn id={template.id} />
+                <PublishTemplateBtn id={template.id} />
               </>
             )}
           </div>

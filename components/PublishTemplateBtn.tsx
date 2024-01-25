@@ -1,4 +1,4 @@
-import { PublishForm } from "@/actions/form";
+import { PublishTemplate } from "@/actions/template";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { FaSpinner } from "react-icons/fa";
@@ -17,15 +17,15 @@ import {
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
-function PublishFormBtn({ id }: { id: number }) {
+function PublishTemplateBtn({ id }: { id: number }) {
   const [loading, startTransition] = useTransition();
   const router = useRouter();
 
-  async function publishForm() {
+  async function publishTemplate() {
     try {
-      await PublishForm(id);
+      await PublishTemplate(id);
       toast.success("Success", {
-        description: "Your form is now available to the public"
+        description: "Your template is now published!"
       });
       router.refresh();
     } catch (error) {
@@ -48,7 +48,7 @@ function PublishFormBtn({ id }: { id: number }) {
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. After publishing you will not be able
-            to edit this form. <br />
+            to edit this template. <br />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -57,7 +57,7 @@ function PublishFormBtn({ id }: { id: number }) {
             disabled={loading}
             onClick={(e) => {
               e.preventDefault();
-              startTransition(publishForm);
+              startTransition(publishTemplate);
             }}
           >
             Proceed {loading && <FaSpinner className="animate-spin" />}
@@ -68,4 +68,4 @@ function PublishFormBtn({ id }: { id: number }) {
   );
 }
 
-export default PublishFormBtn;
+export default PublishTemplateBtn;

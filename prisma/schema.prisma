@@ -29,7 +29,7 @@ model User {
   @@map("users")
 }
 
-model Form {
+model Template {
   id          Int      @id @default(autoincrement())
   userId      String
   createdAt   DateTime @default(now())
@@ -38,20 +38,19 @@ model Form {
   description String   @default("")
   content     String   @default("[]")
 
-  visits      Int @default(0)
-  submissions Int @default(0)
-
-  shareURL        String            @unique @default(uuid())
   FormSubmissions FormSubmissions[]
 
   @@unique([name, userId])
 }
 
+// Work in progress for next sprint 
 model FormSubmissions {
   id        Int      @id @default(autoincrement())
+//userID    String   //Employee
+// Other relevant fields have to plan
   createdAt DateTime @default(now())
-  formId    Int
-  form      Form     @relation(fields: [formId], references: [id])
+  templateId    Int
+  form      Template     @relation(fields: [templateId], references: [id])
 
   content String
 }

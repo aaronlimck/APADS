@@ -1,5 +1,5 @@
-import { GetFormById } from "@/actions/form";
-import FormBuilder from "@/components/FormBuilder";
+import { GetTemplateById } from "@/actions/template";
+import FormBuilder from "@/components/TemplateBuilder";
 import React from "react";
 
 async function BuilderPage({
@@ -10,12 +10,12 @@ async function BuilderPage({
   };
 }) {
   const { id } = params;
-  const form = await GetFormById(Number(id));
+  const template = await GetTemplateById(Number(id));
   // console.log(form);
-  if (!form) {
+  if (!template) {
     throw new Error("form not found");
   }
-  return <FormBuilder form={form} />;
+  return <FormBuilder template={template} />;
 }
 
 export default BuilderPage;

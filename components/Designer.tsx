@@ -14,7 +14,7 @@ import {
   ElementsType,
   FormElementInstance,
   FormElements
-} from "./FormElements";
+} from "./TemplateElements";
 import { idGenerator } from "@/lib/idGenerator";
 import { Button } from "./ui/button";
 import { BiSolidTrash } from "react-icons/bi";

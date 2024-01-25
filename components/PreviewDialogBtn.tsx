@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { MdPreview } from "react-icons/md";
 import useDesigner from "./hooks/useDesigner";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
-import { FormElements } from "./FormElements";
+import { FormElements } from "./TemplateElements";
 
 function PreviewDialogBtn() {
   const { elements } = useDesigner();

@@ -1,6 +1,6 @@
 import React from "react";
 import useDesigner from "./hooks/useDesigner";
-import FormElementsSidebar from "./FormElementsSidebar";
+import FormElementsSidebar from "./TemplateElementsSidebar";
 import PropertiesFormSidebar from "./PropertiesFormSidebar";
 
 function DesignerSidebar() {

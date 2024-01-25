@@ -1,9 +1,9 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { formSchema, formSchemaType } from "@/schemas/form";
-import { getServerSession } from "next-auth";
-import { authConfig } from "@/lib/auth.config";
+import { templateSchema, formSchemaType } from "@/schemas/form";
+// import { getServerSession } from "next-auth";
+// import { authConfig } from "@/lib/auth.config";
 
 // import { currentUser } from "@clerk/nextjs";
 
@@ -44,13 +44,13 @@ import { authConfig } from "@/lib/auth.config";
 //   };
 // }
 
-export async function CreateForm(data: formSchemaType) {
-  const validation = formSchema.safeParse(data);
+export async function CreateTemplate(data: formSchemaType) {
+  const validation = templateSchema.safeParse(data);
   if (!validation.success) {
-    throw new Error("form not valid");
+    throw new Error("Template not valid");
   }
 
-  const session = await getServerSession(authConfig);
+  // const session = await getServerSession(authConfig);
   // console.log(session?.user);
 
   // const user = await currentUser();
@@ -60,7 +60,7 @@ export async function CreateForm(data: formSchemaType) {
 
   const { name, description } = data;
 
-  const form = await prisma.form.create({
+  const form = await prisma.template.create({
     data: {
       userId: "12345678", //to change
       name,
@@ -75,13 +75,13 @@ export async function CreateForm(data: formSchemaType) {
   return form.id;
 }
 
-export async function GetForms() {
+export async function GetTemplates() {
   // const user = await currentUser();
   // if (!user) {
   //   throw new UserNotFoundErr();
   // }
 
-  return await prisma.form.findMany({
+  return await prisma.template.findMany({
     where: {
       userId: "12345678" //to change
     },
@@ -91,13 +91,13 @@ export async function GetForms() {
   });
 }
 
-export async function GetFormById(id: number) {
+export async function GetTemplateById(id: number) {
   // const user = await currentUser();
   // if (!user) {
   //   throw new UserNotFoundErr();
   // }
 
-  return await prisma.form.findUnique({
+  return await prisma.template.findUnique({
     where: {
       // to replace
       userId: "12345678",
@@ -106,13 +106,13 @@ export async function GetFormById(id: number) {
   });
 }
 
-export async function UpdateFormContent(id: number, jsonContent: string) {
+export async function UpdateTemplateContent(id: number, jsonContent: string) {
   // const user = await currentUser();
   // if (!user) {
   //   throw new UserNotFoundErr();
   // }
 
-  return await prisma.form.update({
+  return await prisma.template.update({
     where: {
       userId: "12345678", //to change
       id
@@ -123,13 +123,13 @@ export async function UpdateFormContent(id: number, jsonContent: string) {
   });
 }
 
-export async function PublishForm(id: number) {
+export async function PublishTemplate(id: number) {
   // const user = await currentUser();
   // if (!user) {
   //   throw new UserNotFoundErr();
   // }
 
-  return await prisma.form.update({
+  return await prisma.template.update({
     data: {
       published: true
     },

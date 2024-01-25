@@ -1,6 +1,6 @@
 "use client";
 
-import { formSchema, formSchemaType } from "@/schemas/form";
+import { templateSchema, formSchemaType } from "@/schemas/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { ImSpinner2 } from "react-icons/im";
@@ -24,30 +24,27 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { toast } from "./ui/use-toast";
-import { CreateForm } from "@/actions/form";
+import { toast } from "sonner";
+import { CreateTemplate } from "@/actions/template";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
-function CreateFormBtn() {
+function CreateTemplateBtn() {
   const router = useRouter();
   const form = useForm<formSchemaType>({
-    resolver: zodResolver(formSchema)
+    resolver: zodResolver(templateSchema)
   });
 
   async function onSubmit(values: formSchemaType) {
     try {
-      const formId = await CreateForm(values);
-      toast({
-        title: "Success",
-        description: "Form created successfully"
+      const formId = await CreateTemplate(values);
+      toast.success("Success", {
+        description: "Template created successfully"
       });
-      router.push(`/builder/${formId}`);
+      router.push(`/hr/builder/${formId}`);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong, please try again later",
-        variant: "destructive"
+      toast.success("Error", {
+        description: "Template name already exist. Please choose a different name!"
       });
     }
   }
@@ -119,4 +116,4 @@ function CreateFormBtn() {
   );
 }
 
-export default CreateFormBtn;
+export default CreateTemplateBtn;

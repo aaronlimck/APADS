@@ -7,7 +7,7 @@ import {
   createContext,
   useState
 } from "react";
-import { FormElementInstance } from "../FormElements";
+import { FormElementInstance } from "../TemplateElements";
 
 type DesignerContextType = {
   elements: FormElementInstance[];
