@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432 # enables connecting locally via psql
+    environment:
+      POSTGRES_DB: collectives-local-db
+      POSTGRES_HOST_AUTH_METHOD: trust
