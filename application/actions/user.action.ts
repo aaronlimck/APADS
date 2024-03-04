@@ -39,11 +39,16 @@ export async function createUser(payload: any) {
   }
 }
 
-export async function getAllUsers() {
+export async function getAllUsers({
+  isArchived,
+}: { isArchived?: boolean } = {}) {
   try {
     const users = await prisma.user.findMany({
       orderBy: {
         createdAt: "desc",
+      },
+      where: {
+        isArchived: isArchived,
       },
     });
     if (!users) {
@@ -125,6 +130,25 @@ export async function deleteUserById(id: string) {
       throw new Error(error.message);
     } else {
       throw new Error("Error deleting user");
+    }
+  }
+}
+
+export async function updateUserById(id: string, payload: any) {
+  try {
+    const user = await prisma.user.update({
+      where: { id: id },
+      data: payload,
+    });
+    if (!user) {
+      throw new Error("Error updating user");
+    }
+    return { status: 200, message: "User updated", data: user };
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error("Error updating user");
     }
   }
 }

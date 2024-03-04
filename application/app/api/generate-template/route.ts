@@ -2,7 +2,6 @@ import openai from "@/lib/openai";
 import { NextRequest } from "next/server";
 
 // "Create a performance appraisal form to evaluate employees who have just completed their probation period.",
-
 export async function GET(request: Request) {
   return new Response("Hello world!");
 }

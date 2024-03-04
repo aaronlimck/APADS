@@ -9,3 +9,4 @@ services:
     environment:
       POSTGRES_DB: collectives-local-db
       POSTGRES_HOST_AUTH_METHOD: trust
+    container_name: collectives-postgres

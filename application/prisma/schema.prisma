@@ -23,6 +23,7 @@ model User {
   password  String
   role      Role
   createdAt DateTime @default(now())
+  isArchived Boolean  @default(false)
 
   department     Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
   departmentName String
