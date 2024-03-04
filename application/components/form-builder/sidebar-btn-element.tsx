@@ -23,14 +23,23 @@ export default function SidebarBtnElement({
       ref={draggable.setNodeRef}
       variant="outline"
       className={cn(
-        "flex flex-col gap-2 h-[80px] w-[80px] cursor-grab",
-        draggable.isDragging && "ring-2 ring-primary"
+        "flex h-[80px] w-[80px] cursor-grab flex-col gap-2",
+        draggable.isDragging && "ring-2 ring-primary",
       )}
       {...draggable.listeners}
       {...draggable.attributes}
     >
       <Icon className="h-6 w-6 text-muted-foreground" />
-      <p className="text-xs text-gray-800">{label}</p>
+      {label.split(" ").length > 1 && (
+        <p className="text-xs">
+          {label.split(" ")[0]} <br></br> {label.split(" ")[1]}
+        </p>
+      )}
+      {label.split(" ").length == 1 && (
+        <p className="text-xs">
+          {label} 
+        </p>
+      )}
     </Button>
   );
 }
@@ -41,14 +50,18 @@ export function SidebarBtnElementDragOverlay({
   formElement: FormElement;
 }) {
   const { icon: Icon, label } = formElement.designerBtnElement;
-
   return (
     <Button
       variant="outline"
-      className={cn("flex flex-col gap-2 h-[80px] w-[80px] cursor-grab")}
+      className={cn("flex h-[80px] w-[80px] cursor-grab flex-col gap-2 opacity-75")}
     >
-      <Icon className="h-10 w-10 text-primary" />
-      <p className="text-xs">{label}</p>
+      <Icon className="h-6 w-6 text-muted-foreground" />
+      {label.split(" ").length > 1 && (
+        <p className="text-xs">
+          {label.split(" ")[0]} <br></br> {label.split(" ")[1]}
+        </p>
+      )}
+      {label.split(" ").length == 1 && <p className="text-xs">{label}</p>}
     </Button>
   );
 }

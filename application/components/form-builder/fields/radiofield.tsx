@@ -13,7 +13,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import useDesigner from "../hooks/useDesigner";
-import { RxDropdownMenu } from "react-icons/rx";
+import { MdOutlineFormatListNumbered } from "react-icons/md";
+import { FaRegCircle } from "react-icons/fa";
 
 import {
   Form,
@@ -38,7 +39,7 @@ import { Button } from "../../ui/button";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { toast } from "../../ui/use-toast";
 
-const type: ElementsType = "SelectField";
+const type: ElementsType = "RadioField";
 
 const extraAttributes = {
   label: "Type your question",
@@ -56,7 +57,7 @@ const propertiesSchema = z.object({
   managerOnly: z.boolean().default(false),
 });
 
-export const SelectFieldFormElement: FormElement = {
+export const RadioFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
     id,
@@ -64,8 +65,8 @@ export const SelectFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    icon: RxDropdownMenu,
-    label: "Dropdown",
+    icon: MdOutlineFormatListNumbered,
+    label: "Multiple Choice",
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -73,7 +74,7 @@ export const SelectFieldFormElement: FormElement = {
 
   validate: (
     formElement: FormElementInstance,
-    currentValue: string
+    currentValue: string,
   ): boolean => {
     const element = formElement as CustomInstance;
     if (element.extraAttributes.required) {
@@ -96,16 +97,17 @@ function DesignerComponent({
   const element = elementInstance as CustomInstance;
   const { label, required, placeHolder } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <Label>
-        {label}
-        {required && "*"}
-      </Label>
-      <Select>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder={placeHolder} />
-        </SelectTrigger>
-      </Select>
+    <div>
+      <div className="flex w-full flex-col gap-2">
+        <Label className="my-2">
+          {label}
+          {required && "*"}
+        </Label>
+      </div>
+      <Button variant={"outline"} className="min-w-24 gap-2 min-h-19">
+        <FaRegCircle />
+        Option
+      </Button>
     </div>
   );
 }
@@ -132,7 +134,7 @@ function FormComponent({
 
   const { label, required, placeHolder, options } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       <Label className={cn(error && "text-red-500")}>
         {label}
         {required && "*"}
@@ -142,7 +144,7 @@ function FormComponent({
         onValueChange={(value) => {
           setValue(value);
           if (!submitValue) return;
-          const valid = SelectFieldFormElement.validate(element, value);
+          const valid = RadioFieldFormElement.validate(element, value);
           setError(!valid);
           submitValue(element.id, value);
         }}
@@ -186,7 +188,7 @@ function PropertiesComponent({
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
-    const { label, placeHolder, required, options , managerOnly} = values;
+    const { label, placeHolder, required, options, managerOnly } = values;
     updateElement(element.id, {
       ...element,
       extraAttributes: {
@@ -194,7 +196,7 @@ function PropertiesComponent({
         placeHolder,
         required,
         options,
-        managerOnly
+        managerOnly,
       },
     });
 
@@ -208,14 +210,7 @@ function PropertiesComponent({
 
   return (
     <Form {...form}>
-      <form
-        // onBlur={form.handleSubmit(applyChanges)}
-        // onSubmit={(e) => {
-        //   e.preventDefault();
-        // }}
-        onSubmit={form.handleSubmit(applyChanges)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(applyChanges)} className="space-y-6">
         <FormField
           control={form.control}
           name="label"
@@ -238,6 +233,7 @@ function PropertiesComponent({
             </FormItem>
           )}
         />
+        <Separator />
         <FormField
           control={form.control}
           name="placeHolder"
