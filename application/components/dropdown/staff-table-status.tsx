@@ -10,6 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PlusCircleIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function StaffTableStatus({
   statusSelected,
@@ -46,7 +47,10 @@ export default function StaffTableStatus({
       <DropdownMenuContent align="start">
         <RadioGroup defaultValue={statusSelected} className="gap-0">
           <DropdownMenuItem
-            className="flex items-center space-x-2"
+            className={cn(
+              "flex cursor-pointer items-center space-x-2",
+              statusSelected === "all" && "bg-gray-100",
+            )}
             onClick={() => setFilter("all")}
           >
             <RadioGroupItem value="all" id="all" />
@@ -56,7 +60,10 @@ export default function StaffTableStatus({
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className="flex items-center space-x-2"
+            className={cn(
+              "flex cursor-pointer items-center space-x-2",
+              statusSelected === "active" && "bg-gray-100",
+            )}
             onClick={() => setFilter("active")}
           >
             <RadioGroupItem value="active" id="active" />
@@ -66,7 +73,10 @@ export default function StaffTableStatus({
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            className="flex items-center space-x-2"
+            className={cn(
+              "flex cursor-pointer items-center space-x-2",
+              statusSelected === "inactive" && "bg-gray-100",
+            )}
             onClick={() => setFilter("inactive")}
           >
             <RadioGroupItem value="inactive" id="inactive" />

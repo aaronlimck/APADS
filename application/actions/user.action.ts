@@ -1,6 +1,9 @@
 "use server";
 import prisma from "@/lib/prisma";
 import { generateRandomPassword } from "@/lib/utils";
+import NewAccountEmail from "@/emails/new-account";
+import { render } from "@react-email/components";
+import { sendEmail } from "@/lib/api/email";
 
 /**
  * Creates a new user in the database.
@@ -29,6 +32,19 @@ export async function createUser(payload: any) {
     if (!response) {
       throw new Error("Error creating new user");
     }
+
+    if (response) {
+      // Send email to user
+      const emailHtml = render(
+        NewAccountEmail({
+          username: payload.name,
+          email: payload.email,
+          password: password,
+        }),
+      );
+      sendEmail(payload.email, "Welcome to APADS", emailHtml);
+    }
+
     return { status: 201, message: "User created", data: response };
   } catch (error) {
     if (error instanceof Error) {
@@ -106,30 +122,6 @@ export async function getUserById(id: string) {
       throw new Error(error.message);
     } else {
       throw new Error("Error getting user");
-    }
-  }
-}
-
-/**
- * Get user by id in the database.
- * @param {Object} payload - User Id.
- * @return {Promise<Object>} Return status code 200, message.
- * @throws {Error} If there's an error during user deletion.
- */
-export async function deleteUserById(id: string) {
-  try {
-    const user = await prisma.user.delete({
-      where: { id: id },
-    });
-    if (!user) {
-      throw new Error("Error deleting user");
-    }
-    return { status: 200, message: "User deleted" };
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error("Error deleting user");
     }
   }
 }
