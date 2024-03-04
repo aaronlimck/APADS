@@ -4,8 +4,8 @@ import ApprisalItemStaffManager, {
   ApprisalItemStaffManagerEmptyState,
   ApprisalItemStaffManagerSkeleton,
 } from "@/components/appraisal/apprisial-item-staff-manger";
-import GoalCard, { GoalCardSkeleton } from "@/components/goal/goal-card";
-import { GoalModalTrigger } from "@/components/goal/goal-modal";
+import GoalCard, { GoalCardSkeleton } from "@/components/card/goal-card";
+import { GoalModalTrigger } from "@/components/modal/goal-modal";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { getServerSession } from "next-auth";
@@ -17,14 +17,14 @@ export default async function StaffPage() {
 
   const userData = await getUserById(session?.user.id!);
   return (
-    <main className="max-w-7xl mx-auto w-full space-y-6 my-6 p-4">
+    <main className="mx-auto my-6 w-full max-w-7xl space-y-6 p-4">
       <h1 className="text-2xl font-semibold">Welcome back, {userName}</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-        <Card className="space-y-3 p-4 lg:p-6 h-fit">
-          <div className="flex justify-between items-center">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+        <Card className="h-fit space-y-3 p-4 lg:p-6">
+          <div className="flex items-center justify-between">
             <div className="font-medium">Goals</div>
             <GoalModalTrigger>
-              <div className="text-sm text-muted-foreground hover:underline cursor-pointer">
+              <div className="cursor-pointer text-sm text-muted-foreground hover:underline">
                 Add
               </div>
             </GoalModalTrigger>
@@ -57,10 +57,10 @@ export default async function StaffPage() {
           </div> */}
         </Card>
 
-        <Card className="space-y-3 lg:col-span-2 p-4 lg:p-6 h-fit">
+        <Card className="h-fit space-y-3 p-4 lg:col-span-2 lg:p-6">
           <div className="flex items-center justify-between">
             <div className="font-medium">Self-Appraisal</div>
-            <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 hover:text-yellow-800 font-normal capitalize">
+            <Badge className="bg-yellow-100 font-normal capitalize text-yellow-800 hover:bg-yellow-100 hover:text-yellow-800">
               {userData.data?.appraisals?.length! > 0 &&
                 userData.data?.appraisals?.length}{" "}
               due

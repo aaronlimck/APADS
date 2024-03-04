@@ -1,5 +1,5 @@
 "use client";
-import { deleteUserById } from "@/actions/user.action";
+import { deleteUserById, updateUserById } from "@/actions/user.action";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,13 +27,24 @@ import {
 export async function StaffTable({ staffs }: { staffs: any[] }) {
   const router = useRouter();
 
-  const handleDeleteItem = async (id: string) => {
+  const handleUnarchiveItem = async (id: string) => {
     try {
-      const response = await deleteUserById(id);
+      const response = await updateUserById(id, { isArchived: false });
       if (response.status === 200) {
         toast.success(response.message);
         router.refresh();
-        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleArchiveItem = async (id: string) => {
+    try {
+      const response = await updateUserById(id, { isArchived: true });
+      if (response.status === 200) {
+        toast.success(response.message);
+        router.refresh();
       }
     } catch (error) {
       console.log(error);
@@ -42,7 +53,7 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
 
   return (
     <>
-      <div className="hidden sm:block sm:border sm:rounded-lg bg-white">
+      <div className="hidden bg-white sm:block sm:rounded-lg sm:border">
         <Table>
           <TableHeader className="bg-[#f7f7f8]">
             <TableRow>
@@ -52,7 +63,9 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
               </TableHead>
               <TableHead>Department</TableHead>
               <TableHead>Role</TableHead>
-              <TableHead className="rounded-tr-lg">Action</TableHead>
+              <TableHead className="rounded-tr-lg">
+                <span className="invisible">Action</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
 
@@ -73,7 +86,7 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
                       <Button
                         size="sm"
                         variant={"outline"}
-                        className="text-muted-foreground aspect-square p-1.5 focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0"
+                        className="aspect-square p-0 text-muted-foreground focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0"
                       >
                         <MoreHorizontalIcon
                           className="text-muted-foreground"
@@ -84,12 +97,21 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
 
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="cursor-pointer"
-                        onClick={() => handleDeleteItem(staff.id)}
-                      >
-                        Delete
-                      </DropdownMenuItem>
+                      {staff.isArchived ? (
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() => handleUnarchiveItem(staff.id)}
+                        >
+                          Unarchive
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          onClick={() => handleArchiveItem(staff.id)}
+                        >
+                          Archive
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
