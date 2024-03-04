@@ -1,5 +1,5 @@
 "use client";
-import { deleteUserById, updateUserById } from "@/actions/user.action";
+import { updateUserById } from "@/actions/user.action";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -63,6 +63,7 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
               </TableHead>
               <TableHead>Department</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="rounded-tr-lg">
                 <span className="invisible">Action</span>
               </TableHead>
@@ -80,6 +81,17 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
                   {convertTextToTitleCase(staff.departmentName)}
                 </TableCell>
                 <TableCell>{convertTextToTitleCase(staff.role)}</TableCell>
+                <TableCell>
+                  {staff.isArchived ? (
+                    <span className="rounded bg-red-100 px-2.5 py-0.5 text-xs font-normal text-red-800">
+                      Inactive
+                    </span>
+                  ) : (
+                    <span className="rounded bg-green-100 px-2.5 py-0.5 text-xs font-normal text-green-800">
+                      Active
+                    </span>
+                  )}
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
