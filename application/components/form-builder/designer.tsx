@@ -114,34 +114,34 @@ export default function AppraisalDesigner() {
   });
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full ">
       <div
         id="designer"
-        className="p-4 w-full"
+        className="w-full p-4"
         onClick={() => {
           if (selectedElement) setSelectedElement(null);
         }}
       >
-        <div className="bg-accent h-[calc(100dvh-88px)] rounded-xl overflow-y-auto border shadow-lg p-6">
+        <div className="h-[calc(100dvh-88px)] overflow-y-auto rounded-xl border bg-accent p-6 shadow-lg">
           <div
             ref={droppable.setNodeRef}
             className={cn(
-              "bg-white min-h-full max-w-3xl m-auto rounded-lg flex flex-col flex-grow items-center justify-start flex-1",
-              droppable.isOver && "ring-2 ring-primary/20"
+              "m-auto flex min-h-full max-w-3xl flex-1 flex-grow flex-col items-center justify-start rounded-lg bg-white",
+              droppable.isOver && "ring-2 ring-primary/20",
             )}
           >
             {!droppable.isOver && elements.length === 0 && (
-              <p className="text-base text-muted-foreground flex flex-grow items-center">
+              <p className="flex flex-grow items-center text-base text-muted-foreground">
                 Drop Here
               </p>
             )}
             {droppable.isOver && elements.length === 0 && (
-              <div className="p-4 w-full">
+              <div className="w-full p-4">
                 <div className="h-[120px] rounded-md bg-primary/20"></div>
               </div>
             )}
             {elements.length > 0 && (
-              <div className="flex flex-col w-full gap-2 p-4">
+              <div className="flex w-full flex-col gap-2 p-4">
                 {elements.map((element) => (
                   <DesignerElementWrapper key={element.id} element={element} />
                 ))}
@@ -150,7 +150,7 @@ export default function AppraisalDesigner() {
           </div>
         </div>
       </div>
-
+      
       <AppraisalDesignerSidebar />
     </div>
   );
