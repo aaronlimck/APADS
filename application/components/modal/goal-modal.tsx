@@ -35,11 +35,11 @@ export default function GoalModal({
   const [storedGoal, setStoredGoal] = useState("");
   const formPlaceholder =
     storedGoal !== ""
-      ? "Input changes to be made to the SMART Goals"
+      ? "Eg: Increase Measurable to 20%"
       : "Tell me more about it";
   const formLabel =
     storedGoal !== ""
-      ? "Do you want to edit the SMART Goals?"
+      ? "Add a prompt to edit your SMART Goal"
       : "Whats your Goal?";
   const [conversationHistory, setConversationHistory] = useState<
     ConversationMessage[]
@@ -80,16 +80,18 @@ export default function GoalModal({
 
   const handleCreateGoal = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const description = event.currentTarget.goal.value;
-
+    const value=event.currentTarget.goal.value;
+    event.currentTarget.goal.value = "";
+    
     try {
-      const suggestGoal = await makeAiRequest(event.currentTarget.goal.value);
+      const suggestGoal = await makeAiRequest(value);
       const temp = suggestGoal;
       const check = await setConversationHistory([
         ...conversationHistory,
         { role: "assistant", content: temp },
       ]);
       setStoredGoal(temp);
+      
     } catch (error) {
       if(error instanceof Error){
         return Error
@@ -97,11 +99,14 @@ export default function GoalModal({
         return "Something went wrong"
       }
     }
+    
   };
 
 const handleAddGoal = async() =>{
       try {
-        const goal = await createGoal({ description: storedGoal, userId });
+        console.log(storedGoal);
+        let x = storedGoal;
+        const goal = await createGoal({ description: x, userId });
       if (goal && goal.status === 201) {
         toast.success(goal.message);
         setOpen(false);
@@ -151,7 +156,7 @@ const handleAddGoal = async() =>{
             </Button>
             {storedGoal != "" && (
               <Button className="h-11 text-sm font-normal capitalize" onClick={handleAddGoal} >
-                Submit
+                Save current Goal
               </Button>
             )}
           </div>

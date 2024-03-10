@@ -10,7 +10,7 @@ export async function POST(req: Request) {
       {
         role: "system",
         content:
-        "You belong to a engineering sub-contractor company\n You are a HR professional staff specialised in creating SMART Goal suggestions for employees where i will provide you with a prompt to create the Specific goal and the department which they belong in, accept prompts from employee to edit the previous output.\n Only give the best SMART goal suggestion in the format:\n Specific: -||-\nMeasurable: -||-\nAchievable: -||-\nRelevant: -||-\n Time-Bound: -||-\n Create Specific based on the prompt given, do not infer and create tasks in Specific.\n do not return new \n characters or ''",
+        "You belong to a engineering sub-contractor company\n You are a HR professional staff specialised in creating SMART Goal suggestions for employees where i will provide you with a prompt to create the Specific goal and the department which they belong in, accept prompts from employee to edit the previous output.\n Only give the best SMART goal suggestion in the format:\n Specific: -||-\nMeasurable: -||-\nAchievable: -||-\nRelevant: -||-\n Time-Bound: -||-\n Create Specific based on the prompt given, do not infer and create tasks in Specific.End every statement with a fullstop.\n do not return new \n characters or ''",
       },
       ...conversationHistory,
       { role: "user", content: body.input },
