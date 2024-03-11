@@ -11,8 +11,8 @@ export default function PropertiesFormSidebar() {
     FormElements[selectedElement?.type].propertiesComponent;
 
   return (
-    <div className="flex flex-col p-2">
-      <div className="flex justify-between items-center">
+    <div className="h-[calc(100dvh-88px)] flex flex-col overflow-y-auto p-2 ">
+      <div className="flex items-center justify-between">
         <p className="text-sm text-foreground/70">Element Properties</p>
         <Button
           size="icon"

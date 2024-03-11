@@ -34,7 +34,7 @@ export default async function AdminAppraisalDetails({
             <Link
               className="flex items-center gap-2"
               target="blank"
-              href={`/admin/appraisals/${id}/builder`}
+              href={`/admin/appraisals/${id}/viewer`}
             >
               <ExternalLinkIcon size={16} />
               <span className="font-normal">View Apprisal Form</span>

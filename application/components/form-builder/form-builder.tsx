@@ -81,7 +81,6 @@ export default function FormBuilder({
           </span>
         </div>
         <div className="flex items-center gap-2">
-          {/* {<div className="text-sm text-muted-foreground">Draft</div>} */}
           <PreviewBtn />
           {!form.isPublished &&
             (isTemplate === false || isTemplate === undefined) && (

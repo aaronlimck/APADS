@@ -13,7 +13,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import useDesigner from "../hooks/useDesigner";
-import { RxDropdownMenu } from "react-icons/rx";
+import { MdOutlineFormatListNumbered } from "react-icons/md";
+import { FaRegCircle } from "react-icons/fa";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import {
   Form,
@@ -38,7 +40,7 @@ import { Button } from "../../ui/button";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
 import { toast } from "../../ui/use-toast";
 
-const type: ElementsType = "SelectField";
+const type: ElementsType = "RadioField";
 
 const extraAttributes = {
   label: "Type your question",
@@ -56,7 +58,7 @@ const propertiesSchema = z.object({
   managerOnly: z.boolean().default(false),
 });
 
-export const SelectFieldFormElement: FormElement = {
+export const RadioFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
     id,
@@ -64,8 +66,8 @@ export const SelectFieldFormElement: FormElement = {
     extraAttributes,
   }),
   designerBtnElement: {
-    icon: RxDropdownMenu,
-    label: "Dropdown",
+    icon: MdOutlineFormatListNumbered,
+    label: "Number Option",
   },
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
@@ -73,7 +75,7 @@ export const SelectFieldFormElement: FormElement = {
 
   validate: (
     formElement: FormElementInstance,
-    currentValue: string
+    currentValue: string,
   ): boolean => {
     const element = formElement as CustomInstance;
     if (element.extraAttributes.required) {
@@ -94,18 +96,36 @@ function DesignerComponent({
   elementInstance: FormElementInstance;
 }) {
   const element = elementInstance as CustomInstance;
-  const { label, required, placeHolder } = element.extraAttributes;
+  const { label, required , options} = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <Label>
-        {label}
-        {required && "*"}
-      </Label>
-      <Select>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder={placeHolder} />
-        </SelectTrigger>
-      </Select>
+    <div>
+      <div className="flex w-full flex-col gap-2">
+        <Label className="my-2">
+          {label}
+          {required && "*"}
+        </Label>
+      </div>
+      <RadioGroup defaultValue="comfortable" className="flex flex-col gap-2">
+        {options.length != 0 &&
+          options.map((option) => (
+            <div className="flex items-center space-x-2" key={option}>
+              <RadioGroupItem
+                value={option}
+                id={option}
+                className="text-slate-400"
+              />
+              <Label htmlFor={option}>{option}</Label>
+            </div>
+          ))}
+      </RadioGroup>
+      {options.length == 0 && (
+        <RadioGroup className="flex flex-col gap-2" defaultValue="comfortable">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="LOL" />
+            <Label htmlFor="LOL">New number option</Label>
+          </div>
+        </RadioGroup>
+      )}
     </div>
   );
 }
@@ -132,32 +152,40 @@ function FormComponent({
 
   const { label, required, placeHolder, options } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2 gap-y-4">
       <Label className={cn(error && "text-red-500")}>
         {label}
         {required && "*"}
       </Label>
-      <Select
-        defaultValue={value}
+      <RadioGroup
+        className="flex flex-col gap-2"
+        defaultValue="comfortable"
         onValueChange={(value) => {
           setValue(value);
           if (!submitValue) return;
-          const valid = SelectFieldFormElement.validate(element, value);
+          const valid = RadioFieldFormElement.validate(element, value);
           setError(!valid);
           submitValue(element.id, value);
         }}
       >
-        <SelectTrigger className={cn("w-full", error && "border-red-500")}>
-          <SelectValue placeholder={placeHolder} />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option} value={option}>
-              {option}
-            </SelectItem>
+        {options.length != 0 &&
+          options.map((option) => (
+            <div className="flex items-center gap-y-2 space-x-2" key={option}>
+              <RadioGroupItem
+                value={option}
+                id={option}
+                className="text-slate-400"
+              />
+              <Label htmlFor={option}>{option}</Label>
+            </div>
           ))}
-        </SelectContent>
-      </Select>
+        {options.length == 0 && (
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="LOL" />
+              <Label htmlFor="LOL">New number option</Label>
+            </div>
+        )}
+      </RadioGroup>
     </div>
   );
 }
@@ -168,6 +196,7 @@ function PropertiesComponent({
 }: {
   elementInstance: FormElementInstance;
 }) {
+  const [count, setCount] = useState(1);
   const element = elementInstance as CustomInstance;
   const { updateElement, setSelectedElement } = useDesigner();
   const form = useForm<propertiesFormSchemaType>({
@@ -186,7 +215,8 @@ function PropertiesComponent({
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
-    const { label, placeHolder, required, options , managerOnly} = values;
+    const { label, placeHolder, required, options, managerOnly } = values;
+    
     updateElement(element.id, {
       ...element,
       extraAttributes: {
@@ -194,7 +224,7 @@ function PropertiesComponent({
         placeHolder,
         required,
         options,
-        managerOnly
+        managerOnly,
       },
     });
 
@@ -208,14 +238,7 @@ function PropertiesComponent({
 
   return (
     <Form {...form}>
-      <form
-        // onBlur={form.handleSubmit(applyChanges)}
-        // onSubmit={(e) => {
-        //   e.preventDefault();
-        // }}
-        onSubmit={form.handleSubmit(applyChanges)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(applyChanges)} className="space-y-6">
         <FormField
           control={form.control}
           name="label"
@@ -238,6 +261,7 @@ function PropertiesComponent({
             </FormItem>
           )}
         />
+        <Separator />
         <FormField
           control={form.control}
           name="placeHolder"
@@ -264,13 +288,14 @@ function PropertiesComponent({
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center justify-between">
-                <FormLabel>Options</FormLabel>
+                <FormLabel>Number Options</FormLabel>
                 <Button
                   variant={"outline"}
                   className="gap-2"
                   onClick={(e) => {
-                    e.preventDefault(); // avoid submit
-                    form.setValue("options", field.value.concat("New option"));
+                    e.preventDefault();
+                    form.setValue("options", field.value.concat(count + " "));
+                    setCount(count + 1);
                   }}
                 >
                   <AiOutlinePlus />
@@ -284,6 +309,8 @@ function PropertiesComponent({
                     className="flex items-center justify-between gap-1"
                   >
                     <Input
+                      disabled
+                      className="max-w-15"
                       placeholder=""
                       value={option}
                       onChange={(e) => {
@@ -291,20 +318,32 @@ function PropertiesComponent({
                         field.onChange(field.value);
                       }}
                     />
-                    <Button
-                      variant={"ghost"}
-                      size={"icon"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const newOptions = [...field.value];
-                        newOptions.splice(index, 1);
-                        field.onChange(newOptions);
-                      }}
-                    >
-                      <AiOutlineClose />
-                    </Button>
                   </div>
                 ))}
+                {form.watch("options").length > 0 && (
+                  <Button
+                    variant={"outline"}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCount(1);
+                      form.setValue("options", []);
+                    }}
+                  >
+                    Reset Counter
+                  </Button>
+                )}
+                {/* <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const newOptions = [...field.value];
+                    newOptions.splice(index, 1);
+                    field.onChange(newOptions);
+                  }}
+                >
+                  Reset Counter
+                </Button> */}
               </div>
               <FormMessage />
             </FormItem>

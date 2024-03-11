@@ -17,12 +17,13 @@ export default function FormElementSidebar() {
 
       <div>
         <p className="text-xs font-medium text-muted-foreground mb-2">
-          Choice Elements
+          Question Elements
         </p>
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-3 gap-y-3">
           <SidebarBtnElement formElement={FormElements.TextField} />
           <SidebarBtnElement formElement={FormElements.TextAreaField} />
           <SidebarBtnElement formElement={FormElements.SelectField} />
+          <SidebarBtnElement formElement={FormElements.RadioField}/>
         </div>
       </div>
 
@@ -30,7 +31,7 @@ export default function FormElementSidebar() {
         <p className="text-xs font-medium text-muted-foreground mb-2">
           Layout Elements
         </p>
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-3 ">
           <SidebarBtnElement formElement={FormElements.SeparatorField} />
         </div>
       </div>

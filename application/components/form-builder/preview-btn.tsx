@@ -6,30 +6,32 @@ import { FormElements } from "./form-elements";
 
 export default function PreviewBtn() {
   const { elements } = useDesigner();
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          className="flex text-muted-foreground gap-2"
+          className="flex gap-2 text-muted-foreground"
         >
           <EyeIcon size={16} />
           <span>Preview</span>
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="w-screen max-w-full h-dvh flex flex-col flex-grow p-0 gap-0">
-        <div className="p-4 border-b">
+      <DialogContent className="flex h-dvh w-screen max-w-full flex-grow flex-col gap-0 p-0">
+        <div className="border-b p-4">
           <p className="text-muted-foreground">Form Preview</p>
         </div>
-        <div className="bg-accent flex flex-col flex-grow items-center justify-center p-4 overflow-y-auto pt-[76px]">
-          <div className="max-w-3xl w-full bg-white flex flex-col gap-4 px-4 py-8 space-y-4 flex-grow min-h-dvh">
+        <div className="flex flex-grow flex-col items-center justify-center overflow-y-auto bg-accent p-4 pt-[76px]">
+          <div className="flex min-h-dvh w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 bg-white px-4 py-8">
             {elements.map((element) => {
+            
               const FormComponent = FormElements[element.type].formComponent;
               return (
-                <FormComponent key={element.id} elementInstance={element} />
+                <>
+                  <FormComponent key={element.id} elementInstance={element} />
+                </>
               );
             })}
           </div>
