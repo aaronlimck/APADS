@@ -11,7 +11,7 @@ const PieChartComponent = ({ data }: { data: any }) => {
     let neutralCount = 0;
     let negativeCount = 0;
 
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data?.length; i++) {
       if (data[i].compound_percentage > 50) {
         positiveCount++;
       } else if (data[i].compound_percentage < 50) {
