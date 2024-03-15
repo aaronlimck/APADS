@@ -1,5 +1,4 @@
 import { getAppraisalFormById } from "@/actions/appraisal.action";
-import AppraisalMoreBtn from "@/components/appraisal/appraisal-more-btn";
 import AppraisalRecipientsTable from "@/components/appraisal/appraisal-recipients-table";
 import {
   TotalRecipientsCard,
@@ -42,7 +41,7 @@ export default async function AdminAppraisalDetails({
           </Button>
           <Button
             variant="outline"
-            className="flex items-center text-muted-foreground hover:text-primary border gap-2"
+            className="flex items-center gap-2 border text-muted-foreground hover:text-primary"
           >
             <Link
               className="flex items-center gap-2"
@@ -52,10 +51,9 @@ export default async function AdminAppraisalDetails({
               <span className="font-normal">View Report</span>
             </Link>
           </Button>
-          <AppraisalMoreBtn formId={id} />
         </div>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
         <TotalRecipientsCard formId={id} />
         <TotalSubmissionCard formId={id} />
         <TotalSubmissionRate />

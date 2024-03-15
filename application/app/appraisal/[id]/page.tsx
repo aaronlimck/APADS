@@ -1,7 +1,5 @@
-import {
-  getAppraisalFormContentById,
-  getAppraisalFormSubmissionByFormIdAndUserId,
-} from "@/actions/appraisal.action";
+import { getAppraisalFormContentById } from "@/actions/appraisal.action";
+import { getAppraisalSubmissionByFormIdANDUserId } from "@/actions/appraisalSubmission";
 import { authConfig } from "@/auth.config";
 import ErrorComponent from "@/components/error/error";
 import { FormElementInstance } from "@/components/form-builder/form-elements";
@@ -11,10 +9,10 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 async function isStaffSubmissionExistFn(id: string, userId: string) {
-  const isSubmissionExist = await getAppraisalFormSubmissionByFormIdAndUserId(
+  const isSubmissionExist = await getAppraisalSubmissionByFormIdANDUserId({
     id,
-    userId
-  );
+    userId,
+  });
   if (isSubmissionExist.data !== null) {
     return true;
   }
@@ -31,6 +29,7 @@ export default async function AppraisalFormPage({
   /* Fetch form content by id */
   const { id } = params;
   const form = await getAppraisalFormContentById(id);
+
   if (!form || !form.data) {
     return notFound();
   }

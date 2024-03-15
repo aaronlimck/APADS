@@ -52,11 +52,13 @@ export const NewAccountEmail = ({
           Please remember to keep your login credentials confidential and do not
           share them with anyone for security reasons.
         </Text>
+
         <Section style={btnContainer}>
           <Button style={button} href={`${baseUrl}/login`}>
             Login
           </Button>
         </Section>
+
         <Text style={paragraph}>
           Best,
           <br />

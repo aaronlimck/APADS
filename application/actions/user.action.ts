@@ -18,6 +18,7 @@ export async function createUser(payload: any) {
   }
 
   const password = await generateRandomPassword(12);
+
   try {
     const response = await prisma.user.create({
       data: {
@@ -26,6 +27,7 @@ export async function createUser(payload: any) {
         password: password,
         role: payload.role,
         departmentName: payload.departmentName,
+        managerId: payload.managerId || null,
       },
     });
 
@@ -47,6 +49,7 @@ export async function createUser(payload: any) {
 
     return { status: 201, message: "User created", data: response };
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
       throw new Error(error.message);
     } else {
@@ -66,10 +69,15 @@ export async function getAllUsers({
       where: {
         isArchived: isArchived,
       },
+      include: {
+        manager: true,
+      },
     });
+
     if (!users) {
       throw new Error("Error getting users");
     }
+
     return { status: 200, message: "User fetched", data: users };
   } catch (error) {
     if (error instanceof Error) {
@@ -109,6 +117,7 @@ export async function getUserById(id: string) {
     const user = await prisma.user.findUnique({
       where: { id: id },
       include: {
+        manager: true,
         appraisals: true,
         goals: true,
       },

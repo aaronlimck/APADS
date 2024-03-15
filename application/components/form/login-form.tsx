@@ -23,6 +23,7 @@ export default function LoginForm() {
       ...payload,
       redirect: false,
     });
+
     if (response && response.status === 200 && response.ok) {
       router.replace(callbackUrl);
     }
@@ -41,7 +42,7 @@ export default function LoginForm() {
             type="email"
             id="email"
             placeholder="Enter your email"
-            className="focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-gray-500 focus-visible:border-[1.5px]"
+            className="focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
 
@@ -51,7 +52,7 @@ export default function LoginForm() {
             type="password"
             id="password"
             placeholder="Enter your password"
-            className="focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-gray-500 focus-visible:border-[1.5px]"
+            className="focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
       </div>

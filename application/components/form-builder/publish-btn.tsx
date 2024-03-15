@@ -1,5 +1,10 @@
+import { publishAppraisalFormByDepartments } from "@/actions/appraisal.action";
+import { getDepartment } from "@/actions/department.action";
+import { convertTextToTitleCase } from "@/lib/utils";
 import { Loader2Icon, PartyPopperIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,31 +17,19 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { toast } from "sonner";
-import { publishAppraisalForm } from "@/actions/appraisal.action";
-import { useRouter } from "next/navigation";
-import { getDepartment } from "@/actions/department.action";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { convertTextToTitleCase } from "@/lib/utils";
-import { getAllUsersByDepartment } from "@/actions/user.action";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 import useDesigner from "./hooks/useDesigner";
-import { sendEmail } from "@/actions/email.action";
 
 export default function PublishBtn({ id }: { id: string }) {
-  let host = "http://localhost:3000";
   const router = useRouter();
   const { elements } = useDesigner();
   const [loading, startTransition] = useTransition();
   const [currentStep, setCurrentStep] = useState(0);
 
-  const [departmentNames, setDepartmentNames] = useState<String[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState<String>("");
+  const [departmentNames, setDepartmentNames] = useState<string[]>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState<string[]>([]);
+
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -50,6 +43,17 @@ export default function PublishBtn({ id }: { id: string }) {
     fetchDepartments();
   }, []);
 
+  const handleSelectDepartment = (departmentName: string) => {
+    // Check if the department is already selected
+    const isSelected = selectedDepartment.includes(departmentName);
+    // If it's selected, remove it from the list; otherwise, add it
+    const updatedDepartments = isSelected
+      ? selectedDepartment.filter((item) => item !== departmentName)
+      : [...selectedDepartment, departmentName];
+    // Update the state with the new list of selected departments
+    setSelectedDepartment(updatedDepartments);
+  };
+
   const nextStep = () => {
     setCurrentStep((prev) => prev + 1);
   };
@@ -61,47 +65,23 @@ export default function PublishBtn({ id }: { id: string }) {
   async function publishForm() {
     // GET FORM CONTENT
     const JsonElements = JSON.stringify(elements);
-
     if (JsonElements === "[]") {
       toast.error("Form is empty");
       return;
     }
 
+    const payload = {
+      id: id,
+      content: JsonElements,
+      recipientsDepartment: selectedDepartment,
+    };
+
     try {
-      // FETCH RECIPIENTS BY DEPARTMENT
-      const recipientsData = await getAllUsersByDepartment(
-        selectedDepartment as string
-      );
-      if (recipientsData.status === 200) {
-        const recipientsId = recipientsData.data
-          .filter((user) => user.role === "STAFF")
-          .map((user) => user.id);
-
-        const payload = {
-          id,
-          recipientsId,
-          content: JsonElements,
-        };
-
-        // PUBLISH FORM
-        const response = await publishAppraisalForm(payload);
-        if (response && response.status === 200) {
-          toast.success(response.message);
-          router.push(`/admin/appraisals/${response.data.id}/details`);
-          router.refresh();
-        }
-
-        const recipientsEmail = recipientsData.data
-          .filter((user) => user.role === "STAFF")
-          .map((user) => user.email);
-
-        for (const email of recipientsEmail) {
-          sendEmail(
-            email,
-            "Appraisal Form",
-            `<a href="${host}/appraisal/${response.data.id}">Do appraisal</a>`
-          );
-        }
+      const response = await publishAppraisalFormByDepartments(payload);
+      if (response.status === 200) {
+        toast.success(response.message);
+        router.replace(`/admin/appraisals/${id}/details`);
+        router.refresh();
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -141,30 +121,31 @@ export default function PublishBtn({ id }: { id: string }) {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Select recipients</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Select recipients to receive a self-evaluation email
+                    Please select the departments to whom you'd like to send the
+                    self-evaluation form.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <Select
-                  defaultValue={selectedDepartment as string}
-                  onValueChange={(value) => setSelectedDepartment(value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a department" />
-                  </SelectTrigger>
 
-                  <SelectContent>
-                    {departmentNames.map((role, index) => (
-                      <SelectItem key={index} value={role.toUpperCase()}>
-                        {convertTextToTitleCase(role as string)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {departmentNames.map((departmentName, index) => (
+                  <div key={index} className="items-top flex space-x-2">
+                    <Checkbox
+                      id={departmentName}
+                      onCheckedChange={() =>
+                        handleSelectDepartment(departmentName)
+                      }
+                      checked={selectedDepartment.includes(departmentName)}
+                    />
+                    <Label htmlFor={departmentName} className="font-normal">
+                      {convertTextToTitleCase(departmentName)}
+                    </Label>
+                  </div>
+                ))}
 
                 <AlertDialogFooter>
                   <AlertDialogCancel
                     onClick={() => {
                       setCurrentStep(0); // Reset to step 0
+                      setSelectedDepartment([]); // Reset selected departments
                     }}
                   >
                     Cancel
@@ -194,11 +175,11 @@ export default function PublishBtn({ id }: { id: string }) {
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
-                  <div className="flex justify-between w-full">
+                  <div className="flex w-full justify-between">
                     <Button
                       type="button"
                       variant="ghost"
-                      className="hover:bg-transparent px-0 text-muted-foreground hover:text-primary"
+                      className="px-0 text-muted-foreground hover:bg-transparent hover:text-primary"
                       onClick={previousStep}
                     >
                       Back

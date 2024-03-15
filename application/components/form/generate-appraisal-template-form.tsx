@@ -37,7 +37,6 @@ export default function GenerateAppraisalTemplateForm() {
 
       const data = await response.json();
       const generatedTemplate = await transformGeneratedAITemplateToForm(data);
-
       if (generatedTemplate) {
         const payload = {
           name: title,
