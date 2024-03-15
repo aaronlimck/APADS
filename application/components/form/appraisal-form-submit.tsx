@@ -4,7 +4,6 @@ import {
   getAppraisalSubmissionByFormId,
   updateAppraisalSubmissionByFormId,
 } from "@/actions/appraisal.action";
-import { sendEmail } from "@/actions/email.action";
 import { getUserById, getUserManager } from "@/actions/user.action";
 import { Role } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
@@ -15,6 +14,7 @@ import {
   FormElements,
 } from "../form-builder/form-elements";
 import { Button } from "../ui/button";
+import { sendEmail } from "@/lib/api/email";
 
 export default function AppraisalFormSubmit({
   formId,
@@ -55,7 +55,7 @@ export default function AppraisalFormSubmit({
     (key: string, value: string) => {
       formValues.current[key] = value;
     },
-    [content]
+    [content],
   );
 
   const submitForm = async () => {
@@ -73,7 +73,7 @@ export default function AppraisalFormSubmit({
         const response = await createAppraisalSubmissionByFormId(
           formId,
           userId,
-          JsonContent
+          JsonContent,
         );
 
         if (response.status === 201) {
@@ -82,17 +82,17 @@ export default function AppraisalFormSubmit({
           const employeeData = await getUserById(userId);
           if (employeeData.status === 200 && employeeData.data) {
             const managerData = await getUserManager(
-              employeeData.data?.departmentName
+              employeeData.data?.departmentName,
             );
             if (managerData.status === 200 && managerData.data) {
               const managerEmail = managerData.data.email;
               const managerResponseURL = encodeURI(
-                `${host}/appraisal/${formId}?employeeResponseFormId=${employeeResponseFormId}`
+                `${host}/appraisal/${formId}?employeeResponseFormId=${employeeResponseFormId}`,
               );
               await sendEmail(
                 managerEmail,
                 "Appraisal Form",
-                `<a href="${managerResponseURL}">Do appraisal</a>`
+                `<a href="${managerResponseURL}">Do appraisal</a>`,
               );
             }
           }
@@ -101,12 +101,12 @@ export default function AppraisalFormSubmit({
         }
       } else if (userRole === "MANAGER" && employeeResponseFormId) {
         const currentResponse = await getAppraisalSubmissionByFormId(
-          employeeResponseFormId
+          employeeResponseFormId,
         );
 
         if (currentResponse.status === 200 && currentResponse.data) {
           const currentResponseContent = JSON.parse(
-            currentResponse.data.content
+            currentResponse.data.content,
           );
 
           const updatedContent = {
@@ -121,7 +121,7 @@ export default function AppraisalFormSubmit({
 
           const response = await updateAppraisalSubmissionByFormId(
             employeeResponseFormId,
-            payload
+            payload,
           );
 
           if (response.status === 200) {
@@ -136,10 +136,10 @@ export default function AppraisalFormSubmit({
   };
 
   return (
-    <div className="bg-accent flex flex-col w-full min-h-dvh items-center p-8">
+    <div className="flex min-h-dvh w-full flex-col items-center bg-accent p-8">
       <div
         key={renderKey}
-        className="max-w-3xl w-full bg-white rounded-lg p-4 space-y-4"
+        className="w-full max-w-3xl space-y-4 rounded-lg bg-white p-4"
       >
         {content
           .filter((element) => {

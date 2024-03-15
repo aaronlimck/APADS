@@ -23,8 +23,10 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import Link from "next/link";
+import EditEmployeeModal from "../modal/edit-employee-modal";
 
-export async function StaffTable({ staffs }: { staffs: any[] }) {
+export function StaffTable({ staffs }: { staffs: any[] }) {
   const router = useRouter();
 
   const handleUnarchiveItem = async (id: string) => {
@@ -50,7 +52,7 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
       console.log(error);
     }
   };
-
+  console.log(staffs);
   return (
     <>
       <div className="hidden bg-white sm:block sm:rounded-lg sm:border">
@@ -62,6 +64,7 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
                 <span className="hidden md:block">Email</span>
               </TableHead>
               <TableHead>Department</TableHead>
+              <TableHead>Reporting Manager</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="rounded-tr-lg">
@@ -71,14 +74,21 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
           </TableHeader>
 
           <TableBody>
-            {staffs.map((staff: User) => (
-              <TableRow key={staff.id}>
-                <TableCell>{staff.name}</TableCell>
+            {staffs.map((staff: any) => (
+              <TableRow key={staff.id} className="group">
+                <TableCell className="group-hover:underline group-hover:underline-offset-2">
+                  <Link href={`/admin/employees/${staff.id}`}>
+                    {staff.name}
+                  </Link>
+                </TableCell>
                 <TableCell className="px-0 md:px-4">
                   <span className="hidden md:block">{staff.email}</span>
                 </TableCell>
                 <TableCell>
                   {convertTextToTitleCase(staff.departmentName)}
+                </TableCell>
+                <TableCell>
+                  {staff.manager ? staff.manager.name : "NA"}
                 </TableCell>
                 <TableCell>{convertTextToTitleCase(staff.role)}</TableCell>
                 <TableCell>
@@ -108,7 +118,20 @@ export async function StaffTable({ staffs }: { staffs: any[] }) {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <EditEmployeeModal
+                          staffData={staff}
+                          action={
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              className="h-fit w-full justify-start p-0 px-2 py-1.5 font-normal"
+                            >
+                              Edit
+                            </Button>
+                          }
+                        />
+                      </DropdownMenuItem>
                       {staff.isArchived ? (
                         <DropdownMenuItem
                           className="cursor-pointer"

@@ -1,10 +1,10 @@
 import { Loader2Icon, SaveIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import useDesigner from "./hooks/useDesigner";
-import { updateAppraisalForm } from "@/actions/appraisal.action";
-import { toast } from "sonner";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { updateAppraisalFormId } from "@/actions/appraisal.action";
 
 export default function SaveBtn({ id }: { id: string }) {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function SaveBtn({ id }: { id: string }) {
   const updateFormContent = async () => {
     try {
       const JsonElements = JSON.stringify(elements);
-      const response = await updateAppraisalForm(id, JsonElements);
+      const response = await updateAppraisalFormId(id, JsonElements);
       if (response && response.status === 200) {
         toast.success(response.message);
         router.refresh();
@@ -28,7 +28,7 @@ export default function SaveBtn({ id }: { id: string }) {
     <Button
       variant="outline"
       size="sm"
-      className="flex text-muted-foreground gap-2"
+      className="flex gap-2 text-muted-foreground"
       disabled={loading}
       onClick={() => startTransition(updateFormContent)}
     >

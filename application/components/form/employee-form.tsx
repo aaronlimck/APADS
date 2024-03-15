@@ -1,17 +1,9 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
 import {
   Form,
   FormControl,
@@ -30,16 +22,26 @@ import {
 } from "../ui/select";
 
 import { getDepartment } from "@/actions/department.action";
-import { createUser } from "@/actions/user.action";
+import { createUser, getAllUsers, updateUserById } from "@/actions/user.action";
 import { convertTextToTitleCase } from "@/lib/utils";
 import { employeeFormSchema } from "@/schema";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-const ROLES = ["Admin", "Manager", "Staff"];
+const ROLES = ["Admin", "Staff"];
 
-export default function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
+export default function EmployeeForm({
+  type = "CREATE", // default to create
+  initialValues,
+  closeModal,
+}: {
+  type: "CREATE" | "EDIT";
+  initialValues?: z.infer<typeof employeeFormSchema>;
+  closeModal: () => void;
+}) {
   const router = useRouter();
   const [departmentNames, setDepartmentNames] = useState<String[]>([]);
+  const [staffs, setStaffs] = useState([] as any[]);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -51,30 +53,57 @@ export default function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
         console.error("Error fetching departments:", error);
       }
     };
+
+    const fetchStaff = async () => {
+      try {
+        const staffData = await getAllUsers();
+        const namesArray = staffData.data.map((staff) => {
+          return {
+            id: staff.id,
+            name: staff.name,
+          };
+        });
+        setStaffs(namesArray);
+      } catch (error) {
+        console.error("Error fetching staff:", error);
+      }
+    };
+
     fetchDepartments();
-  }, []);
+    fetchStaff();
+  }, [setDepartmentNames, setStaffs]);
 
   const form = useForm<z.infer<typeof employeeFormSchema>>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      role: "",
-      departmentName: "",
+      name: initialValues?.name || "",
+      email: initialValues?.email || "",
+      role: initialValues?.role || "",
+      departmentName: initialValues?.departmentName || "",
+      managerId: initialValues?.managerId || "",
     },
   });
 
   const handleOnSubmit = async (data: z.infer<typeof employeeFormSchema>) => {
-    // alert(JSON.stringify(data, null, 2));
     try {
-      const userCreationResponse = await createUser(data);
-      if (userCreationResponse && userCreationResponse.status === 409) {
-        toast.error(userCreationResponse.error);
-      }
-      if (userCreationResponse && userCreationResponse.status === 201) {
-        toast.success("Staff created successfully");
-        onSuccess();
-        router.refresh();
+      if (type === "CREATE") {
+        const userCreationResponse = await createUser(data);
+        if (userCreationResponse && userCreationResponse.status === 409) {
+          toast.error(userCreationResponse.error);
+        }
+        if (userCreationResponse && userCreationResponse.status === 201) {
+          toast.success("Staff created successfully");
+          router.refresh();
+          closeModal();
+        }
+      } else if (type === "EDIT") {
+        // @ts-ignore
+        const response = await updateUserById(initialValues?.id!, data);
+        if (response.status === 200) {
+          toast.success(response.message);
+          router.refresh();
+          closeModal();
+        }
       }
     } catch (error) {
       console.log(error);
@@ -188,47 +217,40 @@ export default function EmployeeForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="managerId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-800">Manager</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger
+                    className={`${
+                      form.formState.errors.managerId?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                    } w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`}
+                  >
+                    <SelectValue placeholder="Select a manager" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {staffs.map((staff, index) => (
+                    <SelectItem key={index} value={staff.id}>
+                      {staff.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage className="font-normal" />
+            </FormItem>
+          )}
+        />
+
         <Button type="submit" className="w-full">
-          Create Employee
+          {type === "CREATE" ? "Create Employee" : "Save Changes"}
         </Button>
       </form>
     </Form>
-  );
-}
-
-export function EmployeeFormDialog({
-  open,
-  setOpen,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="py-8">
-        <DialogHeader>
-          <DialogTitle>Create Employee</DialogTitle>
-          <DialogDescription>
-            Fill in the required details to create a new employee.
-          </DialogDescription>
-        </DialogHeader>
-        <EmployeeForm onSuccess={() => setOpen(!open)} />
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export function AddEmployeeBtn() {
-  const [open, setOpen] = React.useState(false);
-  return (
-    <>
-      <Button
-        className="font-normal capitalize space-x-2"
-        onClick={() => setOpen((current) => !current)}
-      >
-        <span>New employee</span>
-      </Button>
-      <EmployeeFormDialog open={open} setOpen={setOpen} />
-    </>
   );
 }

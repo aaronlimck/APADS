@@ -1,11 +1,11 @@
 import {
-  getAppraisalById,
+  getAppraisalFormById,
   getAppraisalFormSubmissionsByFormId,
 } from "@/actions/appraisal.action";
 import { Card } from "../ui/card";
 
 export const TotalRecipientsCard = async ({ formId }: { formId: string }) => {
-  const apprisalData = await getAppraisalById(formId);
+  const apprisalData = await getAppraisalFormById(formId);
   if (!apprisalData) return "0";
 
   return (
@@ -19,15 +19,14 @@ export const TotalRecipientsCard = async ({ formId }: { formId: string }) => {
 };
 
 export const TotalSubmissionCard = async ({ formId }: { formId: string }) => {
-  const apprisalSubmissionData = await getAppraisalFormSubmissionsByFormId(
-    formId
-  );
+  const apprisalSubmissionData =
+    await getAppraisalFormSubmissionsByFormId(formId);
   if (!apprisalSubmissionData) return "0";
 
   // COUNT THOSE ONLY WHERE MANAGER HAS APPRISED
   const actualSubmitted = apprisalSubmissionData.data?.filter(
     (apprisalSubmissionData) =>
-      apprisalSubmissionData.hasManagerAppraise === true
+      apprisalSubmissionData.hasManagerAppraise === true,
   ).length;
 
   return (

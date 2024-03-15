@@ -17,19 +17,23 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role
+  createdAt  DateTime @default(now())
   isArchived Boolean  @default(false)
+
+  managerId String?
+  manager   User?   @relation("Manager", fields: [managerId], references: [id])
+  employees User[]  @relation("Manager")
 
   department     Department @relation("DepartmentStaff", fields: [departmentName], references: [name])
   departmentName String
 
   goals      Goal[]
-  appraisals AppraisalForm[] // Define the relationship from User to AppraisalForm
+  appraisals AppraisalForm[]
 
   @@index([email])
   @@map("users")

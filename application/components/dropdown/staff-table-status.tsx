@@ -45,7 +45,7 @@ export default function StaffTableStatus({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="start">
-        <RadioGroup defaultValue={statusSelected} className="gap-0">
+        <RadioGroup defaultValue={statusSelected} className="gap-0 space-y-0.5">
           <DropdownMenuItem
             className={cn(
               "flex cursor-pointer items-center space-x-2",

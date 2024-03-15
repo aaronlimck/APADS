@@ -21,6 +21,7 @@ export const employeeFormSchema = z.object({
   departmentName: z.string().min(1, {
     message: "Required",
   }),
+  managerId: z.string(),
 });
 
 export const automationSchema = z.object({
