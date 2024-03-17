@@ -1,12 +1,13 @@
 "use client";
 import {
-  createAppraisalSubmissionByFormId,
   getAppraisalSubmissionByFormId,
   updateAppraisalSubmissionByFormId,
 } from "@/actions/appraisal.action";
-import { getUserById, getUserManager } from "@/actions/user.action";
+import { createAppraisalSubmissionByFormId } from "@/actions/appraisalSubmission";
+import { sendEmail } from "@/lib/api/email";
 import { Role } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -14,22 +15,25 @@ import {
   FormElements,
 } from "../form-builder/form-elements";
 import { Button } from "../ui/button";
-import { sendEmail } from "@/lib/api/email";
+import { cn, convertTextToTitleCase } from "@/lib/utils";
 
 export default function AppraisalFormSubmit({
   formId,
   content,
   userId,
   userRole,
+  employeeData,
   employeeResponseFormId,
 }: {
   formId: string;
   content: FormElementInstance[];
   userId: string;
   userRole: Role;
+  employeeData?: any;
   employeeResponseFormId?: string;
 }) {
   let host = "http://localhost:3000";
+  const router = useRouter();
   const formValues = useRef<{ [key: string]: string }>({});
   const formErrors = useRef<{ [key: string]: boolean }>({});
   const [renderKey, setRenderKey] = useState(new Date().getTime());
@@ -74,30 +78,13 @@ export default function AppraisalFormSubmit({
           formId,
           userId,
           JsonContent,
+          employeeData,
         );
 
         if (response.status === 201) {
-          const employeeResponseFormId = response.data.id;
-
-          const employeeData = await getUserById(userId);
-          if (employeeData.status === 200 && employeeData.data) {
-            const managerData = await getUserManager(
-              employeeData.data?.departmentName,
-            );
-            if (managerData.status === 200 && managerData.data) {
-              const managerEmail = managerData.data.email;
-              const managerResponseURL = encodeURI(
-                `${host}/appraisal/${formId}?employeeResponseFormId=${employeeResponseFormId}`,
-              );
-              await sendEmail(
-                managerEmail,
-                "Appraisal Form",
-                `<a href="${managerResponseURL}">Do appraisal</a>`,
-              );
-            }
-          }
           // DISPLAY SUCCESSFUL SUBMISSION MESSAGE
           toast.success(response.message);
+          router.replace("/staff");
         }
       } else if (userRole === "MANAGER" && employeeResponseFormId) {
         const currentResponse = await getAppraisalSubmissionByFormId(
@@ -127,6 +114,7 @@ export default function AppraisalFormSubmit({
           if (response.status === 200) {
             // DISPLAY SUCCESSFUL SUBMISSION MESSAGE
             toast.success(response.message);
+            router.replace("/staff");
           }
         }
       }
@@ -136,7 +124,30 @@ export default function AppraisalFormSubmit({
   };
 
   return (
-    <div className="flex min-h-dvh w-full flex-col items-center bg-accent p-8">
+    <div className="flex min-h-dvh w-full flex-col items-center space-y-6 bg-accent p-8">
+      <div
+        className={cn(
+          "w-full max-w-3xl space-y-4 rounded-lg bg-white p-4",
+          userRole !== "MANAGER" && "hidden",
+        )}
+      >
+        <div className="flex w-full flex-col items-center gap-4 text-center md:flex-row md:text-left">
+          <div className="h-28 w-28 rounded-full bg-accent" />
+          <div className="space-y-1">
+            <h1 className="text-xl font-medium md:text-2xl">
+              {employeeData.name}
+            </h1>
+            <div className="flex flex-col text-sm">
+              <span>Email: {employeeData.email}</span>
+              <span>
+                Department:{" "}
+                {convertTextToTitleCase(employeeData.departmentName)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div
         key={renderKey}
         className="w-full max-w-3xl space-y-4 rounded-lg bg-white p-4"
