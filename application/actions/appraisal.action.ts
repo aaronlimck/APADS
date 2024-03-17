@@ -191,26 +191,6 @@ export async function getAppraisalFormSubmissionByFormIdAndUserId(
   }
 }
 
-export async function createAppraisalSubmissionByFormId(
-  id: string,
-  userId: string,
-  content: string,
-) {
-  try {
-    const form = await prisma.appraisalSubmissions.create({
-      data: {
-        formId: id,
-        employeeId: userId,
-        content: content,
-      },
-    });
-    return { status: 201, message: "Submission successful!", data: form };
-  } catch (error) {
-    console.log(error);
-    throw new Error("Something went wrong, please try again later!");
-  }
-}
-
 export async function getAppraisalSubmissionByFormId(id: string) {
   try {
     const form = await prisma.appraisalSubmissions.findUnique({

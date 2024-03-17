@@ -23,7 +23,7 @@ export default function ApprisalItem({
         formId: data.id,
         userId: userId,
       });
-      if (response.data.length > 0) {
+      if (response.data !== null) {
         setIsSubmissionExist(true);
       }
     };

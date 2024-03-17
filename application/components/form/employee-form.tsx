@@ -57,13 +57,13 @@ export default function EmployeeForm({
     const fetchStaff = async () => {
       try {
         const staffData = await getAllUsers();
-        const namesArray = staffData.data.map((staff) => {
-          return {
+        const filteredNamesArray = staffData.data
+          .filter((staff) => staff.isArchived === false)
+          .map((staff) => ({
             id: staff.id,
             name: staff.name,
-          };
-        });
-        setStaffs(namesArray);
+          }));
+        setStaffs(filteredNamesArray);
       } catch (error) {
         console.error("Error fetching staff:", error);
       }
