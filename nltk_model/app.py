@@ -57,8 +57,12 @@ def getSentiment():
 
 @app.route('/getClusters', methods=['POST'])
 def getClusters():
-    data = request.get_json()
-    print(data)
+    data = request.get_json()['formResponses']
+    empIDs = request.get_json()['empIDs']
+    df = pd.DataFrame(data)
+    df['empIDs'] = empIDs
+    df.set_index('empIDs',inplace=True)
+    print(df)
     return "123"
 
 if __name__ == '__main__':

@@ -46,6 +46,7 @@ export default async function AdminAppraisalDetails({
     }
   }
 
+  const empIDs:string[] = [];
   for (let i=0;i<formResponses.length;i++){
     await Promise.all(Object.keys(formResponses[i]).map(async (element:string) => {
       if (element in mappings){
@@ -60,10 +61,11 @@ export default async function AdminAppraisalDetails({
         }
       }
     }));
-    
+    empIDs.push(submissionsData.data[i].employeeId);
   }
 
-  const clusters = await getClusters(formResponses);
+  const payload = {'empIDs':empIDs, 'formResponses':formResponses}
+  const clusters = await getClusters(payload);
 
   return (
     <>
