@@ -51,7 +51,7 @@ export async function getAppraisalFormById(id: string) {
   try {
     const form = await prisma.appraisalForm.findUnique({
       where: { id: id },
-      include: { recipientsId: true },
+      include: { recipientsId: true, appraisalSubmissions: true },
     });
     return { status: 200, data: form };
   } catch (error) {
@@ -191,12 +191,42 @@ export async function getAppraisalFormSubmissionByFormIdAndUserId(
   }
 }
 
+
+// NAMING IS WRONG, SHOULD BE getAppraisalSubmissionByAppraisalSubmissionId
 export async function getAppraisalSubmissionByFormId(id: string) {
   try {
     const form = await prisma.appraisalSubmissions.findUnique({
       where: { id: id },
     });
     return { status: 200, message: "Submission successful!", data: form };
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later!");
+  }
+}
+
+export async function getAppraisalSubmissionByFormId2(id: string) {
+  try {
+    const form = await prisma.appraisalSubmissions.findMany({
+      where: { formId: id },
+    });
+    return { status: 200, message: "Submission successful!", data: form };
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later!");
+  }
+}
+
+export async function getHasManagerAppraisedAppraisalByFormIdAndEmployeeId(
+  id: string,
+  employeeId: string
+) {
+  try {
+    const form = await prisma.appraisalSubmissions.findMany({
+      where: { formId: id, employeeId: employeeId, hasManagerAppraise: true},
+    });
+    if(form != null){
+      return { status: 200, message: "Manager has appraised!", data: form };
+    }
+    return { status: 200, message: "Manger has not appraised!", data: form };
   } catch (error) {
     throw new Error("Something went wrong, please try again later!");
   }
@@ -223,3 +253,5 @@ export async function updateAppraisalSubmissionByFormId(
     throw new Error("Something went wrong, please try again later!");
   }
 }
+
+

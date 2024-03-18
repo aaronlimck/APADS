@@ -6,17 +6,15 @@ import { SeparatorFieldFormElement } from "./fields/separatorfield";
 import { ParagraphFieldFormElement } from "./fields/paragraphfield";
 import { TextAreaFormElement } from "./fields/textareafield";
 import { SelectFieldFormElement } from "./fields/selectfield";
-import { RadioFieldFormElement } from "./fields/radiofield";
 
 export type ElementsType =
   | "TextField"
-  | "TitleField"
+  | "TitleField" 
   | "SubTitleField"
   | "SeparatorField"
   | "ParagraphField"
   | "TextAreaField"
   | "SelectField"
-  | "RadioField"
 
 export type SubmitFunction = (key: string, value: string) => void;
 
@@ -59,5 +57,4 @@ export const FormElements: FormElementsType = {
   ParagraphField: ParagraphFieldFormElement,
   TextAreaField: TextAreaFormElement,
   SelectField: SelectFieldFormElement,
-  RadioField: RadioFieldFormElement
 };

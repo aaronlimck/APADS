@@ -1,4 +1,6 @@
-import { getAppraisalFormById } from "@/actions/appraisal.action";
+import {
+  getAppraisalFormById,
+} from "@/actions/appraisal.action";
 import AppraisalRecipientsTable from "@/components/appraisal/appraisal-recipients-table";
 import {
   TotalRecipientsCard,
@@ -16,6 +18,25 @@ export default async function AdminAppraisalDetails({
 }) {
   const { id } = params;
   const formData = await getAppraisalFormById(id);
+  
+  const completedAppraisalSubmissions = formData.data?.appraisalSubmissions;
+
+  type EmployeeStatus = {
+    employeeCompleted: boolean;
+    managerCompleted: boolean;
+  };
+
+  const employeeCompletedManagerAppraisedObject: {
+    [employeeId: string]: EmployeeStatus;
+  } = {};
+
+  completedAppraisalSubmissions?.map((appraisalSubmission: any) => {
+    employeeCompletedManagerAppraisedObject[appraisalSubmission.employeeId] = {
+      employeeCompleted: true,
+      managerCompleted: appraisalSubmission.hasManagerAppraise,
+    };
+  });
+
 
   if (!formData || !formData.data) {
     throw new Error("Form not found");
@@ -59,7 +80,12 @@ export default async function AdminAppraisalDetails({
         <TotalSubmissionRate />
       </div>
 
-      <AppraisalRecipientsTable formData={formData.data} />
+      <AppraisalRecipientsTable
+        formData={formData.data}
+        employeeCompletedManagerAppraisedObject={
+          employeeCompletedManagerAppraisedObject
+        }
+      />
     </div>
   );
 }
