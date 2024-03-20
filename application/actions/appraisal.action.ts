@@ -204,17 +204,6 @@ export async function getAppraisalSubmissionByFormId(id: string) {
   }
 }
 
-export async function getAppraisalSubmissionByFormId2(id: string) {
-  try {
-    const form = await prisma.appraisalSubmissions.findMany({
-      where: { formId: id },
-    });
-    return { status: 200, message: "Submission successful!", data: form };
-  } catch (error) {
-    throw new Error("Something went wrong, please try again later!");
-  }
-}
-
 export async function getHasManagerAppraisedAppraisalByFormIdAndEmployeeId(
   id: string,
   employeeId: string

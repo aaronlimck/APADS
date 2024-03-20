@@ -7,9 +7,11 @@ import {
   TableRow,
 } from "../ui/table";
 
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+
 export default async function AppraisalRecipientsTable({
   formData,
   employeeCompletedManagerAppraisedObject,
@@ -55,7 +57,11 @@ export default async function AppraisalRecipientsTable({
                         size="icon"
                         disabled={buttonDisabled}
                       >
-                        <ChevronRight className="h-4 w-4" />
+                        <Link
+                          href={`/admin/appraisals/${formData.id}/${recipient.id}/response`}
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
                       </Button>
                     </TableCell>
                   </TableRow>
