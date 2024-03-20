@@ -1,6 +1,9 @@
 from flask import Flask, jsonify, request
 import joblib
 import pandas as pd
+from sklearn.cluster import MeanShift
+from collections import defaultdict
+
 
 app = Flask(__name__)
 
@@ -62,8 +65,15 @@ def getClusters():
     df = pd.DataFrame(data)
     df['empIDs'] = empIDs
     df.set_index('empIDs',inplace=True)
-    print(df)
-    return "123"
+    model = MeanShift().fit(df)
+    df['cluster'] = model.labels_
+    clusters = defaultdict(list)
+    for index, row in df.iterrows():
+        clusters[row['cluster']].append(index)
+
+    print(clusters)
+
+    return clusters
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
