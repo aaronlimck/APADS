@@ -110,8 +110,7 @@ export async function getClusters(payload: any) {
       },
       body: JSON.stringify(payload),
     });
-    // const responseSentiment = await res.json();
-    // return responseSentiment;
+    return res.json();
   } catch (err) {
     console.log(err);
   }

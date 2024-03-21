@@ -66,10 +66,34 @@ export default async function AdminAppraisalDetails({
 
   const payload = {'empIDs':empIDs, 'formResponses':formResponses}
   const clusters = await getClusters(payload);
+  
+  Object.entries(clusters).forEach(([key, array]) => {
+    console.log(`Key: ${key}, Length: ${array.length}`);
+  });
+  const maxRows = Math.max(...Object.values(clusters).map(array => array.length));
+
 
   return (
     <>
-      <h1>Appraisal Report</h1>
+      <h1>Clustering Results</h1>
+      <table>
+      <thead>
+        <tr className="border border-black">
+          {Object.keys(clusters).map((key) => (
+            <th key={key} className="border border-black">{key}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Array.from({ length: maxRows }).map((_, rowIndex) => (
+          <tr key={rowIndex} className="border border-black">
+            {Object.values(clusters).map((array, columnIndex) => (
+              <td key={columnIndex} className="border border-black">{array[rowIndex]}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
     </>
   );
 }
