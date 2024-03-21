@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 import joblib
 import pandas as pd
-from sklearn.cluster import MeanShift, KMeans
+from sklearn.cluster import MeanShift
+from sklearn.ensemble import RandomForestClassifier
 from collections import defaultdict
 
 
@@ -65,18 +66,30 @@ def getClusters():
     df = pd.DataFrame(data)
     df['empIDs'] = empIDs
     df.set_index('empIDs',inplace=True)
-    model = MeanShift().fit(df)
-    df['cluster'] = model.labels_
+    ms = MeanShift().fit(df)
+    df['cluster'] = ms.labels_
     clusters = defaultdict(list)
     for index, row in df.iterrows():
         clusters[row['cluster']].append(index)
 
-    SSE = []
-    for k in range(1, 8):
-        kmeans = KMeans(n_clusters=k, n_init=10).fit(df)
-        SSE.append(kmeans.inertia_)
-    print(model.cluster_centers_)
+    # Train a Random Forest model on the cluster labels
+    rf = RandomForestClassifier()
+    rf.fit(df.drop('cluster', axis=1), df['cluster'])
 
+    # Get feature importance
+    importances = rf.feature_importances_
+
+    mostImportantFeature = ''
+    mostImportantFeatureValue = 0
+    # Print feature importance
+    for feature, importance in zip(df.drop('cluster', axis=1).columns, importances):
+        print(f'{feature}: {importance}')
+        if importance > mostImportantFeatureValue:
+            mostImportantFeatureValue = importance
+            mostImportantFeature = feature
+    
+    if(request.get_json()['questionTypes'][mostImportantFeature] == 'TextAreaField'):
+        print(ms.cluster_centers_)
 
     return clusters
 

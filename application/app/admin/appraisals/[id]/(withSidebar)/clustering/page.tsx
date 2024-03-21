@@ -9,6 +9,7 @@ import { get } from "http";
 import { ClipboardMinusIcon, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { text } from "stream/consumers";
+import {getUserById} from "@/actions/user.action";
 
 export default async function AdminAppraisalDetails({
   params,
@@ -64,9 +65,14 @@ export default async function AdminAppraisalDetails({
     empIDs.push(submissionsData.data[i].employeeId);
   }
 
-  const payload = {'empIDs':empIDs, 'formResponses':formResponses}
+  const questionTypes = formStructure.reduce((acc: any, element: any) => {
+    acc[element.id] = element.type;
+    return acc;
+  }, {});
+
+  const payload = {'empIDs':empIDs, 'formResponses':formResponses, 'questionTypes':questionTypes};
   const clusters = await getClusters(payload);
-  
+
   Object.entries(clusters).forEach(([key, array]) => {
     console.log(`Key: ${key}, Length: ${array.length}`);
   });
