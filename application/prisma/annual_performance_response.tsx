@@ -24,11 +24,17 @@ const questions: Question[] = [
   },
   {
     id: "9771",
-    options: null
+    options: ["I developed the dashboard which provided many useful insights to upper management which resulted in us saving thousands of dollars.",
+              "I accomplished all my goals and learnt alot of new technical skills.",
+              "I achieved the most productive employee award."
+  ]
   },
   {
     id: "6311",
-    options: null
+    options: ["I have faced some difficulties to find and get some instruments and proper tools when doing and setting a job.",
+              "Learning a new development language was challenging but through peer programming I was able to overcome it.",
+              "I have experienced some interpersonal challenges within my team"
+  ]
   }
 ];
 

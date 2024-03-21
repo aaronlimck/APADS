@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 import joblib
 import pandas as pd
-from sklearn.cluster import MeanShift
+from sklearn.cluster import MeanShift, KMeans
 from collections import defaultdict
 
 
@@ -71,7 +71,12 @@ def getClusters():
     for index, row in df.iterrows():
         clusters[row['cluster']].append(index)
 
-    print(clusters)
+    SSE = []
+    for k in range(1, 8):
+        kmeans = KMeans(n_clusters=k, n_init=10).fit(df)
+        SSE.append(kmeans.inertia_)
+    print(model.cluster_centers_)
+
 
     return clusters
 
