@@ -7,7 +7,7 @@ import {
 } from "@/components/form-builder/form-elements";
 import ViewerComponent from "@/components/viewer/viewer-component";
 
-export default async function AdminAppraisalsBuilderPage({
+export default async function AdminAppraisalsFormViewerPage({
   params,
 }: {
   params: { id: string };

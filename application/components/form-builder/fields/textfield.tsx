@@ -60,9 +60,10 @@ export const TextFieldFormElement: FormElement = {
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+  responseFormComponent: ReponseFormComponent,
   validate: (
     formElement: FormElementInstance,
-    currentValue: string
+    currentValue: string,
   ): boolean => {
     const element = formElement as CustomInstance;
     if (element.extraAttributes.required) {
@@ -269,6 +270,31 @@ function FormComponent({
           submitValue(element.id, e.target.value);
         }}
         value={value}
+      />
+    </div>
+  );
+}
+
+function ReponseFormComponent({
+  elementInstance,
+  response,
+}: {
+  elementInstance: FormElementInstance;
+  response: string
+}) {
+  const element = elementInstance as CustomInstance;
+  const { label, required, placeholder } = element.extraAttributes;
+
+  return (
+    <div className="flex w-full flex-col gap-2">
+      <Label>
+        {label}
+        <span className="ml-1 text-red-800">{required && "*"}</span>
+      </Label>
+      <Input
+        placeholder={placeholder}
+        value={response}
+        readOnly
       />
     </div>
   );

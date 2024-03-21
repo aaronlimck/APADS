@@ -70,6 +70,7 @@ export const SelectFieldFormElement: FormElement = {
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+  responseFormComponent: ResponseFormComponent,
 
   validate: (
     formElement: FormElementInstance,
@@ -148,6 +149,35 @@ function FormComponent({
         }}
       >
         <SelectTrigger className={cn("w-full", error && "border-red-500")}>
+          <SelectValue placeholder={placeHolder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option} value={option}>
+              {option}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function ResponseFormComponent({
+  elementInstance,
+  response,
+}: {
+  elementInstance: FormElementInstance;
+  response: string
+}) {
+  const element = elementInstance as CustomInstance;
+
+  const { label, placeHolder, options } = element.extraAttributes;
+  return (
+    <div className="pointer-events-none flex w-full flex-col gap-2">
+      <Label>{label}</Label>
+      <Select value={response}>
+        <SelectTrigger>
           <SelectValue placeholder={placeHolder} />
         </SelectTrigger>
         <SelectContent>
