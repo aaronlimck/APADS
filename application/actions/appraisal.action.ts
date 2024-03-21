@@ -158,7 +158,7 @@ export async function getAppraisalFormContentById(id: string) {
   try {
     const form = await prisma.appraisalForm.findUnique({
       where: { id: id, isPublished: true },
-      select: { content: true, recipientsId: true },
+      select: { name: true, content: true, recipientsId: true },
     });
     return { status: 200, message: "Successully fetch content", data: form };
   } catch (error) {

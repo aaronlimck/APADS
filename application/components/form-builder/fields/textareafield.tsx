@@ -62,6 +62,7 @@ export const TextAreaFormElement: FormElement = {
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
+  responseFormComponent: ResponseFormComponent,
 
   validate: (
     formElement: FormElementInstance,
@@ -101,6 +102,33 @@ function DesignerComponent({
     </div>
   );
 }
+
+function ResponseFormComponent({
+  elementInstance,
+  response,
+}: {
+  elementInstance: FormElementInstance;
+  response: string,
+}) {
+  const element = elementInstance as CustomInstance;
+  const { label, placeHolder, helperText, rows } = element.extraAttributes;
+
+  console.log(element);
+  return (
+    <div className="flex w-full flex-col gap-2">
+      <Label>{label}</Label>
+      <Textarea
+        className=""
+        rows={rows}
+        placeholder={placeHolder}
+        value={response}
+        readOnly
+      />
+      {helperText && <p>{helperText}</p>}
+    </div>
+  );
+}
+
 
 function FormComponent({
   elementInstance,

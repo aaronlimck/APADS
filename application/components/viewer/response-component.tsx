@@ -7,18 +7,21 @@ import {
 } from "../form-builder/form-elements";
 import Image from "next/image";
 import Link from "next/link";
+import { StringValidation } from "zod";
+
+
 
 export default function ResponseComponent({
   content,
   response,
+  appraisalName,
+  employeeName,
 }: {
   content: FormElementInstance[];
-  response: any,
+  response: any;
+  appraisalName: string;
+  employeeName: string;
 }) {
-
-  // console.log(response);
-  // console.log(content);
-  
   return (
     <main className="flex w-full flex-col ">
       <nav className="top-0 z-50 flex h-14 w-full items-center justify-between border-b bg-white p-4">
@@ -31,18 +34,29 @@ export default function ResponseComponent({
           </span>
         </div>
       </nav>
+
+      <p>Appraisal Name: {appraisalName}</p>
+      <p>Employee Name: {employeeName}</p>
+
       <div className="flex flex-grow flex-col items-center justify-center overflow-y-auto bg-accent p-4 pt-[35px]">
         <div className="flex min-h-screen w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 rounded-md bg-white px-4 py-8">
           {content.map((element) => {
             const FormElement = FormElements[element.type].formComponent;
+            const ResponseElement =
+              FormElements[element.type].responseFormComponent;
 
-            if(element.id in response){
-              console.log(element.id );
-              console.log(element.id, response[element.id])
-            }else{
+            console.log(ResponseElement);
+            if (element.id in response) {
+              return (
+                <ResponseElement
+                  key={element.id}
+                  elementInstance={element}
+                  response={response[element.id]}
+                />
+              );
+            } else {
               return <FormElement key={element.id} elementInstance={element} />;
             }
-            // console.log()
           })}
         </div>
       </div>

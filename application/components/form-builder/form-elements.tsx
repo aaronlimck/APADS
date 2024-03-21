@@ -35,6 +35,12 @@ export type FormElement = {
     isInvalid?: boolean;
     defaultValue?: string;
   }>;
+
+  responseFormComponent: React.FC<{
+    elementInstance: FormElementInstance;
+    response: string;
+  }>;
+
   propertiesComponent: React.FC<{ elementInstance: FormElementInstance }>;
   validate: (formElement: FormElementInstance, currentValue: string) => boolean;
 };

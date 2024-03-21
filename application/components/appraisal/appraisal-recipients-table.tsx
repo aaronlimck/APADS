@@ -52,17 +52,16 @@ export default async function AppraisalRecipientsTable({
                     <TableCell>{employeeCompleted ? "Yes" : "No"}</TableCell>
                     <TableCell>{managerAppraised ? "Yes" : "No"}</TableCell>
                     <TableCell>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        disabled={buttonDisabled}
+                      <Link
+                        href={`/admin/appraisals/${formData.id}/${recipient.id}/response`}
+                        className={buttonDisabled ? "pointer-events-none" : ""}
+                        aria-disabled={buttonDisabled}
+                        tabIndex={buttonDisabled ? -1 : undefined}
                       >
-                        <Link
-                          href={`/admin/appraisals/${formData.id}/${recipient.id}/response`}
-                        >
+                        <Button variant="outline" size="icon" disabled={buttonDisabled}>
                           <ChevronRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
+                        </Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 );
