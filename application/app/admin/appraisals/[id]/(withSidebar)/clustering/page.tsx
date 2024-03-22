@@ -10,6 +10,7 @@ import { ClipboardMinusIcon, ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { text } from "stream/consumers";
 import {getUserById} from "@/actions/user.action";
+import cluster from "cluster";
 
 export default async function AdminAppraisalDetails({
   params,
@@ -73,10 +74,31 @@ export default async function AdminAppraisalDetails({
   const payload = {'empIDs':empIDs, 'formResponses':formResponses, 'questionTypes':questionTypes};
   const clusters = await getClusters(payload);
 
-  Object.entries(clusters).forEach(([key, array]) => {
-    console.log(`Key: ${key}, Length: ${array.length}`);
-  });
+
   const maxRows = Math.max(...Object.values(clusters).map(array => array.length));
+
+  // Replace employee ids with employee names in the clusters
+
+  var clusterNames: { [key: number]: string[] } = {};
+  
+  await Promise.all(
+    Array.from({ length: maxRows }).map(async (_, rowIndex) => {
+      await Promise.all(
+        Object.values(clusters).map(async (array, columnIndex) => {
+          if (array[rowIndex]) {
+            const user = await getUserById(array[rowIndex]);
+            if (user) {
+              if (clusterNames[columnIndex]) {
+                clusterNames[columnIndex].push(user.data.name);
+              } else {
+                clusterNames[columnIndex] = [user.data.name];
+              }
+            }
+          }
+        })
+      );
+    })
+  );
 
 
   return (
@@ -93,7 +115,7 @@ export default async function AdminAppraisalDetails({
       <tbody>
         {Array.from({ length: maxRows }).map((_, rowIndex) => (
           <tr key={rowIndex} className="border border-black">
-            {Object.values(clusters).map((array, columnIndex) => (
+            {Object.values(clusterNames).map((array, columnIndex) => (
               <td key={columnIndex} className="border border-black">{array[rowIndex]}</td>
             ))}
           </tr>
