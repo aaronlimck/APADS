@@ -46,7 +46,7 @@ export default async function AppraisalReportClientPage({
               data: element.data,
             };
             const sentiment = await getSentiment(objectWithData);
-            const payload = { ...element, data: sentiment };
+            const payload = { ...element, data: sentiment.sentiments };
             return (
               <div key={element.id}>
                 <div className="mb-2 font-medium">{`Q${index + 1}. ${

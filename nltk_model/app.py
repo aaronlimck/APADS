@@ -35,7 +35,7 @@ def getSentiment():
             sentiment = 'Neutral'
         sentiments.append({'sentiment':sentiment,'compound_percentage':compound_percentage})
         
-    return sentiments
+    return {"sentiments":sentiments}
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
