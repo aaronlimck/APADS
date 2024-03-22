@@ -1,5 +1,15 @@
 import { getUserById } from "@/actions/user.action";
+import { getCompleteAppraisalsFormSubmissionByUserId } from "@/actions/appraisal.action";
 import EditEmployeeModal from "@/components/modal/edit-employee-modal";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCaption,
+} from "@/components/ui/table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +19,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { convertTextToTitleCase } from "@/lib/utils";
+import { convertTextToTitleCase, extractDateInfo } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default async function SpecificEmployeePage({
   params,
@@ -18,6 +30,9 @@ export default async function SpecificEmployeePage({
 }) {
   const { id: userId } = params;
   const userData = await getUserById(userId);
+  const appraisalSubmissions =
+    await getCompleteAppraisalsFormSubmissionByUserId(userId);
+  console.log(appraisalSubmissions?.data);
 
   return (
     <div className="w-full space-y-8">
@@ -116,6 +131,48 @@ export default async function SpecificEmployeePage({
 
       <section className="space-y-4 rounded-lg bg-gray-50 p-4 md:p-6">
         <div className="text-lg font-medium">Appraisals</div>
+        <Table className=" bg-white">
+          { appraisalSubmissions?.data.length == 0 ?
+            <TableCaption>
+              {" "}
+              Employee has not completed any appraisals.
+            </TableCaption>
+            :
+            <></>
+          }
+          <TableHeader>
+            <TableRow>
+              <TableHead> Appraisal Name </TableHead>
+              <TableHead> Date of Appraisal </TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {appraisalSubmissions?.data.length == 0 ? (
+              <></>
+            ) : (
+              appraisalSubmissions?.data.map((appraisalSubmission) => (
+                <TableRow key={appraisalSubmission.appraisal.id}>
+                  <TableCell>{appraisalSubmission.appraisal.name}</TableCell>
+                  <TableCell>
+                    {extractDateInfo(
+                      appraisalSubmission.appraisal.createdAt.toString(),
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/admin/appraisals/${appraisalSubmission.appraisal.id}/${userId}/response`}
+                    >
+                      <Button variant="outline" size="icon">
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </section>
     </div>
   );
