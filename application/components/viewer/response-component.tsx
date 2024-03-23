@@ -1,25 +1,26 @@
 "use client";
-
+import { convertTextToTitleCase } from "@/lib/utils";
+import { DotIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   FormElementInstance,
   FormElements,
 } from "../form-builder/form-elements";
+import { Card, CardHeader } from "../ui/card";
+import StaffInfoSheet from "@/app/admin/employees/_components/staffInfoSheet";
 
 export default function ResponseComponent({
   content,
   response,
-  appraisalName,
-  employeeName,
+  employeeData,
 }: {
   content: FormElementInstance[];
   response: any;
-  appraisalName: string;
-  employeeName: string;
+  employeeData: any;
 }) {
   return (
-    <main className="flex w-full flex-col ">
+    <main className="flex h-dvh w-full flex-col overflow-hidden">
       <nav className="top-0 z-50 flex h-14 w-full items-center justify-between border-b bg-white p-4">
         <div className="flex items-center gap-3">
           <Link href="/">
@@ -31,17 +32,35 @@ export default function ResponseComponent({
         </div>
       </nav>
 
-      <p>Appraisal Name: {appraisalName}</p>
-      <p>Employee Name: {employeeName}</p>
+      <div className="flex flex-grow flex-col items-center justify-center space-y-4 bg-accent p-4">
+        <Card className="w-full max-w-3xl shadow-none">
+          <CardHeader>
+            <div className="flex flex-col space-y-1">
+              <div className="text-2xl font-medium tracking-tight">
+                {employeeData.name}
+              </div>
+              <div className="flex items-center space-x-0.5 text-sm text-muted-foreground">
+                <span>
+                  {convertTextToTitleCase(employeeData.departmentName) || "N.A"}
+                </span>
+                <DotIcon size={16} />
+                <StaffInfoSheet
+                  data={employeeData}
+                  className="hover:underline hover:underline-offset-2"
+                >
+                  View Profile
+                </StaffInfoSheet>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
 
-      <div className="flex flex-grow flex-col items-center justify-center overflow-y-auto bg-accent p-4 pt-[35px]">
-        <div className="flex min-h-screen w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 rounded-md bg-white px-4 py-8">
+        <div className="flex h-[calc(100dvh-210px)] w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 overflow-y-scroll rounded-lg border bg-white px-4 py-8">
           {content.map((element) => {
-            const FormElement = FormElements[element.type].formComponent;
+            // const FormElement = FormElements[element.type].formComponent;
             const ResponseElement =
               FormElements[element.type].responseFormComponent;
 
-            console.log(ResponseElement);
             if (element.id in response) {
               return (
                 <ResponseElement
@@ -50,9 +69,10 @@ export default function ResponseComponent({
                   response={response[element.id]}
                 />
               );
-            } else {
-              return <FormElement key={element.id} elementInstance={element} />;
             }
+            //  else {
+            //   return <FormElement key={element.id} elementInstance={element} />;
+            // }
           })}
         </div>
       </div>
