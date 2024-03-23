@@ -66,7 +66,7 @@ export default function StaffInfoSheet({
                   </span>
                 )}
               </div>
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-0.5 text-sm text-muted-foreground">
                 <span>{data.jobTitle || "N.A"}</span>
                 <DotIcon size={16} />
                 <span>
@@ -147,7 +147,7 @@ export default function StaffInfoSheet({
             <TabsContent value="appraisal-history">
               <div className="flex h-8 items-center rounded-md bg-accent px-4 text-sm text-muted-foreground">
                 <div className="w-1/2">Name</div>
-                <div>Created On</div>
+                <div>Assigned On</div>
               </div>
 
               {data.appraisals !== null && data.appraisals.length > 0 ? (
