@@ -21,7 +21,6 @@ export default async function AutomationPage() {
     <main className="space-y-6">
       <div className="grid grid-cols-2">
 
-        <CreateTemplateBtn/>
         {automations.data.map((automation) => (
           <div className="col-span-1 m-2" key={automation.id}>
             <Card>
