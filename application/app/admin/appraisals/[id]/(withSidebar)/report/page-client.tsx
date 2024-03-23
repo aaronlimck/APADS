@@ -4,6 +4,7 @@ import {
 } from "@/actions/appraisal.action";
 import BarChartComponent from "@/components/charts/bar-chart";
 import PieChartComponent from "@/components/charts/pie-chart";
+import WordCloudComponent from "@/components/charts/word-cloud";
 import { analyzeFormResponses, getSentiment } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -47,6 +48,10 @@ export default async function AppraisalReportClientPage({
             };
             const sentiment = await getSentiment(objectWithData);
             const payload = { ...element, data: sentiment.sentiments };
+            const words = (sentiment.positive_sentences ? sentiment.positive_sentences.split(' ') : [])
+              .concat(sentiment.negative_sentences ? sentiment.negative_sentences.split(' ') : [], 
+                      sentiment.neutral_sentences ? sentiment.neutral_sentences.split(' ') : []);
+            console.log(sentiment.negative_sentences);
             return (
               <div key={element.id}>
                 <div className="mb-2 font-medium">{`Q${index + 1}. ${
@@ -61,7 +66,7 @@ export default async function AppraisalReportClientPage({
                     <PieChartComponent data={payload} />
                   </TabsContent>
                   <TabsContent value="word-cloud">
-                    Word Cloud {element.id}
+                    <WordCloudComponent words={words} />
                   </TabsContent>
                 </Tabs>
               </div>
