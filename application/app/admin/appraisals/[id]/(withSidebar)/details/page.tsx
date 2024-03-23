@@ -1,6 +1,4 @@
-import {
-  getAppraisalFormById,
-} from "@/actions/appraisal.action";
+import { getAppraisalFormById } from "@/actions/appraisal.action";
 import AppraisalRecipientsTable from "@/components/appraisal/appraisal-recipients-table";
 import {
   TotalRecipientsCard,
@@ -18,7 +16,7 @@ export default async function AdminAppraisalDetails({
 }) {
   const { id } = params;
   const formData = await getAppraisalFormById(id);
-  
+
   const completedAppraisalSubmissions = formData.data?.appraisalSubmissions;
 
   type EmployeeStatus = {
@@ -36,7 +34,6 @@ export default async function AdminAppraisalDetails({
       managerCompleted: appraisalSubmission.hasManagerAppraise,
     };
   });
-
 
   if (!formData || !formData.data) {
     throw new Error("Form not found");

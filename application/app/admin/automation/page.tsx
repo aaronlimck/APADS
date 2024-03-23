@@ -1,3 +1,4 @@
+
 import { CreateAutomationBtn } from "@/components/automation/createAutomation";
 
 import {
@@ -10,13 +11,17 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getAutomation } from "@/actions/automation.action";
+import CreateTemplateBtn from "@/components/automation/createTemplateBtn";
 
 export default async function AutomationPage() {
   const automations = await getAutomation();
+  
 
   return (
     <main className="space-y-6">
       <div className="grid grid-cols-2">
+
+        <CreateTemplateBtn/>
         {automations.data.map((automation) => (
           <div className="col-span-1 m-2" key={automation.id}>
             <Card>
