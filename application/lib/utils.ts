@@ -145,6 +145,17 @@ export function formattedAIFormDataToForm(rawDataString: any): any {
   return formStructure;
 }
 
+export function extractDateInfo(dateString: string): string {
+  const date = new Date(dateString);
+  const month = date
+    .toLocaleString("default", { month: "long" })
+    .replace(/^\w/, (c) => c.toUpperCase());
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day} ${year}`;
+}
+
 export function convertToSGTimeString(timestampStr: string): string {
   // Convert string to Date object
   let utcTime: Date = new Date(timestampStr);

@@ -191,6 +191,20 @@ export async function getAppraisalFormSubmissionByFormIdAndUserId(
   }
 }
 
+export async function getCompleteAppraisalsFormSubmissionByUserId(
+  userId: string,
+) {
+  try {
+    const form = await prisma.appraisalSubmissions.findMany({
+      where: { employeeId: userId, hasManagerAppraise: true },
+      select: { appraisal: true },
+    });
+    return { status: 200, message: "Successully fetch content", data: form };
+  } catch (error) {
+    throw new Error("Something went wrong, please try again later!");
+  }
+}
+
 
 // NAMING IS WRONG, SHOULD BE getAppraisalSubmissionByAppraisalSubmissionId
 export async function getAppraisalSubmissionByFormId(id: string) {
