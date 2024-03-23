@@ -8,29 +8,29 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function AppraisalItem({ form }: { form: AppraisalForm }) {
   return (
-    <Card className="max-h-[200px] h-full">
+    <Card className="h-full max-h-[200px]">
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-base">
-          <span className="line-clamp-1">{form.name}</span>
+          <span className="line-clamp-1 font-medium">{form.name}</span>
           {form.isPublished ? (
-            <Badge className="font-medium rounded-md bg-green-100 text-green-800 hover:bg-green-100 hover:text-green-800">
+            <Badge className="rounded-md bg-green-100 font-medium text-green-800 hover:bg-green-100 hover:text-green-800">
               Published
             </Badge>
           ) : (
-            <Badge className="font-medium rounded-md bg-yellow-100 text-yellow-800 hover:bg-yellow-100 hover:text-yellow-800">
+            <Badge className="rounded-md bg-yellow-100 font-medium text-yellow-800 hover:bg-yellow-100 hover:text-yellow-800">
               Draft
             </Badge>
           )}
         </CardTitle>
 
         <CardDescription className="flex flex-col space-y-3">
-          <span className="text-gray-500 font-normal">
+          <span className="font-normal text-gray-500">
             {formatDistance(form.createdAt, new Date(), {
               addSuffix: true,
             })}
           </span>
 
-          <span className="text-gray-800 line-clamp-1">
+          <span className="line-clamp-1 text-gray-800">
             {form.description || "No description"}
           </span>
         </CardDescription>
@@ -52,6 +52,6 @@ export default function AppraisalItem({ form }: { form: AppraisalForm }) {
 
 export function AppraisalItemSkeleton() {
   return (
-    <Skeleton className="border-2 border-primary-/20 h-[200px] w-full animate-pulse" />
+    <Skeleton className="border-primary-/20 h-[200px] w-full animate-pulse border-2" />
   );
 }

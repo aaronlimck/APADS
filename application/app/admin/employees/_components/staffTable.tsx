@@ -7,14 +7,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { convertTextToTitleCase } from "@/lib/utils";
-import { User } from "@prisma/client";
 import { MoreHorizontalIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Badge } from "../../../../components/ui/badge";
+import { Button } from "../../../../components/ui/button";
+import { Card, CardContent, CardHeader } from "../../../../components/ui/card";
 import {
   Table,
   TableBody,
@@ -22,16 +21,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import Link from "next/link";
-import EditEmployeeModal from "../modal/edit-employee-modal";
+} from "../../../../components/ui/table";
+import StaffInfoSheet from "./staffInfoSheet";
 
 export function StaffTable({ staffs }: { staffs: any[] }) {
   const router = useRouter();
 
-  const handleUnarchiveItem = async (id: string) => {
+  const handleArchiveToggle = async (id: string, isArchived: boolean) => {
     try {
-      const response = await updateUserById(id, { isArchived: false });
+      const response = await updateUserById(id, { isArchived: !isArchived });
       if (response.status === 200) {
         toast.success(response.message);
         router.refresh();
@@ -41,18 +39,6 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
     }
   };
 
-  const handleArchiveItem = async (id: string) => {
-    try {
-      const response = await updateUserById(id, { isArchived: true });
-      if (response.status === 200) {
-        toast.success(response.message);
-        router.refresh();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  console.log(staffs);
   return (
     <>
       <div className="hidden bg-white sm:block sm:rounded-lg sm:border">
@@ -64,8 +50,7 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
                 <span className="hidden md:block">Email</span>
               </TableHead>
               <TableHead>Department</TableHead>
-              <TableHead>Reporting Manager</TableHead>
-              <TableHead>Role</TableHead>
+              <TableHead>User Type</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="rounded-tr-lg">
                 <span className="invisible">Action</span>
@@ -74,40 +59,41 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
           </TableHeader>
 
           <TableBody>
-            {staffs.map((staff: any) => (
+            {staffs.map((staff) => (
               <TableRow key={staff.id} className="group">
-                <TableCell className="group-hover:underline group-hover:underline-offset-2">
-                  <Link href={`/admin/employees/${staff.id}`}>
+                <TableCell>
+                  <StaffInfoSheet
+                    className="group-hover:underline group-hover:underline-offset-2"
+                    data={staff}
+                  >
                     {staff.name}
-                  </Link>
+                  </StaffInfoSheet>
                 </TableCell>
+
                 <TableCell className="px-0 md:px-4">
                   <span className="hidden md:block">{staff.email}</span>
                 </TableCell>
+
                 <TableCell>
                   {convertTextToTitleCase(staff.departmentName)}
                 </TableCell>
-                <TableCell>
-                  {staff.manager ? staff.manager.name : "NA"}
-                </TableCell>
+
                 <TableCell>{convertTextToTitleCase(staff.role)}</TableCell>
+
                 <TableCell>
-                  {staff.isArchived ? (
-                    <span className="rounded bg-red-100 px-2.5 py-0.5 text-xs font-normal text-red-800">
-                      Inactive
-                    </span>
-                  ) : (
-                    <span className="rounded bg-green-100 px-2.5 py-0.5 text-xs font-normal text-green-800">
-                      Active
-                    </span>
-                  )}
+                  <span
+                    className={`rounded ${staff.isArchived ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"} px-2.5 py-0.5 text-xs font-normal`}
+                  >
+                    {staff.isArchived ? "Inactive" : "Active"}
+                  </span>
                 </TableCell>
+
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="sm"
-                        variant={"outline"}
+                        variant="outline"
                         className="aspect-square p-0 text-muted-foreground focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0"
                       >
                         <MoreHorizontalIcon
@@ -118,35 +104,20 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem asChild>
-                        <EditEmployeeModal
-                          staffData={staff}
-                          action={
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              className="h-fit w-full justify-start p-0 px-2 py-1.5 font-normal"
-                            >
-                              Edit
-                            </Button>
-                          }
-                        />
+                      <DropdownMenuItem
+                        className="w-full cursor-pointer"
+                        asChild
+                      >
+                        <StaffInfoSheet data={staff}>View</StaffInfoSheet>
                       </DropdownMenuItem>
-                      {staff.isArchived ? (
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() => handleUnarchiveItem(staff.id)}
-                        >
-                          Unarchive
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          onClick={() => handleArchiveItem(staff.id)}
-                        >
-                          Archive
-                        </DropdownMenuItem>
-                      )}
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() =>
+                          handleArchiveToggle(staff.id, staff.isArchived)
+                        }
+                      >
+                        {staff.isArchived ? "Unarchive" : "Archive"}
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

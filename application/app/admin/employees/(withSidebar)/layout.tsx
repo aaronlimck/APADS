@@ -1,4 +1,4 @@
-import NewEmployeeModal from "@/components/modal/new-employee-modal";
+import NewEmployeeModal from "@/app/admin/employees/_components/new-employee-modal";
 import HRNavItems from "@/components/navigation/hrNavItems";
 import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
