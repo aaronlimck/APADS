@@ -1,15 +1,11 @@
 "use client";
 
-import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   FormElementInstance,
   FormElements,
 } from "../form-builder/form-elements";
-import Image from "next/image";
-import Link from "next/link";
-import { StringValidation } from "zod";
-
-
 
 export default function ResponseComponent({
   content,
@@ -29,7 +25,7 @@ export default function ResponseComponent({
           <Link href="/">
             <Image src="/logo.svg" width={28} height={28} alt="logo" />
           </Link>
-          <span className="rounded-lg border border-transparent px-2 py-1 font-semibold hover:border hover:border-gray-200">
+          <span className="rounded-lg border border-transparent px-2 py-1 font-semibold">
             <h1>Employee Response</h1>
           </span>
         </div>

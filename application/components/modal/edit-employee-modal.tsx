@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import EmployeeForm from "../form/employee-form";
+import EmployeeForm from "../../app/admin/employees/_components/new-employee-form";
 import { useState } from "react";
 
 export default function EditEmployeeModal({

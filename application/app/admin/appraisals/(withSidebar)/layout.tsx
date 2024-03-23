@@ -1,6 +1,7 @@
+import NewAppraisalModal from "@/app/admin/appraisals/_components/new-appraisal-modal";
 import AdminAppraisalNavTabs from "@/components/navigation/admin-appraisal-nav-tabs";
 import HRNavItems from "@/components/navigation/hrNavItems";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
@@ -21,12 +22,9 @@ export default function HRLayout({ children }: { children: React.ReactNode }) {
         <div className="space-y-4 border-b border-gray-200 px-4 pt-6">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-semibold">Appraisals</h1>
-            <Link
-              href="/admin/appraisals/create"
-              className={buttonVariants({ variant: "default" })}
-            >
-              New Appraisal
-            </Link>
+            <NewAppraisalModal>
+              <Button variant="default">New Appraisal</Button>
+            </NewAppraisalModal>
           </div>
           <AdminAppraisalNavTabs />
         </div>

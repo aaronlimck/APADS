@@ -25,8 +25,8 @@ export default function CreateAppraisalFromTemplateBtn({
 
   return (
     <Button
-      className="font-normal cursor-pointer"
-      variant="outline"
+      className="w-full cursor-pointer font-normal"
+      variant="secondary"
       onClick={handleCreateAppriasal}
     >
       Use Template

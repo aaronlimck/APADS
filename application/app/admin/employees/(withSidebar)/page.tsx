@@ -1,6 +1,6 @@
 import { getAllUsers } from "@/actions/user.action";
 import StaffTableStatus from "@/components/dropdown/staff-table-status";
-import { StaffTable } from "@/components/table/staffTable";
+import { StaffTable } from "@/app/admin/employees/_components/staffTable";
 
 export default async function EmployeesPage({
   searchParams,
@@ -19,6 +19,7 @@ export default async function EmployeesPage({
     <main className="space-y-6">
       <div className="space-y-3">
         <StaffTableStatus statusSelected={status} />
+
         <StaffTable staffs={staffData.data} />
       </div>
     </main>

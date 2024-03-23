@@ -17,13 +17,17 @@ enum Role {
 }
 
 model User {
-  id         String   @id @default(cuid())
-  name       String
-  email      String   @unique
-  password   String
-  role       Role
-  createdAt  DateTime @default(now())
-  isArchived Boolean  @default(false)
+  id            String    @id @default(cuid())
+  name          String // Full name
+  gender        String? // NEW
+  mobileNumber  String? // NEW
+  monthlySalary Float? // NEW
+  jobTitle      String? // NEW
+  email         String    @unique
+  password      String
+  role          Role
+  createdAt     DateTime  @default(now())
+  isArchived    Boolean   @default(false)
 
   managerId String?
   manager   User?   @relation("Manager", fields: [managerId], references: [id])

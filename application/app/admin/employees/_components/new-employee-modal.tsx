@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import EmployeeForm from "../form/employee-form";
+import EmployeeForm from "./new-employee-form";
 import { useState } from "react";
 
 export default function NewEmployeeModal({
@@ -26,14 +26,13 @@ export default function NewEmployeeModal({
       <DialogTrigger asChild>{action}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>New Employee</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Fill in the form below to add a new employee.
           </DialogDescription>
         </DialogHeader>
 
-        <EmployeeForm type="CREATE" closeModal={handleDialogClose} />
+        <EmployeeForm closeModal={handleDialogClose} />
       </DialogContent>
     </Dialog>
   );
