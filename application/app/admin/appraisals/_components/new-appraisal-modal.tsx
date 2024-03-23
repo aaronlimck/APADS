@@ -33,7 +33,7 @@ export default function NewAppraisalModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
 
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="flex h-full max-h-[320px] max-w-3xl flex-col items-center justify-center">
         {selectedOption === undefined && (
           <>
             <DialogHeader>

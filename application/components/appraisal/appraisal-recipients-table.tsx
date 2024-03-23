@@ -9,8 +9,9 @@ import {
 
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChevronRight, EyeIcon, EyeOffIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default async function AppraisalRecipientsTable({
   formData,
@@ -19,7 +20,6 @@ export default async function AppraisalRecipientsTable({
   formData: any;
   employeeCompletedManagerAppraisedObject: any;
 }) {
-
   return (
     <div className="rounded-lg border">
       <Table>
@@ -29,7 +29,7 @@ export default async function AppraisalRecipientsTable({
             <TableHead>Email</TableHead>
             <TableHead>Employee Completed</TableHead>
             <TableHead className="rounded-tr-lg">Manager Reviewed</TableHead>
-            <TableHead className="rounded-tr-lg"> View Appraisal</TableHead>
+            <TableHead className="rounded-tr-lg"> View Response</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -52,16 +52,37 @@ export default async function AppraisalRecipientsTable({
                     <TableCell>{employeeCompleted ? "Yes" : "No"}</TableCell>
                     <TableCell>{managerAppraised ? "Yes" : "No"}</TableCell>
                     <TableCell>
-                      <Link
+                      {!buttonDisabled ? (
+                        <Link
+                          className={cn(
+                            buttonVariants({ variant: "outline" }),
+                            "aspect-square p-0",
+                          )}
+                          href={`/admin/appraisals/${formData.id}/${recipient.id}/response`}
+                        >
+                          <EyeIcon size={16} />
+                        </Link>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          disabled={buttonDisabled}
+                        >
+                          <EyeOffIcon size={16} />
+                        </Button>
+                      )}
+                      {/* <Link
                         href={`/admin/appraisals/${formData.id}/${recipient.id}/response`}
                         className={buttonDisabled ? "pointer-events-none" : ""}
-                        aria-disabled={buttonDisabled}
-                        tabIndex={buttonDisabled ? -1 : undefined}
                       >
-                        <Button variant="outline" size="icon" disabled={buttonDisabled}>
-                          <ChevronRight className="h-4 w-4" />
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          disabled={buttonDisabled}
+                        >
+                          <EyeIcon className="h-4 w-4" />
                         </Button>
-                      </Link>
+                      </Link> */}
                     </TableCell>
                   </TableRow>
                 );
