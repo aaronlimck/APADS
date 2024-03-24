@@ -79,6 +79,7 @@ export async function getAllUsers({
           },
         },
         appraisals: true,
+        goals: true,
       },
     });
 

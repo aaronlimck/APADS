@@ -27,6 +27,7 @@ import StaffInfoSheet from "./staffInfoSheet";
 export function StaffTable({ staffs }: { staffs: any[] }) {
   const router = useRouter();
 
+
   const handleArchiveToggle = async (id: string, isArchived: boolean) => {
     try {
       const response = await updateUserById(id, { isArchived: !isArchived });
@@ -38,6 +39,7 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
       console.log(error);
     }
   };
+
 
   return (
     <>

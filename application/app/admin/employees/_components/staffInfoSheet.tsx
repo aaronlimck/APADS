@@ -12,6 +12,8 @@ import EmploymentDetail from "./employmentDetails";
 import PersonalInformation from "./personalInformation";
 import Remuneration from "./remuneration";
 import ReportingManger from "./reportingManger";
+import SmartGoals from "./smartGoals";
+import Link from "next/link";
 
 export default function StaffInfoSheet({
   className,
@@ -46,6 +48,8 @@ export default function StaffInfoSheet({
       console.log(error);
     }
   };
+
+  console.log(data);
 
   return (
     <Sheet>
@@ -136,6 +140,7 @@ export default function StaffInfoSheet({
             <TabsContent value="staff-details" className="space-y-4">
               <PersonalInformation data={data} />
               <ContactDetails data={data} />
+              <SmartGoals data={data}/>
             </TabsContent>
 
             <TabsContent value="employement-details" className="space-y-4">
@@ -152,14 +157,22 @@ export default function StaffInfoSheet({
 
               {data.appraisals !== null && data.appraisals.length > 0 ? (
                 data.appraisals.map((appraisal: any, index: number) => {
+                  
                   return (
-                    <div
+                    <Link
                       key={index}
-                      className="flex items-center border-b px-4 py-2 text-sm"
+                      href={`/admin/appraisals/${appraisal.id}/details`}
                     >
-                      <span className="w-1/2">{appraisal.name}</span>
-                      <span>{appraisal.createdAt.toISOString()}</span>
-                    </div>
+                      <div
+                        key={index}
+                        className="group flex items-center border-b px-4 py-2 text-sm"
+                      >
+                        <span className="w-1/2 group-hover:underline group-hover:underline-offset-2">
+                          {appraisal.name}
+                        </span>
+                        <span>{appraisal.createdAt.toISOString()}</span>
+                      </div>
+                    </Link>
                   );
                 })
               ) : (

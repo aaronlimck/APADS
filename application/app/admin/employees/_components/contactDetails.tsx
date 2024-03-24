@@ -28,7 +28,7 @@ export default function ContactDetails({ data }: { data: any }) {
   const handleSaveChanges = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevents the default form submission behavior
 
-    const payload = { name: form.email, mobileNumber: form.mobileNumber };
+    const payload = { email: form.email, mobileNumber: form.mobileNumber };
 
     // Call the API to update the user's personal information
     try {
