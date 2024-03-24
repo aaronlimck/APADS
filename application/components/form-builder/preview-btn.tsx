@@ -24,9 +24,8 @@ export default function PreviewBtn() {
           <p className="text-muted-foreground">Form Preview</p>
         </div>
         <div className="flex flex-grow flex-col items-center justify-center overflow-y-auto bg-accent p-4 pt-[76px]">
-          <div className="flex min-h-dvh w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 bg-white px-4 py-8">
+          <div className="flex min-h-screen w-full max-w-3xl flex-grow flex-col gap-4 space-y-4 overflow-y-auto bg-white px-4 py-8">
             {elements.map((element) => {
-            
               const FormComponent = FormElements[element.type].formComponent;
               return (
                 <>
