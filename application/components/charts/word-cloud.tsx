@@ -1,10 +1,19 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import * as d3 from "d3";
-import cloud from "d3-cloud";
+import React, { useEffect, useRef } from 'react';
+import * as d3 from 'd3';
+import cloud from 'd3-cloud';
 
 interface WordCloudProps {
   words: string[];
+}
+
+function calculateWordFrequencies(words: string[]): { text: string; size: number }[] {
+  const wordFrequencies = words.reduce((acc, word) => {
+    acc[word] = (acc[word] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(wordFrequencies).map(([text, size]) => ({ text, size: size * 25 })); // Adjust size as needed
 }
 
 const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
@@ -12,7 +21,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
 
   useEffect(() => {
     if (wordCloudRef.current && words.length > 0) {
-      const wordData = words.map(word => ({ text: word, size: Math.random() * 50 + 10 })); // Adjust size as needed
+      const wordData = calculateWordFrequencies(words);
 
       const layout = cloud()
         .size([300, 300]) // Adjust size as needed

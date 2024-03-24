@@ -7,7 +7,6 @@ import PieChartComponent from "@/components/charts/pie-chart";
 import WordCloudComponent from "@/components/charts/word-cloud";
 import { analyzeFormResponses, getSentiment } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useMemo } from 'react'; // Add useMemo import here
 
 export default async function AppraisalReportClientPage({
   id,
