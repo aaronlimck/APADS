@@ -27,7 +27,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
         .size([300, 300]) // Adjust size as needed
         .words(wordData)
         .padding(5) // Adjust padding as needed
-        .rotate(() => ~~(Math.random() * 2) * 90) // Adjust rotation as needed
+        .rotate(() => 0) // Make all words horizontal
         .font("Impact")
         .fontSize(d => d.size)
         .on("end", draw);
@@ -45,7 +45,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
           .style("font-family", "Impact")
           .attr("text-anchor", "middle")
           .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
-          .attr("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)]) // Add fill for color
+          .attr("fill", () => "black") // Add fill for color
           .text(d => d.text);
       }
     }
