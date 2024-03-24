@@ -1,4 +1,5 @@
 import pandas as pd
+import string
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -6,9 +7,6 @@ from nltk.stem import WordNetLemmatizer
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 
 def preprocess_text(sentences):
     processed_sentences = []
@@ -18,7 +16,10 @@ def preprocess_text(sentences):
         
         # Remove stopwords
         tokens = [word for word in tokens if word not in stopwords.words('english')]
-
+        
+        # Remove punctuation
+        tokens = [word for word in tokens if word not in string.punctuation]
+        
         # Lemmatize the words
         lemmatizer = WordNetLemmatizer()
         tokens = [lemmatizer.lemmatize(word) for word in tokens]
