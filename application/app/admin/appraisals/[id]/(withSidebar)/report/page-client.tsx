@@ -58,7 +58,6 @@ export default async function AppraisalReportClientPage({
             <TabsList>
               <TabsTrigger value="pie-chart">Pie Chart</TabsTrigger>
               <TabsTrigger value="word-cloud">Word Cloud</TabsTrigger>
-              <TabsTrigger value="summariser">Summary</TabsTrigger>
             </TabsList>
             <TabsContent value="pie-chart">
               <PieChartComponent data={payload} />
@@ -78,11 +77,6 @@ export default async function AppraisalReportClientPage({
                   <WordCloudComponent words={neutralWords} />
                 </div>
               </div>
-            </TabsContent>
-            <TabsContent value="summariser">
-              <h2>Positive</h2>
-              <h2>Negative</h2>
-              <h2>Neutral</h2>
             </TabsContent>
           </Tabs>
         </div>
