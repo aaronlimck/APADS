@@ -27,7 +27,6 @@ import StaffInfoSheet from "./staffInfoSheet";
 export function StaffTable({ staffs }: { staffs: any[] }) {
   const router = useRouter();
 
-
   const handleArchiveToggle = async (id: string, isArchived: boolean) => {
     try {
       const response = await updateUserById(id, { isArchived: !isArchived });
@@ -39,7 +38,6 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
       console.log(error);
     }
   };
-
 
   return (
     <>
@@ -65,7 +63,7 @@ export function StaffTable({ staffs }: { staffs: any[] }) {
               <TableRow key={staff.id} className="group">
                 <TableCell>
                   <StaffInfoSheet
-                    className="group-hover:underline group-hover:underline-offset-2"
+                    className="text-left group-hover:underline group-hover:underline-offset-2"
                     data={staff}
                   >
                     {staff.name}

@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { convertDateString, convertToSGTimeString } from "@/lib/utils";
 import { ArchiveIcon, DotIcon, MailIcon } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import ContactDetails from "./contactDetails";
@@ -12,8 +13,8 @@ import EmploymentDetail from "./employmentDetails";
 import PersonalInformation from "./personalInformation";
 import Remuneration from "./remuneration";
 import ReportingManger from "./reportingManger";
-import SmartGoals from "./smartGoals";
-import Link from "next/link";
+import Goals from "./goals";
+import Notes from "./notes";
 
 export default function StaffInfoSheet({
   className,
@@ -48,8 +49,6 @@ export default function StaffInfoSheet({
       console.log(error);
     }
   };
-
-  console.log(data);
 
   return (
     <Sheet>
@@ -133,14 +132,17 @@ export default function StaffInfoSheet({
                 value="appraisal-history"
                 className="text-sm font-normal"
               >
-                Appraisal History
+                Appraisals History
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="text-sm font-normal">
+                Notes
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="staff-details" className="space-y-4">
               <PersonalInformation data={data} />
               <ContactDetails data={data} />
-              <SmartGoals data={data}/>
+              <Goals data={data} />
             </TabsContent>
 
             <TabsContent value="employement-details" className="space-y-4">
@@ -157,7 +159,6 @@ export default function StaffInfoSheet({
 
               {data.appraisals !== null && data.appraisals.length > 0 ? (
                 data.appraisals.map((appraisal: any, index: number) => {
-                  
                   return (
                     <Link
                       key={index}
@@ -180,6 +181,10 @@ export default function StaffInfoSheet({
                   No appraisals assigned
                 </div>
               )}
+            </TabsContent>
+
+            <TabsContent value="notes">
+              <Notes data={data} />
             </TabsContent>
           </Tabs>
         </div>

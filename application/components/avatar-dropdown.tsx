@@ -19,7 +19,7 @@ export default function AvatarDropdown({
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/login" })}
           >
             Sign Out
           </DropdownMenuItem>

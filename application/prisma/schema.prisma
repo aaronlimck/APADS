@@ -37,6 +37,7 @@ model User {
   departmentName String
 
   goals      Goal[]
+  notes      Note[]
   appraisals AppraisalForm[]
 
   @@index([email])
@@ -48,6 +49,15 @@ model Goal {
   description String
   user        User   @relation(fields: [userId], references: [id])
   userId      String
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Department {
