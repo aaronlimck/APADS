@@ -12,10 +12,10 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
 
   useEffect(() => {
     if (wordCloudRef.current && words.length > 0) {
-      const wordData = words.map(word => ({ text: word, size: Math.random() * 100 + 10 }));
+      const wordData = words.map(word => ({ text: word, size: Math.random() * 50 + 10 })); // Adjust size as needed
 
       const layout = cloud()
-        .size([500, 500]) // Adjust size as needed
+        .size([300, 300]) // Adjust size as needed
         .words(wordData)
         .padding(5) // Adjust padding as needed
         .rotate(() => ~~(Math.random() * 2) * 90) // Adjust rotation as needed
@@ -28,7 +28,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
       function draw(words) {
         d3.select(wordCloudRef.current)
           .append("g")
-          .attr("transform", "translate(250,250)") // Adjust translation as needed
+          .attr("transform", "translate(150,150)") // Adjust translation as needed
           .selectAll("text")
           .data(words)
           .enter().append("text")
@@ -36,12 +36,20 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
           .style("font-family", "Impact")
           .attr("text-anchor", "middle")
           .attr("transform", d => `translate(${[d.x, d.y]})rotate(${d.rotate})`)
+          .attr("fill", () => d3.schemeCategory10[Math.floor(Math.random() * 10)]) // Add fill for color
           .text(d => d.text);
       }
     }
+
+    // Cleanup function to remove the previous word cloud
+    return () => {
+      if (wordCloudRef.current) {
+        d3.select(wordCloudRef.current).selectAll("*").remove();
+      }
+    };
   }, [words]);
 
-  return <svg ref={wordCloudRef} width="500" height="500" />; // Adjust width and height as needed
+  return <svg ref={wordCloudRef} width="300" height="300" />; // Adjust width and height as needed
 };
 
 export default WordCloudComponent;

@@ -7,6 +7,7 @@ import PieChartComponent from "@/components/charts/pie-chart";
 import WordCloudComponent from "@/components/charts/word-cloud";
 import { analyzeFormResponses, getSentiment } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useMemo } from 'react'; // Add useMemo import here
 
 export default async function AppraisalReportClientPage({
   id,
@@ -48,9 +49,9 @@ export default async function AppraisalReportClientPage({
             };
             const sentiment = await getSentiment(objectWithData);
             const payload = { ...element, data: sentiment.sentiments };
-            const words = (sentiment.positive_sentences ? sentiment.positive_sentences.split(' ') : [])
-              .concat(sentiment.negative_sentences ? sentiment.negative_sentences.split(' ') : [], 
-                      sentiment.neutral_sentences ? sentiment.neutral_sentences.split(' ') : []);
+            const positiveWords = sentiment.positive_sentences ? sentiment.positive_sentences.split(' ') : [];
+            const negativeWords = sentiment.negative_sentences ? sentiment.negative_sentences.split(' ') : [];
+            const neutralWords = sentiment.neutral_sentences ? sentiment.neutral_sentences.split(' ') : [];
             console.log(sentiment.negative_sentences);
             return (
               <div key={element.id}>
@@ -66,7 +67,20 @@ export default async function AppraisalReportClientPage({
                     <PieChartComponent data={payload} />
                   </TabsContent>
                   <TabsContent value="word-cloud">
-                    <WordCloudComponent words={words} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <h2>Positive</h2>
+                        <WordCloudComponent words={positiveWords} />
+                      </div>
+                      <div>
+                        <h2>Negative</h2>
+                        <WordCloudComponent words={negativeWords} />
+                      </div>
+                      <div>
+                        <h2>Neutral</h2>
+                        <WordCloudComponent words={neutralWords} />
+                      </div>
+                    </div>
                   </TabsContent>
                 </Tabs>
               </div>
