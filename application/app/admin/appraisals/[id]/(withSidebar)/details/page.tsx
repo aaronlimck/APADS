@@ -54,7 +54,7 @@ export default async function AdminAppraisalDetails({
               href={`/admin/appraisals/${id}/viewer`}
             >
               <ExternalLinkIcon size={16} />
-              <span className="font-normal">View Apprisal Form</span>
+              <span className="font-normal">View Appraisal Form</span>
             </Link>
           </Button>
           <Button

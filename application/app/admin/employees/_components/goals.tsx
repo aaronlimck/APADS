@@ -1,15 +1,8 @@
 "use client";
-import { updateUserById } from "@/actions/user.action";
 import GoalCard from "@/components/card/goal-card";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { toast } from "sonner";
 
-export default function smartGoals({ data }: { data: any }) {
-
+export default function Goals({ data }: { data: any }) {
   return (
     <div className="h-64 overflow-y-auto">
       <Card>
@@ -22,9 +15,9 @@ export default function smartGoals({ data }: { data: any }) {
               return <GoalCard key={item.id} data={item} />;
             })
           ) : (
-            <dd className="mt-1 text-sm leading-6 text-gray-500">
+            <div className="flex flex-col items-center space-y-2 px-4 py-6 text-sm text-muted-foreground">
               Employee has not set goals yet!
-            </dd>
+            </div>
           )}
         </div>
       </Card>

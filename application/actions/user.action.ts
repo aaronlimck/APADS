@@ -80,6 +80,11 @@ export async function getAllUsers({
         },
         appraisals: true,
         goals: true,
+        notes: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
