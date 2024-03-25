@@ -72,7 +72,8 @@ export default async function AdminAppraisalDetails({
   }, {});
 
   const payload = {'empIDs':empIDs, 'formResponses':formResponses, 'questionTypes':questionTypes};
-  const clusters = await getClusters(payload);
+  const clusteringResponse = await getClusters(payload);
+  const clusters = clusteringResponse.clusters;
 
 
   const maxRows = Math.max(...Object.values(clusters).map(array => array.length));
@@ -101,6 +102,7 @@ export default async function AdminAppraisalDetails({
   );
 
 
+
   return (
     <>
       <h1>Clustering Results</h1>
@@ -122,6 +124,17 @@ export default async function AdminAppraisalDetails({
         ))}
       </tbody>
     </table>
+
+    <p>Feature Importance</p>
+    {Object.entries(clusteringResponse.featureImportance)
+      .sort((a, b) => b[1] - a[1])
+      .map(([feature, importance], index) => {
+        const formStructureObject = formStructure.find(item => item.id === feature.toString());
+        const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
+        return (
+          <p key={index}>{label}: {(importance * 100).toFixed(2)}%</p>
+        );
+    })}
     </>
   );
 }
