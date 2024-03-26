@@ -130,7 +130,6 @@ export default async function AdminAppraisalDetails({
   // Sort clusterDescriptions in descending order based on its values
   const sortedClusterDescriptions = new Map([...clusterDescriptions.entries()].sort((a, b) => b[1] - a[1]));
 
-  console.log(sortedClusterDescriptions);
   // Prepare the payload for the PieChartComponent
   const pieChartData = Object.entries(clusteringResponse.featureImportance)
   .sort((a, b) => b[1] - a[1])
@@ -143,39 +142,46 @@ export default async function AdminAppraisalDetails({
 
   return (
     <>
-    <h1>Clustering Results</h1>
-    <p>The clusters are sorted according to the most distinct question where Employees in Rank 1 gave the highest/most positive response</p>
-    <table>
-      <thead>
-        <tr className="border border-black">
-          {
-          [...sortedClusterDescriptions.keys()].map((key, index) => (
-            <th key={key} className="border border-black">Cluster Rank {index +1}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {Array.from({ length: Math.max(...Array.from(sortedClusterDescriptions.keys(), key => clusterNames[key].length)) }).map((_, rowIndex) => (
-          <tr key={rowIndex} className="border border-black">
-            {[...sortedClusterDescriptions.keys()].map((key) => (
-              <td key={key} className="border border-black">{clusterNames[key] && clusterNames[key][rowIndex]}</td>
+    <div className="p-10 bg-gray-100">
+      <h1 className="text-4xl font-bold mb-4">Clustering Results</h1>
+      <p className="text-lg mb-8">The clusters are sorted according to the most distinct question where Employees in Rank 1 gave the highest/most positive response</p>
+      <table className="w-full text-center bg-white rounded-lg shadow overflow-hidden">
+        <thead className="bg-gray-200">
+          <tr>
+            {[...sortedClusterDescriptions.keys()].map((key, index) => (
+              <th key={key} className="py-4 px-6">Cluster Rank {index + 1}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {Array.from({ length: Math.max(...Array.from(sortedClusterDescriptions.keys(), key => clusterNames[key].length)) }).map((_, rowIndex) => (
+            <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-100' : ''}>
+              {[...sortedClusterDescriptions.keys()].map((key) => (
+                <td key={key} className="py-4 px-6 border-t">{clusterNames[key] && clusterNames[key][rowIndex]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
 
-    <p>Question Distinctness: The higher the percentage, the more variety in responses for that question.</p>
-    {Object.entries(clusteringResponse.featureImportance)
-      .sort((a, b) => b[1] - a[1])
-      .map(([feature, importance], index) => {
-        const formStructureObject = formStructure.find(item => item.id === feature.toString());
-        const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
-        return (
-          <p key={index}>{label}: {(importance * 100).toFixed(2)}%</p>
-        );
-    })}
-    <PieChartComponent data={pieChartData} />
+    <div className="p-10 bg-gray-100">
+      <p className="text-lg mb-4">Question Distinctness: The higher the percentage, the more variety in responses for that question.</p>
+      <div className="mb-8">
+        {Object.entries(clusteringResponse.featureImportance)
+          .sort((a, b) => b[1] - a[1])
+          .map(([feature, importance], index) => {
+            const formStructureObject = formStructure.find(item => item.id === feature.toString());
+            const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
+            return (
+              <p key={index} className="text-base">{label}: <span className="font-bold">{(importance * 100).toFixed(2)}%</span></p>
+            );
+        })}
+      </div>
+      <div className="w-full h-64">
+        <PieChartComponent data={pieChartData} />
+      </div>
+    </div>
     </>
   );
 }
