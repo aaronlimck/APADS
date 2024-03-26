@@ -3,7 +3,7 @@ import {
   getAppraisalFormSubmissionsByFormId,
 } from "@/actions/appraisal.action";
 import BarChartComponent from "@/components/charts/bar-chart";
-import PieChartComponent from "@/components/charts/pie-chart";
+import PieChartComponent from "@/components/charts/pie-chart-Importance";
 import { analyzeFormResponses, getClusters, getSentiment } from "@/lib/utils";
 import { get } from "http";
 import { ClipboardMinusIcon, ExternalLinkIcon } from "lucide-react";
@@ -101,31 +101,71 @@ export default async function AdminAppraisalDetails({
     })
   );
 
+  // convert cluster labels to human readable form
+  const clusterLabels = clusteringResponse.clusterLabels;
+  const featureImportance = Object.entries(clusteringResponse.featureImportance).sort((a, b) => b[1] - a[1]);
+  const mostImportantFeatures = [];
+  let totalImportance = 0;
+  featureImportance.map((item, index) => {
+    if (totalImportance < 0.5) {
+      mostImportantFeatures.push(item[0]);
+      totalImportance += item[1];
+    }
+  });
+
+  const mostImptFeatPositions: (string | number)[] = [];
+  const positions = mostImportantFeatures.map((feature) => {
+    const keys = Object.keys(clusteringResponse.featureImportance);
+    mostImptFeatPositions.push(keys.indexOf(feature));
+  });
+
+
+  // Create a Map for clusterDescriptions
+  const clusterDescriptions = new Map();
+  
+  clusteringResponse.clusterCenters.forEach((center, centerIndex) => {
+    clusterDescriptions.set(centerIndex, center[mostImptFeatPositions[0]]);
+  });
+
+  // Sort clusterDescriptions in descending order based on its values
+  const sortedClusterDescriptions = new Map([...clusterDescriptions.entries()].sort((a, b) => b[1] - a[1]));
+
+  console.log(sortedClusterDescriptions);
+  // Prepare the payload for the PieChartComponent
+  const pieChartData = Object.entries(clusteringResponse.featureImportance)
+  .sort((a, b) => b[1] - a[1])
+  .map(([feature, importance]) => {
+    const formStructureObject = formStructure.find(item => item.id === feature.toString());
+    const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
+    return { label, value: importance };
+  });
 
 
   return (
     <>
-      <h1>Clustering Results</h1>
-      <table>
+    <h1>Clustering Results</h1>
+    <p>The clusters are sorted according to the most distinct question where Employees in Rank 1 gave the highest/most positive response</p>
+    <table>
       <thead>
         <tr className="border border-black">
-          {Object.keys(clusters).map((key) => (
-            <th key={key} className="border border-black">{key}</th>
+          {
+          [...sortedClusterDescriptions.keys()].map((key, index) => (
+            <th key={key} className="border border-black">Cluster Rank {index +1}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {Array.from({ length: maxRows }).map((_, rowIndex) => (
+        {Array.from({ length: Math.max(...Array.from(sortedClusterDescriptions.keys(), key => clusterNames[key].length)) }).map((_, rowIndex) => (
           <tr key={rowIndex} className="border border-black">
-            {Object.values(clusterNames).map((array, columnIndex) => (
-              <td key={columnIndex} className="border border-black">{array[rowIndex]}</td>
+            {[...sortedClusterDescriptions.keys()].map((key) => (
+              <td key={key} className="border border-black">{clusterNames[key] && clusterNames[key][rowIndex]}</td>
             ))}
           </tr>
         ))}
       </tbody>
     </table>
 
-    <p>Feature Importance</p>
+    <p>Question Distinctness: The higher the percentage, the more variety in responses for that question.</p>
     {Object.entries(clusteringResponse.featureImportance)
       .sort((a, b) => b[1] - a[1])
       .map(([feature, importance], index) => {
@@ -135,6 +175,7 @@ export default async function AdminAppraisalDetails({
           <p key={index}>{label}: {(importance * 100).toFixed(2)}%</p>
         );
     })}
+    <PieChartComponent data={pieChartData} />
     </>
   );
 }

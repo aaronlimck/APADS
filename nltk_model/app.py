@@ -92,7 +92,7 @@ def getClusters():
     if(request.get_json()['questionTypes'][mostImportantFeature] == 'TextAreaField'):
         print(ms.cluster_centers_)
 
-    data = {'clusters': clusters, 'featureImportance': featureImportance}
+    data = {'clusters': clusters, 'featureImportance': featureImportance, 'clusterCenters': ms.cluster_centers_.tolist()}
 
     return data
 
