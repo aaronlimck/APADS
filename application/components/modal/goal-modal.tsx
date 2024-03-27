@@ -60,11 +60,11 @@ export default function GoalModal({
             history: conversationHistory,
           }),
         });
-        
+
         if (aiResponse && aiResponse.status === 200) {
-          await setConversationHistory(conversationHistory => [
+          await setConversationHistory((conversationHistory) => [
             ...conversationHistory,
-            { role: "user", content: finalPrompt }
+            { role: "user", content: finalPrompt },
           ]);
           return aiResponse.json();
         }
@@ -80,9 +80,9 @@ export default function GoalModal({
 
   const handleCreateGoal = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const value=event.currentTarget.goal.value;
+    const value = event.currentTarget.goal.value;
     event.currentTarget.goal.value = "";
-    
+
     try {
       const suggestGoal = await makeAiRequest(value);
       const temp = suggestGoal;
@@ -91,35 +91,33 @@ export default function GoalModal({
         { role: "assistant", content: temp },
       ]);
       setStoredGoal(temp);
-      
     } catch (error) {
-      if(error instanceof Error){
-        return Error
-      }else{
-        return "Something went wrong"
+      if (error instanceof Error) {
+        return Error;
+      } else {
+        return "Something went wrong";
       }
     }
-    
   };
 
-const handleAddGoal = async() =>{
-      try {
-        console.log(storedGoal);
-        let x = storedGoal;
-        const goal = await createGoal({ description: x, userId });
+  const handleAddGoal = async () => {
+    try {
+      console.log(storedGoal);
+      let x = storedGoal;
+      const goal = await createGoal({ description: x, userId });
       if (goal && goal.status === 201) {
         toast.success(goal.message);
         setOpen(false);
         router.refresh();
       }
-      } catch (error) {
-        if(error instanceof Error){
-          return Error
-        }else{
-          return "Failed to create goal"
-        }
+    } catch (error) {
+      if (error instanceof Error) {
+        return Error;
+      } else {
+        return "Failed to create goal";
       }
     }
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="space-y-4">
@@ -131,7 +129,19 @@ const handleAddGoal = async() =>{
           <div>
             {storedGoal.split("\n").map((smart, index) => (
               <div key={index}>
-                {smart.split(":")[0]}: {smart.split(":")[1]}
+                {index === 0 ? (
+                  <div className=" mb-2">
+                    <span className="font-lg font-bold">
+                      {smart.split(":")[0]}
+                    </span>
+                    : <span>{smart.split(":")[1]}</span>
+                  </div>
+                ) : (
+                  <div className="text-sm mb-1">
+                    <span className="font-semibold">{smart.split(":")[0]}</span>
+                    <span>{smart.split(":")[1]}</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -155,7 +165,10 @@ const handleAddGoal = async() =>{
               <SparklesIcon width={16} height={16} className="ml-2" />
             </Button>
             {storedGoal != "" && (
-              <Button className="h-11 text-sm font-normal capitalize" onClick={handleAddGoal} >
+              <Button
+                className="h-11 text-sm font-normal capitalize"
+                onClick={handleAddGoal}
+              >
                 Save current Goal
               </Button>
             )}
