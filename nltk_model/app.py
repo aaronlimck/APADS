@@ -82,15 +82,13 @@ def getClusters():
     mostImportantFeature = ''
     mostImportantFeatureValue = 0
     featureImportance = {}
-    # Print feature importance
+    # Get Feature importance
     for feature, importance in zip(df.drop('cluster', axis=1).columns, importances):
         featureImportance[feature] = importance
         if importance > mostImportantFeatureValue:
             mostImportantFeatureValue = importance
             mostImportantFeature = feature
     
-    if(request.get_json()['questionTypes'][mostImportantFeature] == 'TextAreaField'):
-        print(ms.cluster_centers_)
 
     data = {'clusters': clusters, 'featureImportance': featureImportance, 'clusterCenters': ms.cluster_centers_.tolist()}
 

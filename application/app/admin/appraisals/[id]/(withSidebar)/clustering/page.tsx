@@ -144,7 +144,7 @@ export default async function AdminAppraisalDetails({
     <>
     <div className="p-10 bg-gray-100">
       <h1 className="text-4xl font-bold mb-4">Clustering Results</h1>
-      <p className="text-lg mb-8">The clusters are sorted according to the most distinct question where Employees in Rank 1 gave the highest/most positive response</p>
+      <p className="text-lg mb-8">The clusters are sorted according to the question with the most varied answers in descending order where Employees in Rank 1 gave the highest/most positive response</p>
       <table className="w-full text-center bg-white rounded-lg shadow overflow-hidden">
         <thead className="bg-gray-200">
           <tr>
@@ -166,17 +166,26 @@ export default async function AdminAppraisalDetails({
     </div>
 
     <div className="p-10 bg-gray-100">
-      <p className="text-lg mb-4">Question Distinctness: The higher the percentage, the more variety in responses for that question.</p>
+      <p className="text-4xl font-bold mb-4">Response Variety</p>
+      <p className="text-lg mb-4">The higher the percentage, the more variety in responses for that question and the more it influences the cluster categorization.</p>
       <div className="mb-8">
-        {Object.entries(clusteringResponse.featureImportance)
-          .sort((a, b) => b[1] - a[1])
-          .map(([feature, importance], index) => {
-            const formStructureObject = formStructure.find(item => item.id === feature.toString());
-            const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
-            return (
-              <p key={index} className="text-base">{label}: <span className="font-bold">{(importance * 100).toFixed(2)}%</span></p>
-            );
-        })}
+        <table>
+          <tbody>
+          {Object.entries(clusteringResponse.featureImportance)
+            .sort((a, b) => b[1] - a[1])
+            .map(([feature, importance], index) => {
+              const formStructureObject = formStructure.find(item => item.id === feature.toString());
+              const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
+              return (
+                <tr key={index}>
+                  <td className="py-4 px-6 border-t">
+                    <p className="text-base">{label}: <span className="font-bold">{(importance * 100).toFixed(2)}%</span></p>
+                  </td>
+                </tr>
+              );
+          })}
+          </tbody>
+        </table>
       </div>
       <div className="w-full h-64">
         <PieChartComponent data={pieChartData} />
