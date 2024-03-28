@@ -144,7 +144,7 @@ export default async function AdminAppraisalDetails({
     <>
     <div className="p-10 bg-gray-100">
       <h1 className="text-4xl font-bold mb-4">Clustering Results</h1>
-      <p className="text-lg mb-8">The clusters are sorted according to the question with the most varied answers in descending order where Employees in Cluster Rank 1 gave the highest/most positive response</p>
+      <p className="text-lg mb-8">The clusters are sorted according to the question with the most varied answers in descending order where Employees in Cluster Rank 1 gave the highest/most positive response (if applicable)</p>
       <p className="text-lg mb-4">See Response Variety below for more details</p>
       <table className="w-full text-center bg-white rounded-lg shadow overflow-hidden">
         <thead className="bg-gray-200">
