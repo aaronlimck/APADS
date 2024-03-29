@@ -28,10 +28,18 @@ import {
   SelectItem,
   SelectContent,
 } from "../ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { automationSchema } from "@/schema";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Calendar } from "../ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -42,9 +50,11 @@ import { Template } from "@prisma/client";
 import { useEffect } from "react";
 import { getDepartment } from "@/actions/department.action";
 import { getAllUsersByDepartment } from "@/actions/user.action";
+import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 
 export function CreateAutomationBtn() {
   const [open, setOpen] = React.useState<boolean>(false);
+
   return (
     <>
       <Button onClick={() => setOpen(!open)} className="font-normal">
@@ -71,19 +81,22 @@ export function AutomationDialog({
         <DialogDescription>
           Fill in the information to create an automation process
         </DialogDescription>
-        <AutomationForm onSuccess={() => setOpen(!open)}/>
+        <AutomationForm onSuccess={() => setOpen(!open)} />
       </DialogContent>
     </Dialog>
   );
 }
 
 export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
+  type Checked = DropdownMenuCheckboxItemProps["checked"];
   const [isCalendarOpen, setIsCalendarOpen] = React.useState<boolean>(false);
-  const router= useRouter();
+  const router = useRouter();
   const [templates, setTemplates] = React.useState<Template[]>([]);
-  const [departmentNames, setDepartmentNames] = React.useState<String[]>([]);
-  const [isCalendarTwoOpen, setIsCalendarTwoOpen] = React.useState<boolean>(false);
 
+  const [departmentNames, setDepartmentNames] = React.useState<string[]>([]);
+  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
+  const [showPanel, setShowPanel] = React.useState<Checked>(false);
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -112,34 +125,38 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
 
   const form = useForm<z.infer<typeof automationSchema>>({
     resolver: zodResolver(automationSchema),
-    defaultValues:{
-      name:"",
-      templateId:"",
-      frequency:"",
-      department:"",
-      
-    }
-    
+    defaultValues: {
+      name: "",
+      templateId: "",
+      frequency: "",
+      department: [],
+    },
   });
 
-  const handleOnSubmit = async(data:z.infer<typeof automationSchema>) => {
-      try{
-          //get Department then get recipients
-          const recipients = await getAllUsersByDepartment(data.department);
-          const recipientArray= recipients.data.map((recipients)=> recipients.id)
-          //Creation of Automation process
-          const automation= await createAutomation(data,recipientArray);
-          if(automation.status===201){
-            toast.success("Automation process created succesfully");
-            onSuccess()
-            router.refresh();
-          }
-      }catch(error){
-        if(error instanceof Error){
-          toast("Failed to create new Automation process")
-        }
+  const handleOnSubmit = async (data: z.infer<typeof automationSchema>) => {
+    try {
+      //get Department then get recipients
+      let recipientArray: string[] = [];
+      for (let singleDepartment of data.department) {
+        const recipients = await getAllUsersByDepartment(singleDepartment);
+        recipientArray = [
+          ...recipientArray,
+          ...recipients.data.map((recipient) => recipient.id),
+        ];
       }
 
+      //Creation of Automation process
+      const automation = await createAutomation(data, recipientArray);
+      if (automation.status === 201) {
+        toast.success("Automation process created succesfully");
+        onSuccess();
+        router.refresh();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast("Failed to create new Automation process");
+      }
+    }
   };
 
   return (
@@ -187,20 +204,19 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
                       className={cn(
                         form.formState.errors.templateId?.message &&
                           "border-red-500 focus-visible:ring-red-500",
-                        "w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`",
-                        !field.value && "text-muted-foreground"
+                        "focus-visible:ring-offset-0` w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1",
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       <SelectValue placeholder="Select a frequency of automation" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                        {templates.map((template)=>(
-                          <SelectItem key={template.id} value={template.id}>
-                            {template.name}
-                          </SelectItem>
-                        ))}
-                  
+                    {templates.map((template) => (
+                      <SelectItem key={template.id} value={template.id}>
+                        {template.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormItem>
@@ -235,38 +251,71 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="department"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-800">Recipients</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger
-                      className={cn(
-                        form.formState.errors.department?.message &&
-                          "border-red-500 focus-visible:ring-red-500",
-                        "w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      <SelectValue placeholder="Select Recipients" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                        {departmentNames.map((department,index)=>(
-                          <SelectItem key={index} value={department as string}>
-                            {department}
-                          </SelectItem>
-                        ))}
-                  
-                  </SelectContent>
-                </Select>
-              </FormItem>
+              console.log(field.value),
+              (
+                <FormItem>
+                  <FormLabel className="text-gray-800">Recipients</FormLabel>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild className={`${
+                        form.formState.errors.frequency?.message &&
+                        "border-red-500 focus-visible:ring-red-500"
+                      } w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between p-3 "
+                      >
+                        <div className="max-w-[400px] font-normal ">
+                          {field.value.length > 0 ? (
+                            <div
+                              className="flex overflow-x-auto "
+                              style={{
+                                overflowX: "auto",
+                                scrollbarWidth: "none",
+                                WebkitOverflowScrolling: "touch",
+                              }}
+                            >
+                              {field.value.map((department, index) => (
+                                <div
+                                  key={index}
+                                  className=" mr-1 max-w-32 truncate rounded-sm border p-1 font-normal"
+                                >
+                                  {department}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            "Select Departments"
+                          )}
+                        </div>
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full">
+                      {departmentNames.map((department, index) => (
+                        <DropdownMenuCheckboxItem
+                          key={index}
+                          checked={field.value.includes(department)}
+                          onCheckedChange={(checked) => {
+                            const updatedDepartments = checked
+                              ? [...field.value, department]
+                              : field.value.filter(
+                                  (d: any) => d !== department,
+                                );
+                            field.onChange(updatedDepartments);
+                          }}
+                        >
+                          {department}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </FormItem>
+              )
             )}
           />
 
@@ -285,7 +334,7 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
                           "w-full pl-3 text-left font-normal focus-visible:ring-1 focus-visible:ring-offset-0",
                           !field.value && "text-muted-foreground",
                           form.formState.errors.startDate?.message &&
-                            "border-red-500 focus-visible:ring-red-500"
+                            "border-red-500 focus-visible:ring-red-500",
                         )}
                       >
                         {field.value ? (
@@ -316,8 +365,6 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
             )}
           />
 
-
-          
           <Button type="submit" className="w-full">
             Create Automation
           </Button>

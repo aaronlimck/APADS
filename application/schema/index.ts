@@ -30,6 +30,8 @@ export const automationSchema = z.object({
   }),
   frequency: z.string().min(1, { message: "Frequency is required" }),
   templateId: z.string().min(1, { message: "Template is required" }),
-  department: z.string().min(1),
+  department: z.array(z.string()).min(1, {
+    message: "At least one department must be selected",
+  }),
   startDate: z.date().min(new Date()),
 });
