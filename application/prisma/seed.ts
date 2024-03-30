@@ -165,28 +165,42 @@ async function main() {
     "STAFF",
     "FINANCE"
   );
+  
+  // Create 30 test staff
+  const users = [];
+  for (let i = 0; i < 30; i++) {
+    const user = await createUser(
+      `testuser${i}@gmail.com`,
+      `Test User ${i}`,
+      `Password@${i}`,
+      "STAFF",
+      i % 3 === 0 ? "FINANCE" : "INFORMATION TECHNOLOGY"
+    );
+    users.push(user);
+  }
   const baseTemplate = await createAppraisalTemplate(
     "Performance Excellence Review",
     "The Performance Insight Review (PIR) is a focused evaluation process that encourages employees to self-reflect on their achievements and growth areas. Managers provide valuable insights, fostering a collaborative discussion aimed at aligning individual performance with organizational goals. PIR emphasizes continuous improvement, skill enhancement, and mutual understanding, creating a pathway for ongoing success within our dynamic workplace.",
     JSON.stringify(templateData)
   );
   const recipientsIds = [ITStaff1.id, ITStaff2.id, ITStaff3.id];
+  const userIds = recipientsIds.concat(users.map((user) => user.id));
   const appraisal = await createAppraisal(
     "clt18aq89000908lc0gn72i8t",
     "Annual Appraisal 2",
     "Annual Appraisal Description",
     JSON.stringify(templateData),
     true,
-    recipientsIds
+    userIds
   );
 
-  for (let i = 0; i < recipientsIds.length; i++) {
+  for (let i = 0; i < userIds.length; i++) {
     const content = JSON.stringify(responses[i]);
     const appraisalSubmission = await createAppraisalSubmission(
       createId(),
       content,
       appraisal.id,
-      recipientsIds[i]
+      userIds[i]
     );
   }
 }

@@ -40,6 +40,7 @@
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
     "date-fns": "^3.3.1",
+    "faker": "^6.6.6",
     "lucide-react": "^0.331.0",
     "next": "14.1.0",
     "next-auth": "^4.24.6",
@@ -59,8 +60,10 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@paralleldrive/cuid2": "^2.2.2",
     "@types/chart.js": "^2.9.41",
+    "@types/faker": "^6.6.9",
     "@types/node": "^20.11.19",
     "@types/nodemailer": "^6.4.14",
     "@types/react": "^18",

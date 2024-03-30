@@ -1,4 +1,44 @@
-export const responses = [
+import { faker } from '@faker-js/faker';
+
+interface Question {
+  id: string;
+  options: string[] | null;
+}
+
+const questions: Question[] = [
+  {
+    id: "9223",
+    options: ["Excellent", "Good", "Satisfactory", "Needs Improvement"]
+  },
+  {
+    id: "8400",
+    options: ["Exceptional", "Competent", "Adequate", "Requires Improvement"]
+  },
+  {
+    id: "2571",
+    options: ["Always collaborative", "Usually collaborative", "Occasionally collaborative", "Rarely collaborative"]
+  },
+  {
+    id: "3033",
+    options: ["Very well", "Well", "Somewhat", "Not well"]
+  },
+  {
+    id: "9771",
+    options: ["I developed the dashboard which provided many useful insights to upper management which resulted in us saving thousands of dollars.",
+              "I accomplished all my goals and learnt alot of new technical skills.",
+              "I achieved the most productive employee award."
+  ]
+  },
+  {
+    id: "6311",
+    options: ["I have faced some difficulties to find and get some instruments and proper tools when doing and setting a job.",
+              "Learning a new development language was challenging but through peer programming I was able to overcome it.",
+              "I have experienced some interpersonal challenges within my team"
+  ]
+  }
+];
+
+const responses1: Response[] = [
   {
     "2571": "Usually collaborative",
     "3033": "Not well",
@@ -22,9 +62,30 @@ export const responses = [
   {
     "2571": "Occasionally collaborative",
     "3033": "Not well",
-    "6311": "Gay",
+    "6311": "I have experienced some interpersonal challenges within my team",
     "8400": "Adequate",
     "9223": "Good",
-    "9771": "Gay ",
+    "9771": "I achieved the most productive employee award.",
   },
 ];
+interface Response {
+  [key: string]: string;
+}
+
+// Generate 30 random responses
+
+for (let i = 0; i < 30; i++) {
+  const response: Response = {};
+  for (const question of questions) {
+    if (question.options) {
+      const randomIndex = Math.floor(Math.random() * question.options.length);
+      response[question.id] = question.options[randomIndex];
+    } else {
+      response[question.id] = faker.lorem.sentences();
+    }
+  }
+  responses1.push(response);
+}
+
+
+export const responses = responses1;
