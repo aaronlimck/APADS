@@ -2,15 +2,9 @@ import {
   getAppraisalFormById,
   getAppraisalFormSubmissionsByFormId,
 } from "@/actions/appraisal.action";
-import BarChartComponent from "@/components/charts/bar-chart";
+import { getUserById } from "@/actions/user.action";
 import PieChartComponent from "@/components/charts/pie-chart-Importance";
 import { analyzeFormResponses, getClusters, getSentiment } from "@/lib/utils";
-import { get } from "http";
-import { ClipboardMinusIcon, ExternalLinkIcon } from "lucide-react";
-import Link from "next/link";
-import { text } from "stream/consumers";
-import {getUserById} from "@/actions/user.action";
-import cluster from "cluster";
 
 export default async function AdminAppraisalDetails({
   params,
@@ -36,33 +30,46 @@ export default async function AdminAppraisalDetails({
 
   const reportDataJson = analyzeFormResponses(formStructure, formResponses);
 
-// label encode the form responses and analyze sentiment for clustering
+  // label encode the form responses and analyze sentiment for clustering
   const mappings: { [key: string]: Map<string, number> } = {};
-  for (let i=0; i<formStructure.length; i++) {
-    if (formStructure[i].type=='SelectField'){
+  for (let i = 0; i < formStructure.length; i++) {
+    if (formStructure[i].type == "SelectField") {
       const mapping = new Map();
-      for(let j=0; j<formStructure[i].extraAttributes.options.length; j++){
-        mapping.set(formStructure[i].extraAttributes.options[j],formStructure[i].extraAttributes.options.length-j);
+      for (
+        let j = 0;
+        j < formStructure[i].extraAttributes.options.length;
+        j++
+      ) {
+        mapping.set(
+          formStructure[i].extraAttributes.options[j],
+          formStructure[i].extraAttributes.options.length - j,
+        );
       }
       mappings[formStructure[i].id] = mapping;
     }
   }
 
-  const empIDs:string[] = [];
-  for (let i=0;i<formResponses.length;i++){
-    await Promise.all(Object.keys(formResponses[i]).map(async (element:string) => {
-      if (element in mappings){
-        formResponses[i][element] = mappings[element].get(formResponses[i][element]);
-      }
-      else {
-        try {
-          const sentimentResponse = await getSentiment({data:formResponses[i][element]});
-          formResponses[i][element] = sentimentResponse[0].compound_percentage;
-        } catch (error) {
-          console.error(`Error getting sentiment for ${element}:`, error);
+  const empIDs: string[] = [];
+  for (let i = 0; i < formResponses.length; i++) {
+    await Promise.all(
+      Object.keys(formResponses[i]).map(async (element: string) => {
+        if (element in mappings) {
+          formResponses[i][element] = mappings[element].get(
+            formResponses[i][element],
+          );
+        } else {
+          try {
+            const sentimentResponse = await getSentiment({
+              data: formResponses[i][element],
+            });
+            formResponses[i][element] =
+              sentimentResponse[0].compound_percentage;
+          } catch (error) {
+            console.error(`Error getting sentiment for ${element}:`, error);
+          }
         }
-      }
-    }));
+      }),
+    );
     empIDs.push(submissionsData.data[i].employeeId);
   }
 
@@ -71,21 +78,26 @@ export default async function AdminAppraisalDetails({
     return acc;
   }, {});
 
-  const payload = {'empIDs':empIDs, 'formResponses':formResponses, 'questionTypes':questionTypes};
+  const payload = {
+    empIDs: empIDs,
+    formResponses: formResponses,
+    questionTypes: questionTypes,
+  };
   const clusteringResponse = await getClusters(payload);
   const clusters = clusteringResponse.clusters;
 
-
-  const maxRows = Math.max(...Object.values(clusters).map(array => array.length));
+  const maxRows = Math.max(
+    ...Object.values(clusters).map((array) => array.length),
+  );
 
   // Replace employee ids with employee names in the clusters
 
   var clusterNames: { [key: number]: string[] } = {};
-  
+
   await Promise.all(
     Array.from({ length: maxRows }).map(async (_, rowIndex) => {
       await Promise.all(
-        Object.values(clusters).map(async (array, columnIndex) => {
+        Object.values(clusters).map(async (array: any, columnIndex: any) => {
           if (array[rowIndex]) {
             const user = await getUserById(array[rowIndex]);
             if (user) {
@@ -96,14 +108,16 @@ export default async function AdminAppraisalDetails({
               }
             }
           }
-        })
+        }),
       );
-    })
+    }),
   );
 
   // convert cluster labels to human readable form
   const clusterLabels = clusteringResponse.clusterLabels;
-  const featureImportance = Object.entries(clusteringResponse.featureImportance).sort((a, b) => b[1] - a[1]);
+  const featureImportance = Object.entries(
+    clusteringResponse.featureImportance,
+  ).sort((a, b) => b[1] - a[1]);
   const mostImportantFeatures = [];
   let totalImportance = 0;
   featureImportance.map((item, index) => {
@@ -119,79 +133,115 @@ export default async function AdminAppraisalDetails({
     mostImptFeatPositions.push(keys.indexOf(feature));
   });
 
-
   // Create a Map for clusterDescriptions
   const clusterDescriptions = new Map();
-  
-  clusteringResponse.clusterCenters.forEach((center, centerIndex) => {
+
+  clusteringResponse.clusterCenters.forEach((center: any, centerIndex: any) => {
     clusterDescriptions.set(centerIndex, center[mostImptFeatPositions[0]]);
   });
 
   // Sort clusterDescriptions in descending order based on its values
-  const sortedClusterDescriptions = new Map([...clusterDescriptions.entries()].sort((a, b) => b[1] - a[1]));
+  const sortedClusterDescriptions = new Map(
+    [...clusterDescriptions.entries()].sort((a, b) => b[1] - a[1]),
+  );
 
   // Prepare the payload for the PieChartComponent
   const pieChartData = Object.entries(clusteringResponse.featureImportance)
-  .sort((a, b) => b[1] - a[1])
-  .map(([feature, importance]) => {
-    const formStructureObject = formStructure.find(item => item.id === feature.toString());
-    const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
-    return { label, value: importance };
-  });
-
+    .sort((a, b) => b[1] - a[1])
+    .map(([feature, importance]) => {
+      const formStructureObject = formStructure.find(
+        (item: any) => item.id === feature.toString(),
+      );
+      const label = formStructureObject
+        ? formStructureObject.extraAttributes.label
+        : feature;
+      return { label, value: importance };
+    });
 
   return (
     <>
-    <div className="p-10 bg-gray-100">
-      <h1 className="text-4xl font-bold mb-4">Clustering Results</h1>
-      <p className="text-lg mb-8">The clusters are sorted according to the question with the most varied answers in descending order where Employees in Cluster Rank 1 gave the highest/most positive response (if applicable)</p>
-      <p className="text-lg mb-4">See Response Variety below for more details</p>
-      <table className="w-full text-center bg-white rounded-lg shadow overflow-hidden">
-        <thead className="bg-gray-200">
-          <tr>
-            {[...sortedClusterDescriptions.keys()].map((key, index) => (
-              <th key={key} className="py-4 px-6">Cluster Rank {index + 1}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: Math.max(...Array.from(sortedClusterDescriptions.keys(), key => clusterNames[key].length)) }).map((_, rowIndex) => (
-            <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-100' : ''}>
-              {[...sortedClusterDescriptions.keys()].map((key) => (
-                <td key={key} className="py-4 px-6 border-t">{clusterNames[key] && clusterNames[key][rowIndex]}</td>
+      <div className="bg-gray-100 p-10">
+        <h1 className="mb-4 text-4xl font-bold">Clustering Results</h1>
+        <p className="mb-8 text-lg">
+          The clusters are sorted according to the question with the most varied
+          answers in descending order where Employees in Cluster Rank 1 gave the
+          highest/most positive response (if applicable)
+        </p>
+        <p className="mb-4 text-lg">
+          See Response Variety below for more details
+        </p>
+        <table className="w-full overflow-hidden rounded-lg bg-white text-center shadow">
+          <thead className="bg-gray-200">
+            <tr>
+              {[...sortedClusterDescriptions.keys()].map((key, index) => (
+                <th key={key} className="px-6 py-4">
+                  Cluster Rank {index + 1}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-
-    <div className="p-10 bg-gray-100">
-      <p className="text-4xl font-bold mb-4">Response Variety</p>
-      <p className="text-lg mb-4">The higher the percentage, the more variety in responses for that question and the more it influences the cluster categorization.</p>
-      <div className="mb-8">
-        <table>
+          </thead>
           <tbody>
-          {Object.entries(clusteringResponse.featureImportance)
-            .sort((a, b) => b[1] - a[1])
-            .map(([feature, importance], index) => {
-              const formStructureObject = formStructure.find(item => item.id === feature.toString());
-              const label = formStructureObject ? formStructureObject.extraAttributes.label : feature;
-              return (
-                <tr key={index}>
-                  <td className="py-4 px-6 border-t">
-                    <p className="text-base">{label}: <span className="font-bold">{(importance * 100).toFixed(2)}%</span></p>
+            {Array.from({
+              length: Math.max(
+                ...Array.from(
+                  sortedClusterDescriptions.keys(),
+                  (key) => clusterNames[key].length,
+                ),
+              ),
+            }).map((_, rowIndex) => (
+              <tr
+                key={rowIndex}
+                className={rowIndex % 2 === 0 ? "bg-gray-100" : ""}
+              >
+                {[...sortedClusterDescriptions.keys()].map((key) => (
+                  <td key={key} className="border-t px-6 py-4">
+                    {clusterNames[key] && clusterNames[key][rowIndex]}
                   </td>
-                </tr>
-              );
-          })}
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      <div className="w-full h-64">
-        <PieChartComponent data={pieChartData} />
+
+      <div className="bg-gray-100 p-10">
+        <p className="mb-4 text-4xl font-bold">Response Variety</p>
+        <p className="mb-4 text-lg">
+          The higher the percentage, the more variety in responses for that
+          question and the more it influences the cluster categorization.
+        </p>
+        <div className="mb-8">
+          <table>
+            <tbody>
+              {Object.entries(clusteringResponse.featureImportance)
+                .sort((a, b) => b[1] - a[1])
+                .map(([feature, importance]: any, index) => {
+                  const formStructureObject = formStructure.find(
+                    (item: any) => item.id === feature.toString(),
+                  );
+                  const label = formStructureObject
+                    ? formStructureObject.extraAttributes.label
+                    : feature;
+                  return (
+                    <tr key={index}>
+                      <td className="border-t px-6 py-4">
+                        <p className="text-base">
+                          {label}:{" "}
+                          <span className="font-bold">
+                            {(importance * 100).toFixed(2)}%
+                          </span>
+                        </p>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+        <div className="h-64 w-full">
+          <PieChartComponent data={pieChartData} />
+        </div>
       </div>
-    </div>
     </>
   );
 }
