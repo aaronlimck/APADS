@@ -70,7 +70,21 @@ export async function getAllUsers({
         isArchived: isArchived,
       },
       include: {
-        manager: true,
+        manager: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            departmentName: true,
+          },
+        },
+        appraisals: true,
+        goals: true,
+        notes: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 

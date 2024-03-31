@@ -21,6 +21,7 @@ export default async function RootLayout({
 }>) {
   const session = await getServerSession(authConfig);
   let isArchived = null;
+
   if (session) {
     const userResponse = await getUserById(session?.user?.id!);
     isArchived = userResponse.data?.isArchived;

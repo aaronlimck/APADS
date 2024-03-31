@@ -21,7 +21,7 @@ export default async function StaffPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
         <Card className="h-fit space-y-3 p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <div className="font-medium">Goals</div>
+            <div className="font-medium">Your Goals</div>
             <GoalModalTrigger>
               <div className="cursor-pointer text-sm text-muted-foreground hover:underline">
                 Add

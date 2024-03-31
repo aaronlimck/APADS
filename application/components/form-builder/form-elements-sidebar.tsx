@@ -23,7 +23,6 @@ export default function FormElementSidebar() {
           <SidebarBtnElement formElement={FormElements.TextField} />
           <SidebarBtnElement formElement={FormElements.TextAreaField} />
           <SidebarBtnElement formElement={FormElements.SelectField} />
-          <SidebarBtnElement formElement={FormElements.RadioField}/>
         </div>
       </div>
 

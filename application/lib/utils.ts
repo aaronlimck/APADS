@@ -101,12 +101,25 @@ export async function getSentiment(payload: any) {
   }
 }
 
-export function transformGeneratedAITemplateToForm(
-  generatedAITemplate: any,
-): any {
-  const data = JSON.parse(generatedAITemplate);
+export async function getClusters(payload: any) {
+  try {
+    const res = await fetch(`http://127.0.0.1:5000/getClusters`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+}
 
-  const formStructure = data.Questions.map((question: any) => {
+export function formattedAIFormDataToForm(rawDataString: any): any {
+  const formattedData = JSON.parse(rawDataString);
+
+  const formStructure = formattedData.map((question: any) => {
     if (question.Type === "Close") {
       return {
         id: idGenerator(),
@@ -131,8 +144,68 @@ export function transformGeneratedAITemplateToForm(
           managerOnly: question.User === "Manager" ? true : false,
         },
       };
+    } else if (question.Type === "TitleField") {
+      return {
+        id: idGenerator(),
+        type: "TitleField",
+        extraAttributes: {
+          title: question.Title,
+          managerOnly: question.User === "Manager" ? true : false,
+        },
+      };
     }
   });
 
   return formStructure;
+}
+
+export function extractDateInfo(dateString: string): string {
+  const date = new Date(dateString);
+  const month = date
+    .toLocaleString("default", { month: "long" })
+    .replace(/^\w/, (c) => c.toUpperCase());
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day} ${year}`;
+}
+
+export function convertToSGTimeString(timestampStr: string): string {
+  // Convert string to Date object
+  let utcTime: Date = new Date(timestampStr);
+
+  // Define Singapore timezone offset in milliseconds (GMT+8)
+  let sgOffset: number = 8 * 60 * 60 * 1000;
+
+  // Convert to Singapore time
+  let sgTime: Date = new Date(utcTime.getTime() + sgOffset);
+
+  // Format Singapore time as string
+  let sgTimeStr: string = sgTime.toISOString();
+
+  return sgTimeStr;
+}
+
+export function convertDateString(inputString: string) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const date = new Date(inputString);
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${day} ${month} ${year}`;
 }

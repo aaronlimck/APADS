@@ -22,15 +22,25 @@ export async function POST(request: NextRequest) {
     messages: [
       {
         role: "system",
-        content:
-          'Profession/Role: HR professional\n\nSpecialized Knowledge: Expertise in creating performance appraisal forms\n\nGoal: To understand the employee performance based on self-evaluation and feedback from manager.\n\nCommunication Style: Simple and detail-oriented\n\nPreferences: Provide 6 questions for each type of user. Employee and manager.\n\nResponse Format: \nIn JSON format. \n{\n"Question": "", \n"Type:"", (Indicate if it\'s open or close question)\n"Options": [] Array of options if it\'s close question. Keep to max of 4 options\n"User": "" (Manager or employee)\n}',
+        content: `Profession/Role: HR professional
+        Specialized Knowledge: Expertise in creating performance appraisal forms
+        Goal: To understand the employee performance based on self-evaluation and feedback from manager.
+        Communication Style: Simple and detail-oriented
+        Requirements:
+        (1) Provide 6 questions each for employee and manager respectively with a mix of open and close questions.
+        (2) If number of questions are not specified, provide a suitable heading for employee and manager.
+        Response Format: 
+        In JSON String format, all in one single line.
+        
+        Template: 
+        [{"Title":"" (Suitable title for employee and manager respectively),"Type":"TitleField","User":"" (Manager or employee) },{"Question": "", "Type:"", (Indicate if it\'s open or close question)"Options": [] Array of options if it\'s close question. "User": "" (Manager or employee)}]`,
       },
       {
         role: "user",
         content: prompt,
       },
     ],
-    temperature: 0.5,
+    temperature: 0.1,
     max_tokens: 2000,
     top_p: 1,
     frequency_penalty: 0,

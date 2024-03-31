@@ -18,7 +18,7 @@ export const useSidebarContext = () => {
   const context = React.useContext(SidebarContext);
   if (!context) {
     throw new Error(
-      "useSidebarContext must be used within a SidebarContext.Provider"
+      "useSidebarContext must be used within a SidebarContext.Provider",
     );
   }
   return context;
@@ -37,7 +37,7 @@ export default function SidebarContainer({
       : null;
   const initialExpanded = storedExpanded ? JSON.parse(storedExpanded) : false;
   const [expanded, setExpanded] = React.useState<boolean>(
-    initialExpanded || false
+    initialExpanded || false,
   );
 
   // Save to localStorage whenever 'expanded' changes
@@ -46,18 +46,18 @@ export default function SidebarContainer({
   }, [expanded]);
 
   return (
-    <aside className={`sticky top-0 h-screen z-50 ${classname}`}>
-      <div className="h-full max-w-[240px] flex flex-col bg-white border-r shadow-sm">
-        <div className="p-4 pb-3 flex items-center justify-between">
+    <aside className={`sticky top-0 z-50 h-screen ${classname}`}>
+      <div className="flex h-full max-w-[240px] flex-col border-r bg-white shadow-sm">
+        <div className="flex items-center justify-between p-4 pb-3">
           <div
-            className={`text-lg font-semibold select-none overflow-hidden transition-all ${
+            className={`select-none overflow-hidden text-lg font-semibold transition-all ${
               expanded ? "w-32" : "w-0"
             } `}
           >
             APADS
           </div>
           <button
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+            className="rounded-lg bg-gray-50 p-1.5 hover:bg-gray-100"
             onClick={() => setExpanded((current) => !current)}
           >
             {expanded ? (
@@ -91,22 +91,22 @@ export function SidebarItem({
 }) {
   const { expanded } = useSidebarContext();
   const pathname = usePathname();
-  const activePath = pathname === href;
+  const activePath = pathname.split("/")[2] === href.split("/")[2];
 
   return (
     <li>
       <Link
         href={href}
-        className={`relative flex items-center py-2 px-3 text-sm font-medium rounded-md cursor-pointer transition-colors group ${
+        className={`group relative flex cursor-pointer items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
           activePath
-            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-            : "hover:bg-indigo-50 text-gray-600"
+            ? "bg-accent text-primary"
+            : "text-gray-600 hover:bg-accent"
         }`}
       >
         {icon}
         <span
           className={`overflow-hidden transition-all ${
-            expanded ? "w-52 ml-3" : "w-0"
+            expanded ? "ml-3 w-52" : "w-0"
           } `}
         >
           {text}
@@ -114,13 +114,13 @@ export function SidebarItem({
 
         {alert && (
           <div
-            className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 animate-ping ${expanded} ? "" : "top-2`}
+            className={`absolute right-2 h-2 w-2 animate-ping rounded bg-accent ${expanded} ? "" : "top-2`}
           />
         )}
 
         {!expanded && (
           <div
-            className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 z-50`}
+            className={`invisible absolute left-full z-50 ml-6 -translate-x-3 rounded-md bg-accent px-2 py-1 text-sm text-primary opacity-20 transition-all group-hover:visible group-hover:translate-x-0 group-hover:opacity-100`}
           >
             {text}
           </div>
@@ -143,20 +143,20 @@ export function SidebarButton({
 
   return (
     <button
-      className={`relative flex items-center py-2 px-3 text-sm font-medium rounded-md cursor-pointer transition-colors group w-full h-[36px] text-gray-600 hover:bg-indigo-50`}
+      className={`group relative flex h-[36px] w-full cursor-pointer items-center rounded-md px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-accent`}
       onClick={onClick}
     >
       {icon}
       <span
-        className={`text-left overflow-hidden transition-all ${
-          expanded ? "w-52 ml-3" : "w-0"
+        className={`overflow-hidden text-left transition-all ${
+          expanded ? "ml-3 w-52" : "w-0"
         } `}
       >
         {text}
       </span>
       {!expanded && (
         <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm whitespace-nowrap invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 z-50`}
+          className={`invisible absolute left-full z-50 ml-6 -translate-x-3 whitespace-nowrap rounded-md bg-accent px-2 py-1 text-sm text-indigo-800 opacity-20 transition-all group-hover:visible group-hover:translate-x-0 group-hover:opacity-100`}
         >
           {text}
         </div>

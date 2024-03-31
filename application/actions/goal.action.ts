@@ -28,3 +28,21 @@ export async function createGoal(payload: any) {
     console.log(error);
   }
 }
+
+export async function deleteGoalbyId(goalId: any) {
+  console.log(goalId);
+  try {
+    const deletedGoal = await prisma.goal.delete({
+      where: {
+        id: goalId,
+      },
+    });
+    return {
+      status: 201,
+      message: "Goal deleted successfully",
+      data: deletedGoal,
+    };
+  } catch (error) {
+    throw new Error(`Error deleting goal: ${error}`);
+  }
+}

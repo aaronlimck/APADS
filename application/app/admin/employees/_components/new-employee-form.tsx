@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../../../components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,15 +11,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "../../../../components/ui/form";
+import { Input } from "../../../../components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../../../components/ui/select";
 
 import { getDepartment } from "@/actions/department.action";
 import { createUser, getAllUsers, updateUserById } from "@/actions/user.action";
@@ -31,11 +31,9 @@ import { toast } from "sonner";
 const ROLES = ["Admin", "Staff"];
 
 export default function EmployeeForm({
-  type = "CREATE", // default to create
   initialValues,
   closeModal,
 }: {
-  type: "CREATE" | "EDIT";
   initialValues?: z.infer<typeof employeeFormSchema>;
   closeModal: () => void;
 }) {
@@ -57,13 +55,13 @@ export default function EmployeeForm({
     const fetchStaff = async () => {
       try {
         const staffData = await getAllUsers();
-        const namesArray = staffData.data.map((staff) => {
-          return {
+        const filteredNamesArray = staffData.data
+          .filter((staff) => staff.isArchived === false)
+          .map((staff) => ({
             id: staff.id,
             name: staff.name,
-          };
-        });
-        setStaffs(namesArray);
+          }));
+        setStaffs(filteredNamesArray);
       } catch (error) {
         console.error("Error fetching staff:", error);
       }
@@ -86,24 +84,14 @@ export default function EmployeeForm({
 
   const handleOnSubmit = async (data: z.infer<typeof employeeFormSchema>) => {
     try {
-      if (type === "CREATE") {
-        const userCreationResponse = await createUser(data);
-        if (userCreationResponse && userCreationResponse.status === 409) {
-          toast.error(userCreationResponse.error);
-        }
-        if (userCreationResponse && userCreationResponse.status === 201) {
-          toast.success("Staff created successfully");
-          router.refresh();
-          closeModal();
-        }
-      } else if (type === "EDIT") {
-        // @ts-ignore
-        const response = await updateUserById(initialValues?.id!, data);
-        if (response.status === 200) {
-          toast.success(response.message);
-          router.refresh();
-          closeModal();
-        }
+      const userCreationResponse = await createUser(data);
+      if (userCreationResponse && userCreationResponse.status === 409) {
+        toast.error(userCreationResponse.error);
+      }
+      if (userCreationResponse && userCreationResponse.status === 201) {
+        toast.success("Staff created successfully");
+        router.refresh();
+        closeModal();
       }
     } catch (error) {
       console.log(error);
@@ -248,7 +236,7 @@ export default function EmployeeForm({
         />
 
         <Button type="submit" className="w-full">
-          {type === "CREATE" ? "Create Employee" : "Save Changes"}
+          Create Employee
         </Button>
       </form>
     </Form>

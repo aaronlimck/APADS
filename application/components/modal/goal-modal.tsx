@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { use, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,10 +10,17 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { createGoal } from "@/actions/goal.action";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getUserById } from "@/actions/user.action";
+import { SparklesIcon } from "lucide-react";
+
+type ConversationMessage = {
+  role: string;
+  content: any;
+};
 
 export default function GoalModal({
   open,
@@ -25,38 +32,147 @@ export default function GoalModal({
   const router = useRouter();
   const { data: session, update } = useSession();
   const userId = session?.user.id;
+  const [storedGoal, setStoredGoal] = useState("");
+  const formPlaceholder =
+    storedGoal !== ""
+      ? "Eg: Increase Measurable to 20%"
+      : "Tell me more about it";
+  const formLabel =
+    storedGoal !== ""
+      ? "Add a prompt to edit your SMART Goal"
+      : "Whats your Goal?";
+  const [conversationHistory, setConversationHistory] = useState<
+    ConversationMessage[]
+  >([]);
 
-  const handleAddGoal = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const description = event.currentTarget.goal.value;
-    const goal = await createGoal({ description: description, userId });
-    if (goal && goal.status === 201) {
-      toast.success(goal.message);
-      setOpen(false);
-      router.refresh();
+  const makeAiRequest = async (input: string) => {
+    try {
+      const userResponse = await getUserById(userId!);
+      if (userResponse && userResponse.status === 200) {
+        const departmentString =
+          "Department: " + userResponse.data?.departmentName + "\n";
+        const finalPrompt = departmentString.concat("Prompt: " + input);
+
+        const aiResponse = await fetch("/api/generate-smart", {
+          method: "POST",
+          body: JSON.stringify({
+            input: finalPrompt,
+            history: conversationHistory,
+          }),
+        });
+
+        if (aiResponse && aiResponse.status === 200) {
+          await setConversationHistory((conversationHistory) => [
+            ...conversationHistory,
+            { role: "user", content: finalPrompt },
+          ]);
+          return aiResponse.json();
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("Something went wrong");
+      }
     }
   };
 
+  const handleCreateGoal = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const value = event.currentTarget.goal.value;
+    event.currentTarget.goal.value = "";
+
+    try {
+      const suggestGoal = await makeAiRequest(value);
+      const temp = suggestGoal;
+      const check = await setConversationHistory([
+        ...conversationHistory,
+        { role: "assistant", content: temp },
+      ]);
+      setStoredGoal(temp);
+    } catch (error) {
+      if (error instanceof Error) {
+        return Error;
+      } else {
+        return "Something went wrong";
+      }
+    }
+  };
+
+  const handleAddGoal = async () => {
+    try {
+      console.log(storedGoal);
+      let x = storedGoal;
+      const goal = await createGoal({ description: x, userId });
+      if (goal && goal.status === 201) {
+        toast.success(goal.message);
+        setOpen(false);
+        router.refresh();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        return Error;
+      } else {
+        return "Failed to create goal";
+      }
+    }
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="space-y-4">
         <DialogHeader>
-          <DialogTitle>Add a new goal</DialogTitle>
+          <DialogTitle>Add a new SMART goal</DialogTitle>
           <DialogDescription>What do you want to achieve?</DialogDescription>
         </DialogHeader>
-        <form className="space-y-3" onSubmit={handleAddGoal}>
+        {storedGoal != "" && (
+          <div>
+            {storedGoal.split("\n").map((smart, index) => (
+              <div key={index}>
+                {index === 0 ? (
+                  <div className=" mb-2">
+                    <span className="font-lg font-bold">
+                      {smart.split(":")[0]}
+                    </span>
+                    : <span>{smart.split(":")[1]}</span>
+                  </div>
+                ) : (
+                  <div className="text-sm mb-1">
+                    <span className="font-semibold">{smart.split(":")[0]}</span>
+                    <span>{smart.split(":")[1]}</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        <form className="space-y-3" onSubmit={handleCreateGoal}>
           <div className="grid w-full items-center gap-1.5">
-            <Label htmlFor="goal">What&apos;s your goal?</Label>
+            <Label htmlFor="goal">{formLabel}</Label>
             <Input
               type="text"
               id="goal"
-              placeholder="Tell me more about it"
-              className="focus-visible:ring-0 focus-visible:ring-offset-0 h-11"
+              placeholder={formPlaceholder}
+              className="h-11 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
-          <Button className="text-sm font-normal w-full capitalize h-11">
-            Add goal
-          </Button>
+          <div className="flex justify-between">
+            <Button
+              className="h-11 text-sm font-normal capitalize"
+              variant={"outline"}
+            >
+              Generate goals with AI{" "}
+              <SparklesIcon width={16} height={16} className="ml-2" />
+            </Button>
+            {storedGoal != "" && (
+              <Button
+                className="h-11 text-sm font-normal capitalize"
+                onClick={handleAddGoal}
+              >
+                Save current Goal
+              </Button>
+            )}
+          </div>
         </form>
       </DialogContent>
     </Dialog>

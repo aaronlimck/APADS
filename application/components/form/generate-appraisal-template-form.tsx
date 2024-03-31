@@ -1,13 +1,13 @@
 "use client";
-import { useState } from "react";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import { transformGeneratedAITemplateToForm } from "@/lib/utils";
-import { Input } from "../ui/input";
 import { createAppraisal } from "@/actions/appraisal.action";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { formattedAIFormDataToForm } from "@/lib/utils";
 
 export default function GenerateAppraisalTemplateForm() {
   const router = useRouter();
@@ -31,31 +31,36 @@ export default function GenerateAppraisalTemplateForm() {
         },
       });
 
-      if (response.status === 400) {
-        throw new Error(`Bad request: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Failed to generate template: ${response.statusText}`);
       }
 
       const data = await response.json();
-      const generatedTemplate = await transformGeneratedAITemplateToForm(data);
-      if (generatedTemplate) {
-        const payload = {
-          name: title,
-          description: null,
-          content: JSON.stringify(generatedTemplate),
-        };
+      const generatedTemplate = await formattedAIFormDataToForm(data);
 
-        const createAppraisalResponse = await createAppraisal(payload);
+      if (!generatedTemplate) {
+        toast.error("Failed to transform template");
+        throw new Error("Failed to transform template");
+      }
 
-        if (createAppraisalResponse.status === 201) {
-          toast.success("Appraisal created successfully");
-          router.push(
-            `/admin/appraisals/${createAppraisalResponse.data.id}/builder`,
-          );
-          router.refresh();
-        }
+      const payload = {
+        name: title,
+        description: null,
+        content: JSON.stringify(generatedTemplate),
+      };
+
+      const createAppraisalResponse = await createAppraisal(payload);
+      if (createAppraisalResponse.status === 201) {
+        toast.success("Appraisal created successfully");
+        router.push(
+          `/admin/appraisals/${createAppraisalResponse.data.id}/builder`,
+        );
+        router.refresh();
+        return createAppraisalResponse;
       }
     } catch (error) {
       console.error("Error generating appraisal template:", error);
+      throw error;
     }
   };
 
@@ -65,13 +70,18 @@ export default function GenerateAppraisalTemplateForm() {
 
     if (!title || !prompt) {
       console.error("Title and prompt are required.");
+      setIsLoading(false);
       return;
     }
 
+    const payload = {
+      title,
+      prompt,
+    };
+
     try {
-      const generateAppraisalTemplateFormResponse =
-        await generateAppraisalTemplateForm({ title, prompt });
-      console.log("response on submit", generateAppraisalTemplateFormResponse);
+      const response = await generateAppraisalTemplateForm(payload);
+      console.log("response on submit", response);
     } catch (error) {
       console.error("Error in handleOnSubmit:", error);
     } finally {
