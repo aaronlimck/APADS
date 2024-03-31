@@ -7,7 +7,7 @@ import { Suspense } from "react";
 export default function AdminFormsPage() {
   return (
     <main className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Suspense
           fallback={[1, 2, 3, 4, 5, 6].map((el) => (
             <AppraisalItemSkeleton key={el} />
@@ -20,7 +20,7 @@ export default function AdminFormsPage() {
   );
 }
 
-export async function AppraisalForm() {
+async function AppraisalForm() {
   const appraisalForms = await getAllAppraisals();
   return appraisalForms.data.length > 0 ? (
     <>

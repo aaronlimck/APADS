@@ -83,17 +83,17 @@ export default async function AdminAppraisalDetails({
     formResponses: formResponses,
     questionTypes: questionTypes,
   };
+
   const clusteringResponse = await getClusters(payload);
   const clusters = clusteringResponse.clusters;
 
   const maxRows = Math.max(
-    ...Object.values(clusters).map((array) => array.length),
+    ...Object.values(clusters).map((array: any) => array.length),
   );
 
   // Replace employee ids with employee names in the clusters
 
   var clusterNames: { [key: number]: string[] } = {};
-
   await Promise.all(
     Array.from({ length: maxRows }).map(async (_, rowIndex) => {
       await Promise.all(
@@ -102,9 +102,9 @@ export default async function AdminAppraisalDetails({
             const user = await getUserById(array[rowIndex]);
             if (user) {
               if (clusterNames[columnIndex]) {
-                clusterNames[columnIndex].push(user.data.name);
+                clusterNames[columnIndex].push(user.data!.name);
               } else {
-                clusterNames[columnIndex] = [user.data.name];
+                clusterNames[columnIndex] = [user.data!.name];
               }
             }
           }
@@ -117,10 +117,10 @@ export default async function AdminAppraisalDetails({
   const clusterLabels = clusteringResponse.clusterLabels;
   const featureImportance = Object.entries(
     clusteringResponse.featureImportance,
-  ).sort((a, b) => b[1] - a[1]);
-  const mostImportantFeatures = [];
+  ).sort((a: any, b: any) => b[1] - a[1]);
+  const mostImportantFeatures: any[] = [];
   let totalImportance = 0;
-  featureImportance.map((item, index) => {
+  featureImportance.map((item: any, index) => {
     if (totalImportance < 0.5) {
       mostImportantFeatures.push(item[0]);
       totalImportance += item[1];
@@ -142,12 +142,13 @@ export default async function AdminAppraisalDetails({
 
   // Sort clusterDescriptions in descending order based on its values
   const sortedClusterDescriptions = new Map(
+    // @ts-ignore
     [...clusterDescriptions.entries()].sort((a, b) => b[1] - a[1]),
   );
 
   // Prepare the payload for the PieChartComponent
   const pieChartData = Object.entries(clusteringResponse.featureImportance)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a: any, b: any) => b[1] - a[1])
     .map(([feature, importance]) => {
       const formStructureObject = formStructure.find(
         (item: any) => item.id === feature.toString(),
@@ -173,6 +174,7 @@ export default async function AdminAppraisalDetails({
         <table className="w-full overflow-hidden rounded-lg bg-white text-center shadow">
           <thead className="bg-gray-200">
             <tr>
+              {/* @ts-ignore */}
               {[...sortedClusterDescriptions.keys()].map((key, index) => (
                 <th key={key} className="px-6 py-4">
                   Cluster Rank {index + 1}
@@ -185,7 +187,7 @@ export default async function AdminAppraisalDetails({
               length: Math.max(
                 ...Array.from(
                   sortedClusterDescriptions.keys(),
-                  (key) => clusterNames[key].length,
+                  (key: any) => clusterNames[key].length,
                 ),
               ),
             }).map((_, rowIndex) => (
@@ -193,6 +195,7 @@ export default async function AdminAppraisalDetails({
                 key={rowIndex}
                 className={rowIndex % 2 === 0 ? "bg-gray-100" : ""}
               >
+                {/* @ts-ignore */}
                 {[...sortedClusterDescriptions.keys()].map((key) => (
                   <td key={key} className="border-t px-6 py-4">
                     {clusterNames[key] && clusterNames[key][rowIndex]}
@@ -214,7 +217,7 @@ export default async function AdminAppraisalDetails({
           <table>
             <tbody>
               {Object.entries(clusteringResponse.featureImportance)
-                .sort((a, b) => b[1] - a[1])
+                .sort((a: any, b: any) => b[1] - a[1])
                 .map(([feature, importance]: any, index) => {
                   const formStructureObject = formStructure.find(
                     (item: any) => item.id === feature.toString(),

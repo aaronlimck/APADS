@@ -55,27 +55,26 @@ def getSentiment():
 
     return {"sentiments": sentiments, 'positive_sentences':positive_sentences, 'negative_sentences':negative_sentences, 'neutral_sentences':neutral_sentences}
 
+    # else:
+    #     for sentence in sentences:
+    #         scores = model.polarity_scores(sentence)
 
-    else:
-        for sentence in sentences:
-            scores = model.polarity_scores(sentence)
+    #         # Calculate the percentage of positive, negative, neutral, and compound sentiments
+    #         total = sum(abs(score) for score in scores.values())
+    #         positive_percentage = (scores['compound'] + 1) / (total + 1) * 100  # Adding 1 to avoid division by zero
+    #         negative_percentage = (abs(scores['compound'] - 1)) / (total + 1) * 100
+    #         neutral_percentage = (1 - abs(scores['compound'])) / (total + 1) * 100
+    #         compound_percentage = (scores['compound'] + 1) / 2 * 100
 
-            # Calculate the percentage of positive, negative, neutral, and compound sentiments
-            total = sum(abs(score) for score in scores.values())
-            positive_percentage = (scores['compound'] + 1) / (total + 1) * 100  # Adding 1 to avoid division by zero
-            negative_percentage = (abs(scores['compound'] - 1)) / (total + 1) * 100
-            neutral_percentage = (1 - abs(scores['compound'])) / (total + 1) * 100
-            compound_percentage = (scores['compound'] + 1) / 2 * 100
-
-            # Classify sentiment based on compound score
-            if scores['compound'] >= 0.05:
-                sentiment= 'Positive'
-            elif scores['compound'] <= -0.05:
-                sentiment= 'Negative'
-            else:
-                sentiment = 'Neutral'
-            sentiments.append({'sentiment':sentiment,'compound_percentage':compound_percentage})
-    return sentiments
+    #         # Classify sentiment based on compound score
+    #         if scores['compound'] >= 0.05:
+    #             sentiment= 'Positive'
+    #         elif scores['compound'] <= -0.05:
+    #             sentiment= 'Negative'
+    #         else:
+    #             sentiment = 'Neutral'
+    #         sentiments.append({'sentiment':sentiment,'compound_percentage':compound_percentage})
+    # return sentiments
 
 @app.route('/getClusters', methods=['POST'])
 def getClusters():
