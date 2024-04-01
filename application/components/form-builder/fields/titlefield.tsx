@@ -37,6 +37,7 @@ const propertiesSchema = z.object({
   managerOnly: z.boolean().default(false),
 });
 
+// @ts-ignore
 export const TitleFieldFormElement: FormElement = {
   type,
   construct: (id: string) => {
@@ -69,7 +70,7 @@ function DesignerComponent({
   const element = elementInstance as CustomInstance;
   const { title } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       {/* Title Field */}
       <Label className="text-muted-foreground">Extra Large Heading</Label>
       <p className="text-xl">{title}</p>
@@ -168,7 +169,6 @@ function PropertiesComponent({
             </FormItem>
           )}
         />
-        
       </form>
     </Form>
   );

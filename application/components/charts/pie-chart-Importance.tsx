@@ -1,5 +1,6 @@
 "use client";
 import { Chart as ChartJS, registerables } from "chart.js";
+// @ts-ignore
 import { Pie } from "react-chartjs-2";
 import { Card } from "../ui/card";
 ChartJS.register(...registerables);

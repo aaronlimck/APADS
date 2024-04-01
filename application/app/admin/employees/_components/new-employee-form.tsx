@@ -31,10 +31,8 @@ import { toast } from "sonner";
 const ROLES = ["Admin", "Staff"];
 
 export default function EmployeeForm({
-  initialValues,
   closeModal,
 }: {
-  initialValues?: z.infer<typeof employeeFormSchema>;
   closeModal: () => void;
 }) {
   const router = useRouter();
@@ -74,11 +72,11 @@ export default function EmployeeForm({
   const form = useForm<z.infer<typeof employeeFormSchema>>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
-      name: initialValues?.name || "",
-      email: initialValues?.email || "",
-      role: initialValues?.role || "",
-      departmentName: initialValues?.departmentName || "",
-      managerId: initialValues?.managerId || "",
+      name: "",
+      email: "",
+      role: "",
+      departmentName: "",
+      managerId: "",
     },
   });
 

@@ -4,7 +4,7 @@ import {
   updateAppraisalSubmissionByFormId,
 } from "@/actions/appraisal.action";
 import { createAppraisalSubmissionByFormId } from "@/actions/appraisalSubmission";
-import { sendEmail } from "@/lib/api/email";
+import { cn, convertTextToTitleCase } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,6 @@ import {
   FormElements,
 } from "../form-builder/form-elements";
 import { Button } from "../ui/button";
-import { cn, convertTextToTitleCase } from "@/lib/utils";
 
 export default function AppraisalFormSubmit({
   formId,
@@ -32,7 +31,6 @@ export default function AppraisalFormSubmit({
   employeeData?: any;
   employeeResponseFormId?: string;
 }) {
-  let host = "http://localhost:3000";
   const router = useRouter();
   const formValues = useRef<{ [key: string]: string }>({});
   const formErrors = useRef<{ [key: string]: boolean }>({});

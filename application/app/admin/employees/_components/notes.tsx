@@ -36,6 +36,7 @@ export default function Notes({ data }: { data: any }) {
         <Textarea
           name="notes"
           className="resize-none border-none p-0 focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+          placeholder="Write a note..."
         />
         <Button
           size="sm"

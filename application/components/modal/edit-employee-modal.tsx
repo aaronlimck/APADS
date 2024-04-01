@@ -35,11 +35,7 @@ export default function EditEmployeeModal({
           </DialogDescription>
         </DialogHeader>
 
-        <EmployeeForm
-          type="EDIT"
-          initialValues={staffData}
-          closeModal={handleDialogClose}
-        />
+        <EmployeeForm closeModal={handleDialogClose} />
       </DialogContent>
     </Dialog>
   );

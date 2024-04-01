@@ -121,8 +121,8 @@ export default function PublishBtn({ id }: { id: string }) {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Select recipients</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Please select the departments to whom you'd like to send the
-                    self-evaluation form.
+                    Please select the departments to whom you&apos;d like to
+                    send the self-evaluation form.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
 
