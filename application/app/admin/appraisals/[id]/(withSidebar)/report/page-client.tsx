@@ -5,8 +5,23 @@ import {
 import BarChartComponent from "@/components/charts/bar-chart";
 import PieChartComponent from "@/components/charts/pie-chart";
 import WordCloudComponent from "@/components/charts/word-cloud";
-import { analyzeFormResponses, getSentiment } from "@/lib/utils";
+import { analyzeFormResponses, getSentiment as getSentimentOriginal } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+async function getSentimentWithRetry(objectWithData, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const sentiment = await getSentimentOriginal(objectWithData);
+      if (sentiment && sentiment.sentiments) {
+        return sentiment;
+      }
+    } catch (error) {
+      // Wait 1 second before retrying
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  throw new Error("Sentiment analysis failed");
+}
 
 export default async function AppraisalReportClientPage({
   id,
@@ -44,7 +59,10 @@ export default async function AppraisalReportClientPage({
       const objectWithData = {
         data: element.data,
       };
-      const sentiment = await getSentiment(objectWithData);
+      const sentiment = await getSentimentWithRetry(objectWithData);
+      if (!sentiment || !sentiment.sentiments) {
+        throw new Error("Sentiment analysis failed");
+      }
       const payload = { ...element, data: sentiment.sentiments };
       const positiveWords = sentiment.positive_sentences ? sentiment.positive_sentences.split(' ') : [];
       const negativeWords = sentiment.negative_sentences ? sentiment.negative_sentences.split(' ') : [];

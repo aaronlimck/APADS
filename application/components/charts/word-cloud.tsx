@@ -15,16 +15,36 @@ function calculateWordFrequencies(
     return acc;
   }, {});
 
+  // Create a logarithmic scale for the word sizes
+  const sizeScale = d3.scaleLog().range([15, 30]); // Adjust range as needed
+
   return Object.entries(wordFrequencies).map(([text, size]) => ({
     text,
-    // @ts-ignore
-    size: size * 25,
-  })); // Adjust size as needed
+    size: sizeScale(size),
+  }));
+}
+
+function draw(wordCloudRef: React.RefObject<SVGSVGElement>, words: any) {
+  d3.select(wordCloudRef.current)
+    .append("g")
+    .attr("transform", "translate(150,150)") // Adjust translation as needed
+    .selectAll("text")
+    .data(words)
+    .enter()
+    .append("text")
+    .style("font-size", (d: any) => d.size + "px")
+    .style("font-family", "Impact")
+    .attr("text-anchor", "middle")
+    .attr(
+      "transform",
+      (d: any) => `translate(${[d.x, d.y]})rotate(${d.rotate})`,
+    )
+    .attr("fill", () => "black") // Add fill for color
+    .text((d: any) => d.text);
 }
 
 const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
   const wordCloudRef = useRef<SVGSVGElement | null>(null);
-
   useEffect(() => {
     if (wordCloudRef.current && words.length > 0) {
       const wordData = calculateWordFrequencies(words);
@@ -35,29 +55,10 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
         .padding(5) // Adjust padding as needed
         .rotate(() => 0) // Make all words horizontal
         .font("Impact")
-        .fontSize((d) => d.size!)
-        .on("end", draw);
+        .fontSize((d) => d.size)
+        .on("end", (words: any) => draw(wordCloudRef, words));
 
       layout.start();
-
-      function draw(words: any) {
-        d3.select(wordCloudRef.current)
-          .append("g")
-          .attr("transform", "translate(150,150)") // Adjust translation as needed
-          .selectAll("text")
-          .data(words)
-          .enter()
-          .append("text")
-          .style("font-size", (d: any) => d.size + "px")
-          .style("font-family", "Impact")
-          .attr("text-anchor", "middle")
-          .attr(
-            "transform",
-            (d: any) => `translate(${[d.x, d.y]})rotate(${d.rotate})`,
-          )
-          .attr("fill", () => "black") // Add fill for color
-          .text((d: any) => d.text);
-      }
     }
 
     // Cleanup function to remove the previous word cloud
@@ -68,7 +69,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
     };
   }, [words]);
 
-  return <svg ref={wordCloudRef} width="300" height="300" />; // Adjust width and height as needed
+  return <svg ref={wordCloudRef} width="300" height="300" />;
 };
 
 export default WordCloudComponent;
