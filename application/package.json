@@ -13,7 +13,7 @@
     "format": "prettier \"**/*.{css,js,json,jsx,ts,tsx}\"",
     "lint": "next lint",
     "email": "email dev --port 3600",
-    "postinstall": "prisma generate && pip install spacy && python -m spacy download en_core_web_sm"
+    "postinstall": "prisma generate && prisma db push"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
