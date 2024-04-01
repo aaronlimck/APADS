@@ -50,28 +50,33 @@ export default async function AdminAppraisalDetails({
   }
 
   const empIDs: string[] = [];
+  const sentimentPromises = [];
+
   for (let i = 0; i < formResponses.length; i++) {
-    await Promise.all(
-      Object.keys(formResponses[i]).map(async (element: string) => {
-        if (element in mappings) {
-          formResponses[i][element] = mappings[element].get(
-            formResponses[i][element],
-          );
-        } else {
-          try {
-            const sentimentResponse = await getSentiment({
-              data: formResponses[i][element],
-            });
-            formResponses[i][element] =
-              sentimentResponse.sentiments[0].compound_percentage;
-          } catch (error) {
-            console.error(`Error getting sentiment for ${element}:`, error);
-          }
+    const sentimentAnalysis = Object.keys(formResponses[i]).map(async (element: string) => {
+      if (element in mappings) {
+        formResponses[i][element] = mappings[element].get(
+          formResponses[i][element],
+        );
+      } else {
+        try {
+          const sentimentResponse = await getSentiment({
+            data: formResponses[i][element],
+          });
+          formResponses[i][element] =
+            sentimentResponse.sentiments[0].compound_percentage;
+        } catch (error) {
+          console.error(`Error getting sentiment for ${element}:`, error);
         }
-      }),
-    );
+      }
+    });
+
+    sentimentPromises.push(...sentimentAnalysis);
+    
     empIDs.push(submissionsData.data[i].employeeId);
   }
+
+  await Promise.all(sentimentPromises);
 
   const questionTypes = formStructure.reduce((acc: any, element: any) => {
     acc[element.id] = element.type;
@@ -85,6 +90,7 @@ export default async function AdminAppraisalDetails({
   };
 
   const clusteringResponse = await getClusters(payload);
+
   const clusters = clusteringResponse.clusters;
 
   const maxRows = Math.max(
