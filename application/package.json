@@ -13,7 +13,7 @@
     "format": "prettier \"**/*.{css,js,json,jsx,ts,tsx}\"",
     "lint": "next lint",
     "email": "email dev --port 3600",
-    "postinstall": "python -m spacy download en_core_web_sm"
+    "postinstall": "pip install spacy && python -m spacy download en_core_web_sm"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
