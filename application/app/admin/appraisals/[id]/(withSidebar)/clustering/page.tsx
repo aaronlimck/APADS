@@ -63,7 +63,7 @@ export default async function AdminAppraisalDetails({
               data: formResponses[i][element],
             });
             formResponses[i][element] =
-              sentimentResponse[0].compound_percentage;
+              sentimentResponse.sentiments[0].compound_percentage;
           } catch (error) {
             console.error(`Error getting sentiment for ${element}:`, error);
           }
