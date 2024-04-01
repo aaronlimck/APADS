@@ -38,12 +38,13 @@ type CustomInstance = FormElementInstance & {
   extraAttributes: typeof extraAttributes;
 };
 
+// @ts-ignore
 export const SeparatorFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
     id,
     type,
-    extraAttributes: {managerOnly: false}
+    extraAttributes: { managerOnly: false },
   }),
   designerBtnElement: {
     icon: RiSeparator,
@@ -62,7 +63,7 @@ function DesignerComponent({
   elementInstance: FormElementInstance;
 }) {
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       <Label className="text-muted-foreground">Separator field</Label>
       <Separator />
     </div>

@@ -20,7 +20,7 @@ function calculateWordFrequencies(
 
   return Object.entries(wordFrequencies).map(([text, size]) => ({
     text,
-    size: sizeScale(size),
+    size: sizeScale(size as any),
   }));
 }
 
@@ -55,7 +55,7 @@ const WordCloudComponent: React.FC<WordCloudProps> = ({ words }) => {
         .padding(5) // Adjust padding as needed
         .rotate(() => 0) // Make all words horizontal
         .font("Impact")
-        .fontSize((d) => d.size)
+        .fontSize((d) => d.size || 0) // Handle undefined values by providing a default value
         .on("end", (words: any) => draw(wordCloudRef, words));
 
       layout.start();

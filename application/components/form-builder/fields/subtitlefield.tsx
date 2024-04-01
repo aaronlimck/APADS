@@ -36,6 +36,7 @@ const propertiesSchema = z.object({
   managerOnly: z.boolean().default(false),
 });
 
+// @ts-ignore
 export const SubTitleFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
@@ -66,7 +67,7 @@ function DesignerComponent({
   const element = elementInstance as CustomInstance;
   const { title } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       {/* Subtitle Field */}
       <Label className="text-muted-foreground">Large Heading</Label>
       <p className="text-lg">{title}</p>

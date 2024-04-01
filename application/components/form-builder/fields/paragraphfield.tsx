@@ -19,7 +19,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription
+  FormDescription,
 } from "../../ui/form";
 import { BsTextParagraph } from "react-icons/bs";
 import { Textarea } from "../../ui/textarea";
@@ -37,6 +37,7 @@ const propertiesSchema = z.object({
   managerOnly: z.boolean().default(false),
 });
 
+// @ts-ignore
 export const ParagraphFieldFormElement: FormElement = {
   type,
   construct: (id: string) => ({
@@ -51,7 +52,6 @@ export const ParagraphFieldFormElement: FormElement = {
   designerComponent: DesignerComponent,
   formComponent: FormComponent,
   propertiesComponent: PropertiesComponent,
-
   validate: () => true,
 };
 
@@ -67,7 +67,7 @@ function DesignerComponent({
   const element = elementInstance as CustomInstance;
   const { text } = element.extraAttributes;
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex w-full flex-col gap-2">
       <Label className="text-muted-foreground">Paragraph</Label>
       <p className="text-wrap">{text}</p>
     </div>
@@ -81,7 +81,7 @@ function FormComponent({
 }) {
   const element = elementInstance as CustomInstance;
   const { text } = element.extraAttributes;
-  return <p className="text-muted-foreground text-wrap">{text}</p>;
+  return <p className="text-wrap text-muted-foreground">{text}</p>;
 }
 
 type propertiesFormSchemaType = z.infer<typeof propertiesSchema>;

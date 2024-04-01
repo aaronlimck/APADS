@@ -83,10 +83,12 @@ export default function ContactDetails({ data }: { data: any }) {
               <dt className="text-sm leading-6 text-muted-foreground">Email</dt>
               <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                 <Input
+                  type="email"
                   name="email"
                   className="focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
                   value={form.email}
                   onChange={handleInputChange}
+                  placeholder="Enter email address"
                 />
               </dd>
 
@@ -99,6 +101,7 @@ export default function ContactDetails({ data }: { data: any }) {
                   className="focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
                   value={form.mobileNumber}
                   onChange={handleInputChange}
+                  placeholder="Enter mobile number"
                 />
               </dd>
             </div>

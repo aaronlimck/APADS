@@ -87,7 +87,7 @@ export function analyzeFormResponses(formStructure: any, formResponses: any) {
 
 export async function getSentiment(payload: any) {
   try {
-    const res = await fetch(`http://127.0.0.1:5000/getSentiment`, {
+    const res = await fetch(`${process.env.NLTK_API_URL}/getSentiment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export async function getSentiment(payload: any) {
 
 export async function getClusters(payload: any) {
   try {
-    const res = await fetch(`http://127.0.0.1:5000/getClusters`, {
+    const res = await fetch(`${process.env.NLTK_API_URL}/getClusters`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -92,6 +92,7 @@ export default function PersonalInformation({ data }: { data: any }) {
                   className="focus-visible:border-[1.5px] focus-visible:border-gray-500 focus-visible:ring-0 focus-visible:ring-offset-0"
                   value={form.name}
                   onChange={handleInputChange}
+                  placeholder="Enter full name"
                 />
               </dd>
 
