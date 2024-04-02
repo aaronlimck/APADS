@@ -2,7 +2,7 @@
 import { automationSchema } from "@/schema";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-
+import { Client } from "@upstash/qstash";
 
 export async function createAutomation(
   payload: z.infer<typeof automationSchema>,
@@ -22,38 +22,36 @@ export async function createAutomation(
         template: true,
       },
     });
-    const response = await fetch("https://api.cron-job.org/jobs", {
-      method: "PUT",
+    const token = process.env.QSTASH_API_TOKEN;
+    const dateString = payload.startDate;
+    const month = dateString.getMonth() + 1;
+    const day = dateString.getDate();
+
+    if (!token) {
+      throw new Error("UPSTASH_API_TOKEN environment variable is not set.");
+    }
+    let cronSchedule: string;
+
+    if (payload.frequency == "3") {
+      cronSchedule = `0 0 ${day} ${month},*/3 *`;
+    } else if (payload.frequency == "6") {
+      cronSchedule = `0 0 ${day} ${month},*/6 *`;
+    } else {
+      cronSchedule = `0 0 ${day} ${month},*/12 *`;
+    }
+
+    const client = new Client({ token: token });
+    const schedules = client.schedules;
+    await schedules.create({
+      destination: `${process.env.CRON_ENDPOINT}/api/generate-appraisal`,
+      body: JSON.stringify({ templateId: payload.templateId }),
+      method: "POST",
+      cron: cronSchedule,
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + process.env.CRONJOB_API_KEY,
       },
-      body: JSON.stringify({
-        job: {
-          requestMethod:1,
-          url: "http://127.0.0.1:3000/api/generate-appraisal",
-          extendedData: {
-            "headers": {
-              "Content-Type": "application/json"
-            },
-            "body": JSON.stringify({ templateId: payload.templateId })
-        },
-          enabled: "true",
-          saveResponses: true,
-          schedule: {
-            timezone: "",
-            expiresAt: 0,
-            hours: [0],
-            mdays: [1],
-            minutes: [-1],
-            months: [-1],
-            wdays: ["*"],
-          },
-
-        },
-      }),
     });
-    console.log(response)
+
     return {
       status: 201,
       message: "Automation created successfully",

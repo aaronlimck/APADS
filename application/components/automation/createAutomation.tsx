@@ -256,7 +256,6 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
             control={form.control}
             name="department"
             render={({ field }) => (
-              console.log(field.value),
               (
                 <FormItem>
                   <FormLabel className="text-gray-800">Recipients</FormLabel>
