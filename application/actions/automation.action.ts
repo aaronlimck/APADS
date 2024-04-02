@@ -6,7 +6,6 @@ import { Client } from "@upstash/qstash";
 
 export async function createAutomation(
   payload: z.infer<typeof automationSchema>,
-  recipient: string[],
 ) {
   const date = new Date();
   try {
@@ -16,7 +15,7 @@ export async function createAutomation(
         templateId: payload.templateId,
         frequency: payload.frequency,
         startDate: payload.startDate,
-        recipientId: recipient,
+        recipientId: payload.department,
       },
       include: {
         template: true,
@@ -44,14 +43,13 @@ export async function createAutomation(
     const schedules = client.schedules;
     await schedules.create({
       destination: `${process.env.CRON_ENDPOINT}/api/generate-appraisal`,
-      body: JSON.stringify({ templateId: payload.templateId }),
+      body: JSON.stringify({ templateId: payload.templateId, department:payload.department }),
       method: "POST",
       cron: cronSchedule,
       headers: {
         "Content-Type": "application/json",
       },
     });
-
     return {
       status: 201,
       message: "Automation created successfully",
