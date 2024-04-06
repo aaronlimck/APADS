@@ -10,18 +10,7 @@ export async function createAutomation(
 ) {
   const date = new Date();
   try {
-    const automation = await prisma.automation.create({
-      data: {
-        name: payload.name,
-        templateId: payload.templateId,
-        frequency: payload.frequency,
-        startDate: payload.startDate,
-        recipientId: recipient,
-      },
-      include: {
-        template: true,
-      },
-    });
+    
     const token = process.env.QSTASH_API_TOKEN;
     const dateString = payload.startDate;
     const month = dateString.getMonth() + 1;
@@ -51,7 +40,18 @@ export async function createAutomation(
         "Content-Type": "application/json",
       },
     });
-
+    const automation = await prisma.automation.create({
+      data: {
+        name: payload.name,
+        templateId: payload.templateId,
+        frequency: payload.frequency,
+        startDate: payload.startDate,
+        recipientId: recipient,
+      },
+      include: {
+        template: true,
+      },
+    });
     return {
       status: 201,
       message: "Automation created successfully",
