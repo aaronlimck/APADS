@@ -6,11 +6,10 @@ import { Client } from "@upstash/qstash";
 
 export async function createAutomation(
   payload: z.infer<typeof automationSchema>,
-  recipient: string[],
 ) {
   const date = new Date();
   try {
-    
+
     const token = process.env.QSTASH_API_TOKEN;
     const dateString = payload.startDate;
     const month = dateString.getMonth() + 1;
@@ -33,25 +32,27 @@ export async function createAutomation(
     const schedules = client.schedules;
     await schedules.create({
       destination: `${process.env.CRON_ENDPOINT}/api/generate-appraisal`,
-      body: JSON.stringify({ templateId: payload.templateId }),
+      body: JSON.stringify({ templateId: payload.templateId, department:payload.department }),
       method: "POST",
       cron: cronSchedule,
       headers: {
         "Content-Type": "application/json",
       },
     });
-    const automation = await prisma.automation.create({
+    
+        const automation = await prisma.automation.create({
       data: {
         name: payload.name,
         templateId: payload.templateId,
         frequency: payload.frequency,
         startDate: payload.startDate,
-        recipientId: recipient,
+        recipientId: payload.department,
       },
       include: {
         template: true,
       },
     });
+
     return {
       status: 201,
       message: "Automation created successfully",

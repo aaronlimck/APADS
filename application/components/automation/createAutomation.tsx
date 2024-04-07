@@ -135,18 +135,9 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
 
   const handleOnSubmit = async (data: z.infer<typeof automationSchema>) => {
     try {
-      //get Department then get recipients
-      let recipientArray: string[] = [];
-      for (let singleDepartment of data.department) {
-        const recipients = await getAllUsersByDepartment(singleDepartment);
-        recipientArray = [
-          ...recipientArray,
-          ...recipients.data.map((recipient) => recipient.id),
-        ];
-      }
-
+      
       //Creation of Automation process
-      const automation = await createAutomation(data, recipientArray);
+      const automation = await createAutomation(data);
       if (automation.status === 201) {
         toast.success("Automation process created succesfully");
         onSuccess();
