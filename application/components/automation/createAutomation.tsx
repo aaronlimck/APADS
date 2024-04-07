@@ -135,18 +135,9 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
 
   const handleOnSubmit = async (data: z.infer<typeof automationSchema>) => {
     try {
-      //get Department then get recipients
-      let recipientArray: string[] = [];
-      for (let singleDepartment of data.department) {
-        const recipients = await getAllUsersByDepartment(singleDepartment);
-        recipientArray = [
-          ...recipientArray,
-          ...recipients.data.map((recipient) => recipient.id),
-        ];
-      }
-
+      
       //Creation of Automation process
-      const automation = await createAutomation(data, recipientArray);
+      const automation = await createAutomation(data);
       if (automation.status === 201) {
         toast.success("Automation process created succesfully");
         onSuccess();
@@ -222,6 +213,7 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="frequency"
@@ -239,7 +231,7 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
                         "border-red-500 focus-visible:ring-red-500"
                       } w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`}
                     >
-                      <SelectValue placeholder="Select a template" />
+                      <SelectValue placeholder="Select frequency" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -256,65 +248,64 @@ export function AutomationForm({ onSuccess }: { onSuccess: () => void }) {
             control={form.control}
             name="department"
             render={({ field }) => (
-              (
-                <FormItem>
-                  <FormLabel className="text-gray-800">Recipients</FormLabel>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild className={`${
-                        form.formState.errors.frequency?.message &&
-                        "border-red-500 focus-visible:ring-red-500"
-                      } w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`}>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-between p-3 "
+              <FormItem>
+                <FormLabel className="text-gray-800">Recipients</FormLabel>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    asChild
+                    className={`${
+                      form.formState.errors.frequency?.message &&
+                      "border-red-500 focus-visible:ring-red-500"
+                    } w-full focus:ring-1 focus:ring-offset-0 focus-visible:ring-1 focus-visible:ring-offset-0`}
+                  >
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between p-3 "
+                    >
+                      <div className="max-w-[400px] font-normal ">
+                        {field.value.length > 0 ? (
+                          <div
+                            className="flex overflow-x-auto "
+                            style={{
+                              overflowX: "auto",
+                              scrollbarWidth: "none",
+                              WebkitOverflowScrolling: "touch",
+                            }}
+                          >
+                            {field.value.map((department, index) => (
+                              <div
+                                key={index}
+                                className=" mr-1 max-w-32 truncate rounded-sm border p-1 font-normal"
+                              >
+                                {department}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          "Select Departments"
+                        )}
+                      </div>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    {departmentNames.map((department, index) => (
+                      <DropdownMenuCheckboxItem
+                        key={index}
+                        checked={field.value.includes(department)}
+                        onCheckedChange={(checked) => {
+                          const updatedDepartments = checked
+                            ? [...field.value, department]
+                            : field.value.filter((d: any) => d !== department);
+                          field.onChange(updatedDepartments);
+                        }}
                       >
-                        <div className="max-w-[400px] font-normal ">
-                          {field.value.length > 0 ? (
-                            <div
-                              className="flex overflow-x-auto "
-                              style={{
-                                overflowX: "auto",
-                                scrollbarWidth: "none",
-                                WebkitOverflowScrolling: "touch",
-                              }}
-                            >
-                              {field.value.map((department, index) => (
-                                <div
-                                  key={index}
-                                  className=" mr-1 max-w-32 truncate rounded-sm border p-1 font-normal"
-                                >
-                                  {department}
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            "Select Departments"
-                          )}
-                        </div>
-                        <ChevronDown className="h-4 w-4 opacity-50" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      {departmentNames.map((department, index) => (
-                        <DropdownMenuCheckboxItem
-                          key={index}
-                          checked={field.value.includes(department)}
-                          onCheckedChange={(checked) => {
-                            const updatedDepartments = checked
-                              ? [...field.value, department]
-                              : field.value.filter(
-                                  (d: any) => d !== department,
-                                );
-                            field.onChange(updatedDepartments);
-                          }}
-                        >
-                          {department}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </FormItem>
-              )
+                        {department}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </FormItem>
             )}
           />
 

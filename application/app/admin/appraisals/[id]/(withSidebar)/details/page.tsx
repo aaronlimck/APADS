@@ -6,7 +6,11 @@ import {
   TotalSubmissionRate,
 } from "@/components/appraisal/appraisal-stats-card";
 import { Button } from "@/components/ui/button";
-import { ClipboardMinusIcon, ExternalLinkIcon } from "lucide-react";
+import {
+  ClipboardMinusIcon,
+  ExternalLinkIcon,
+  UsersRoundIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminAppraisalDetails({
@@ -54,9 +58,10 @@ export default async function AdminAppraisalDetails({
               href={`/admin/appraisals/${id}/viewer`}
             >
               <ExternalLinkIcon size={16} />
-              <span className="font-normal">View Appraisal Form</span>
+              <span className="font-normal">Appraisal Form</span>
             </Link>
           </Button>
+
           <Button
             variant="outline"
             className="flex items-center gap-2 border text-muted-foreground hover:text-primary"
@@ -66,7 +71,20 @@ export default async function AdminAppraisalDetails({
               href={`/admin/appraisals/${id}/report`}
             >
               <ClipboardMinusIcon size={16} />
-              <span className="font-normal">View Report</span>
+              <span className="font-normal">Response Report</span>
+            </Link>
+          </Button>
+
+          <Button
+            variant="outline"
+            className="flex items-center gap-2 border text-muted-foreground hover:text-primary"
+          >
+            <Link
+              className="flex items-center gap-2"
+              href={`/admin/appraisals/${id}/clustering`}
+            >
+              <UsersRoundIcon size={16} />
+              <span className="font-normal">Cluster Report</span>
             </Link>
           </Button>
         </div>
