@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 
 export default function HRNavItems() {
   return (
-    <div className="h-full flex flex-col justify-between">
+    <div className="flex h-full flex-col justify-between">
       <div className="space-y-1">
         <SidebarItem
           icon={<UserIcon size={20} />}
@@ -27,7 +27,7 @@ export default function HRNavItems() {
         <SidebarButton
           icon={<LogOutIcon size={20} />}
           text="Log Out"
-          onClick={() => signOut()}
+          onClick={() => signOut({ callbackUrl: "/login" })}
         />
       </div>
     </div>
