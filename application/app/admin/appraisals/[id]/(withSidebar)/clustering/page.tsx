@@ -5,6 +5,13 @@ import {
 import { getUserById } from "@/actions/user.action";
 import PieChartComponent from "@/components/charts/pie-chart-Importance";
 import { analyzeFormResponses, getClusters, getSentiment } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { RxQuestionMarkCircled } from "react-icons/rx";
 
 export default async function AdminAppraisalDetails({
   params,
@@ -53,26 +60,28 @@ export default async function AdminAppraisalDetails({
   const sentimentPromises = [];
 
   for (let i = 0; i < formResponses.length; i++) {
-    const sentimentAnalysis = Object.keys(formResponses[i]).map(async (element: string) => {
-      if (element in mappings) {
-        formResponses[i][element] = mappings[element].get(
-          formResponses[i][element],
-        );
-      } else {
-        try {
-          const sentimentResponse = await getSentiment({
-            data: formResponses[i][element],
-          });
-          formResponses[i][element] =
-            sentimentResponse.sentiments[0].compound_percentage;
-        } catch (error) {
-          console.error(`Error getting sentiment for ${element}:`, error);
+    const sentimentAnalysis = Object.keys(formResponses[i]).map(
+      async (element: string) => {
+        if (element in mappings) {
+          formResponses[i][element] = mappings[element].get(
+            formResponses[i][element],
+          );
+        } else {
+          try {
+            const sentimentResponse = await getSentiment({
+              data: formResponses[i][element],
+            });
+            formResponses[i][element] =
+              sentimentResponse.sentiments[0].compound_percentage;
+          } catch (error) {
+            console.error(`Error getting sentiment for ${element}:`, error);
+          }
         }
-      }
-    });
+      },
+    );
 
     sentimentPromises.push(...sentimentAnalysis);
-    
+
     empIDs.push(submissionsData.data[i].employeeId);
   }
 
@@ -166,17 +175,30 @@ export default async function AdminAppraisalDetails({
     });
 
   return (
-    <>
-      <div className="bg-gray-100 p-10">
-        <h1 className="mb-4 text-4xl font-bold">Clustering Results</h1>
-        <p className="mb-8 text-lg">
-          The clusters are sorted according to the question with the most varied
-          answers in descending order where Employees in Cluster Rank 1 gave the
-          highest/most positive response (if applicable)
-        </p>
-        <p className="mb-4 text-lg">
-          See Response Variety below for more details
-        </p>
+    <div className="space-y-8">
+      <div>
+        <div className="mb-4 flex flex-row gap-2">
+          <h1 className="text-2xl font-semibold">Clustering Results</h1>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <RxQuestionMarkCircled
+                  className="text-muted-foreground"
+                  size={20}
+                />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-sm">
+                <p className="text-balance">
+                  The clusters are sorted according to the question with the
+                  most varied answers in descending order where Employees in
+                  Cluster Rank 1 gave the highest/most positive response (if
+                  applicable)
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
         <table className="w-full overflow-hidden rounded-lg bg-white text-center shadow">
           <thead className="bg-gray-200">
             <tr>
@@ -213,13 +235,18 @@ export default async function AdminAppraisalDetails({
         </table>
       </div>
 
-      <div className="bg-gray-100 p-10">
-        <p className="mb-4 text-4xl font-bold">Response Variety</p>
-        <p className="mb-4 text-lg">
+      <div>
+        <p className="mb-4 text-2xl font-semibold">Response Variety</p>
+        <p className="mb-4">
           The higher the percentage, the more variety in responses for that
           question and the more it influences the cluster categorization.
         </p>
+
         <div className="mb-8">
+          <div className="w-full">
+            <PieChartComponent data={pieChartData} />
+          </div>
+
           <table>
             <tbody>
               {Object.entries(clusteringResponse.featureImportance)
@@ -247,10 +274,7 @@ export default async function AdminAppraisalDetails({
             </tbody>
           </table>
         </div>
-        <div className="h-64 w-full">
-          <PieChartComponent data={pieChartData} />
-        </div>
       </div>
-    </>
+    </div>
   );
 }

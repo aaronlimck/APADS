@@ -108,7 +108,7 @@ export default function NewAppraisalModal({
 
         {selectedOption === "AI" && (
           <>
-            <DialogHeader>
+            <DialogHeader className="w-full">
               <DialogTitle className="text-balance text-xl">
                 New appraisal
               </DialogTitle>
@@ -121,13 +121,12 @@ export default function NewAppraisalModal({
 
             <div className="text-balance text-xs text-muted-foreground/80">
               <span className="font-medium text-muted-foreground">
-                Disclaimer:
+                Disclaimer
               </span>
-              <br />
-              This makes use of an AI langauge model (OpenAI GPT-3.5 Turbo). Any
-              content it generates may contain errors, inconsistents, or outdate
-              information. Please fact-check and verify all AI-generated content
-              before use.
+              : This makes use of an AI langauge model (OpenAI GPT-3.5 Turbo).
+              Any content it generates may contain errors, inconsistents, or
+              outdate information. Please fact-check and verify all AI-generated
+              content before use.
             </div>
           </>
         )}

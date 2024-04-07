@@ -90,7 +90,7 @@ export default function GenerateAppraisalTemplateForm() {
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleOnSubmit}>
+    <form className="w-full space-y-4" onSubmit={handleOnSubmit}>
       <Input
         type="text"
         id="title"
@@ -100,13 +100,19 @@ export default function GenerateAppraisalTemplateForm() {
         onChange={(e) => setTitle(e.target.value)}
       />
 
-      <Textarea
-        id="prompt"
-        name="prompt"
-        placeholder="Write a prompt..."
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-      />
+      <div>
+        <Textarea
+          id="prompt"
+          name="prompt"
+          placeholder="Write a prompt..."
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+        />
+        <div className="mt-2 text-xs text-muted-foreground">
+          Suggestion: Design a performance appraisal template for the Sales
+          Department to evaluate their monthly sales performance.
+        </div>
+      </div>
 
       <Button type="submit" className="w-full">
         {isLoading ? (
