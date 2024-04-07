@@ -15,7 +15,7 @@ export default async function AutomationPage() {
     <main className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {automations.data.map((automation) => (
-          <Card>
+          <Card key={automation.id}>
             <CardHeader>
               <CardTitle className="text-base font-medium">
                 {automation.name}
