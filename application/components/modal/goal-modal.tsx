@@ -40,7 +40,7 @@ export default function GoalModal({
   const formLabel =
     storedGoal !== ""
       ? "Add a prompt to edit your SMART Goal"
-      : "Whats your Goal?";
+      : "What's your goal?";
   const [conversationHistory, setConversationHistory] = useState<
     ConversationMessage[]
   >([]);
@@ -120,7 +120,7 @@ export default function GoalModal({
   };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="space-y-4">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add a new SMART goal</DialogTitle>
           <DialogDescription>What do you want to achieve?</DialogDescription>
@@ -137,7 +137,7 @@ export default function GoalModal({
                     : <span>{smart.split(":")[1]}</span>
                   </div>
                 ) : (
-                  <div className="text-sm mb-1">
+                  <div className="mb-1 text-sm">
                     <span className="font-semibold">{smart.split(":")[0]}</span>
                     <span>{smart.split(":")[1]}</span>
                   </div>
@@ -155,14 +155,18 @@ export default function GoalModal({
               placeholder={formPlaceholder}
               className="h-11 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
+            <div className="text-xs text-muted-foreground">
+              <span className="font-medium">Example: </span>I want to be able to
+              improve my productivity.
+            </div>
           </div>
           <div className="flex justify-between">
             <Button
-              className="h-11 text-sm font-normal capitalize"
-              variant={"outline"}
+              className="h-11 w-full text-sm font-normal capitalize"
+              variant={"default"}
             >
-              Generate goals with AI{" "}
-              <SparklesIcon width={16} height={16} className="ml-2" />
+              <SparklesIcon width={16} height={16} className="mr-2" />
+              <span>Generate goals with AI</span>
             </Button>
             {storedGoal != "" && (
               <Button
@@ -172,6 +176,12 @@ export default function GoalModal({
                 Save current Goal
               </Button>
             )}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            <span className="font-medium">Disclaimer: </span> This makes use of
+            an AI langauge model (OpenAI GPT-3.5 Turbo). Any content it
+            generates may contain errors, inconsistents, or outdate information.
+            Please fact-check and verify all AI-generated content before use.
           </div>
         </form>
       </DialogContent>

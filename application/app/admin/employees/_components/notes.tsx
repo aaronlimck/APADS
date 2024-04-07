@@ -52,13 +52,13 @@ export default function Notes({ data }: { data: any }) {
           Activities
         </div>
 
-        {data.notes.length === 0 && (
+        {data.notes?.length === 0 && (
           <div className="my-4 text-center text-sm text-muted-foreground">
             No notes
           </div>
         )}
 
-        {data.notes.length > 0 &&
+        {data.notes?.length > 0 &&
           data.notes.map((note: any) => {
             return (
               <div className="space-y-2 border-b" key={note.id}>

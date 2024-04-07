@@ -24,6 +24,7 @@ export default function ReportingManger({ data }: { data: any }) {
   const [form, setForm] = useState({
     managerId: data.managerId || "",
   });
+  console.log(data);
 
   useEffect(() => {
     const fetchStaff = async () => {
@@ -97,7 +98,7 @@ export default function ReportingManger({ data }: { data: any }) {
                 Department
               </dt>
               <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-                {convertTextToTitleCase(data.departmentName)}
+                {convertTextToTitleCase(data.manager?.departmentName)}
               </dd>
             </div>
           ) : (
