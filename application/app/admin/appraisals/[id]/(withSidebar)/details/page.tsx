@@ -1,4 +1,7 @@
-import { getAppraisalFormById } from "@/actions/appraisal.action";
+import {
+  getAppraisalFormById,
+  getAppraisalFormSubmissionsByFormId,
+} from "@/actions/appraisal.action";
 import AppraisalRecipientsTable from "@/components/appraisal/appraisal-recipients-table";
 import {
   TotalRecipientsCard,
@@ -6,12 +9,10 @@ import {
   TotalSubmissionRate,
 } from "@/components/appraisal/appraisal-stats-card";
 import { Button } from "@/components/ui/button";
-import {
-  ClipboardMinusIcon,
-  ExternalLinkIcon,
-  UsersRoundIcon,
-} from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
+import ClusteringBtn from "./_components/clusteringBtn";
+import ResponseReportBtn from "./_components/responseReportBtn";
 
 export default async function AdminAppraisalDetails({
   params,
@@ -20,9 +21,11 @@ export default async function AdminAppraisalDetails({
 }) {
   const { id } = params;
   const formData = await getAppraisalFormById(id);
+  const apprisalSubmissionData = await getAppraisalFormSubmissionsByFormId(id);
+  const noOfApprisalSubmission = apprisalSubmissionData.data.length;
+  console.log(noOfApprisalSubmission);
 
   const completedAppraisalSubmissions = formData.data?.appraisalSubmissions;
-
   type EmployeeStatus = {
     employeeCompleted: boolean;
     managerCompleted: boolean;
@@ -62,37 +65,21 @@ export default async function AdminAppraisalDetails({
             </Link>
           </Button>
 
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 border text-muted-foreground hover:text-primary"
-          >
-            <Link
-              className="flex items-center gap-2"
-              href={`/admin/appraisals/${id}/report`}
-            >
-              <ClipboardMinusIcon size={16} />
-              <span className="font-normal">Response Report</span>
-            </Link>
-          </Button>
+          <ResponseReportBtn
+            noOfApprisalSubmission={noOfApprisalSubmission}
+            id={id}
+          />
 
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 border text-muted-foreground hover:text-primary"
-          >
-            <Link
-              className="flex items-center gap-2"
-              href={`/admin/appraisals/${id}/clustering`}
-            >
-              <UsersRoundIcon size={16} />
-              <span className="font-normal">Cluster Report</span>
-            </Link>
-          </Button>
+          <ClusteringBtn
+            noOfApprisalSubmission={noOfApprisalSubmission}
+            id={id}
+          />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
         <TotalRecipientsCard formId={id} />
         <TotalSubmissionCard formId={id} />
-        <TotalSubmissionRate />
+        <TotalSubmissionRate formId={id} />
       </div>
 
       <AppraisalRecipientsTable
