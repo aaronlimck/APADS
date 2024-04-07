@@ -6,7 +6,7 @@ import {
 import { createAppraisalSubmissionByFormId } from "@/actions/appraisalSubmission";
 import { cn, convertTextToTitleCase } from "@/lib/utils";
 import { Role } from "@prisma/client";
-import { Loader2Icon } from "lucide-react";
+import { DotIcon, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -15,6 +15,8 @@ import {
   FormElements,
 } from "../form-builder/form-elements";
 import { Button } from "../ui/button";
+import { Card, CardHeader } from "../ui/card";
+import StaffInfoSheet from "@/app/admin/employees/_components/staffInfoSheet";
 
 export default function AppraisalFormSubmit({
   formId,
@@ -125,25 +127,31 @@ export default function AppraisalFormSubmit({
     <div className="flex min-h-dvh w-full flex-col items-center space-y-6 bg-accent p-8">
       <div
         className={cn(
-          "w-full max-w-3xl space-y-4 rounded-lg bg-white p-4",
+          "w-full max-w-3xl space-y-4 rounded-lg bg-white",
           userRole !== "MANAGER" && "hidden",
         )}
       >
-        <div className="flex w-full flex-col items-center gap-4 text-center md:flex-row md:text-left">
-          <div className="h-28 w-28 rounded-full bg-accent" />
-          <div className="space-y-1">
-            <h1 className="text-xl font-medium md:text-2xl">
-              {employeeData.name}
-            </h1>
-            <div className="flex flex-col text-sm">
-              <span>Email: {employeeData.email}</span>
-              <span>
-                Department:{" "}
-                {convertTextToTitleCase(employeeData.departmentName)}
-              </span>
+        <Card className="w-full max-w-3xl border-none shadow-none">
+          <CardHeader>
+            <div className="flex flex-col space-y-1">
+              <div className="text-2xl font-medium tracking-tight">
+                {employeeData.name}
+              </div>
+              <div className="flex items-center space-x-0.5 text-sm text-muted-foreground">
+                <span>
+                  {convertTextToTitleCase(employeeData.departmentName) || "N.A"}
+                </span>
+                <DotIcon size={16} />
+                <StaffInfoSheet
+                  data={employeeData}
+                  className="hover:underline hover:underline-offset-2"
+                >
+                  View Profile
+                </StaffInfoSheet>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardHeader>
+        </Card>
       </div>
 
       <div

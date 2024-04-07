@@ -134,6 +134,11 @@ export async function getUserById(id: string) {
         manager: true,
         appraisals: true,
         goals: true,
+        notes: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
     if (!user) {
