@@ -108,63 +108,63 @@ async function main() {
     "Lim Cheng Kiat Aaron",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff1 = await createUser(
     "aaronlimchengkiat@gmail.com",
     "Lim Cheng Kiat Aaron (Google)",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff2 = await createUser(
     "aaronlimckdeveloper@gmail.com",
     "Lim Cheng Kiat Aaron (Developer)",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff3 = await createUser(
     "herman.tan.2021@scis.smu.edu.sg",
     "Herman Tan Jie Yang",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff4 = await createUser(
     "andrew.siew.2021@scis.smu.edu.sg",
     "Andrew Siew",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff5 = await createUser(
     "chiyong.tan.2021@scis.smu.edu.sg",
     "Tan Chi Yong",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const ITStaff6 = await createUser(
     "emilia.lim.2021@scis.smu.edu.sg",
     "Emilia Lim",
     "Password@888",
     "STAFF",
-    "INFORMATION TECHNOLOGY",
+    "TEST",
   );
   const fianceManager = await createUser(
     "tanchiyong00@gmail.com",
     "Tan Chi Yong",
     "Password@888",
     "STAFF",
-    "FINANCE",
+    "TEST",
   );
   const financeStaff = await createUser(
     "staff2@apads.com",
     "Staff2",
     "Password@888",
     "STAFF",
-    "FINANCE",
+    "TEST",
   );
 
   // Create 30 test staff
