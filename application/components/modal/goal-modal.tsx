@@ -10,12 +10,13 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { createGoal } from "@/actions/goal.action";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getUserById } from "@/actions/user.action";
-import { SparklesIcon } from "lucide-react";
+import { Loader2Icon, SparklesIcon } from "lucide-react";
+import { set } from "date-fns";
 
 type ConversationMessage = {
   role: string;
@@ -33,6 +34,7 @@ export default function GoalModal({
   const { data: session, update } = useSession();
   const userId = session?.user.id;
   const [storedGoal, setStoredGoal] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const formPlaceholder =
     storedGoal !== ""
       ? "Eg: Increase Measurable to 20%"
@@ -46,6 +48,7 @@ export default function GoalModal({
   >([]);
 
   const makeAiRequest = async (input: string) => {
+    console.log("Hello");
     try {
       const userResponse = await getUserById(userId!);
       if (userResponse && userResponse.status === 200) {
@@ -84,6 +87,7 @@ export default function GoalModal({
     event.currentTarget.goal.value = "";
 
     try {
+      setIsLoading(true);
       const suggestGoal = await makeAiRequest(value);
       const temp = suggestGoal;
       const check = await setConversationHistory([
@@ -91,12 +95,15 @@ export default function GoalModal({
         { role: "assistant", content: temp },
       ]);
       setStoredGoal(temp);
+      setIsLoading(false);
     } catch (error) {
       if (error instanceof Error) {
         return Error;
       } else {
         return "Something went wrong";
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,6 +115,7 @@ export default function GoalModal({
       if (goal && goal.status === 201) {
         toast.success(goal.message);
         setOpen(false);
+        setStoredGoal("");
         router.refresh();
       }
     } catch (error) {
@@ -118,6 +126,7 @@ export default function GoalModal({
       }
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -160,17 +169,29 @@ export default function GoalModal({
               improve my productivity.
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-2">
             <Button
-              className="h-11 w-full text-sm font-normal capitalize"
+              type="submit"
+              className="flex h-11 w-full text-sm font-normal capitalize"
               variant={"default"}
             >
-              <SparklesIcon width={16} height={16} className="mr-2" />
-              <span>Generate goals with AI</span>
+              {isLoading ? (
+                <Loader2Icon size={16} className="mr-2 animate-spin" />
+              ) : (
+                <SparklesIcon width={16} height={16} className="mr-2" />
+              )}
+              <span>
+                {storedGoal === ""
+                  ? "Generate goals with AI"
+                  : "Regenerate goals with AI"}
+              </span>
             </Button>
-            {storedGoal != "" && (
+
+            {storedGoal !== "" && (
               <Button
-                className="h-11 text-sm font-normal capitalize"
+                type="button"
+                variant={"secondary"}
+                className="h-11 w-full text-sm font-normal capitalize"
                 onClick={handleAddGoal}
               >
                 Save current Goal
