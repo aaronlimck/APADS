@@ -12,10 +12,6 @@ Our client has been conducting appraisals manually, relying on handwritten feedb
 
 To overcome the challenges posed by manual appraisal processes, our capstone project introduces a comprehensive digital solution. Leveraging modern technologies and best practices, we aim to create a robust digital platform that automates and streamlines appraisal workflows.
 
-### Digitalization and Automation
-
-The heart of our solution lies in the complete digitalization of the appraisal process. From submission to analysis, the platform will automate routine tasks, reducing manual effort and minimizing the risk of errors.
-
 ### Value Addition: Generative AI for Appraisal Forms
 
 As a unique value proposition, our platform incorporates generative AI to dynamically create appraisal forms. This feature allows users to choose from different creation methods:
@@ -36,17 +32,11 @@ In conclusion, our digital solution not only addresses the existing challenges b
 ## Features
 
 - **Automation:**
-
   - Streamline processes and workflows through automation, reducing manual efforts.
-
 - **Template Generation:**
-
   - Generate customizable templates for appraisals, providing consistency and efficiency.
-
 - **Real-time Analytics:**
-
   - Access and analyze appraisal data in real-time, enabling quick decision-making and insights.
-
 - **Sentiment Analysis for Open Questions:**
   - Utilize sentiment analysis for open-ended questions to understand the emotional tone and feedback sentiment.
 
@@ -62,8 +52,89 @@ In conclusion, our digital solution not only addresses the existing challenges b
 
 - **ORM:** Prisma
 - **Database:** PostgresSQL
-- **Language:** TypeScript
+- **Library** NLKT (Sentiment Analysis)
+- **Language:** TypeScript, Python
+-
 
 ### Additional Service
 
 - **OpenAI API:** GPT-3.5 Turbo
+- **Email Service:** Google SMTP
+
+## Installation Guide
+
+### Main Application
+
+To set up and run the frontend application, follow the steps below:
+
+1. **Navigate to the application folder**  
+   Open a terminal and use the following command to change directories to the application folder:
+
+   ```shell
+   cd application
+   ```
+
+2. **Configure environment variables**  
+   Replace all the values in the `.env.example` file with the appropriate values for your setup and then rename the file to `.env`:
+
+3. **Install dependencies**  
+   Install the necessary dependencies for the frontend application using the following command:
+
+   ```shell
+   npm install
+   ```
+
+4. **Initialize local database**  
+   Start the local database using Docker Compose. Make sure you have Docker installed and running on your system:
+
+   ```shell
+   docker compose up
+   ```
+
+5. **Initialize Prisma**  
+   Generate Prisma client code with the following command:
+
+   ```shell
+   npx prisma generate
+   ```
+
+6. **Set up Prisma database schema**  
+   Push the Prisma schema to your local database. Make sure the local database is running before executing this command:
+
+   ```shell
+   npx prisma db push
+   ```
+
+7. **Run the frontend application (Default port: 3000)**  
+   Finally, start the frontend application using the development server:
+   ```shell
+   npm run dev
+   ```
+
+After successfully running these commands, the frontend application should be accessible at [http://localhost:30000](http://localhost:3000)
+
+### NLTK Model (Sentiment Analysis)
+
+To set up and run the NLTK Model for Sentiment Analysis, follow the steps below:
+
+1. **Navigate to the `nltk_model` folder**  
+   Open a terminal and use the following command to change directories to the `nltk_model` folder:
+
+   ```shell
+   cd nltk_model
+   ```
+
+2. **Install dependencies**  
+   Install the necessary dependencies for the model using the following command:
+
+   ```shell
+   pip install -r requirements.txt
+   ```
+
+3. **Run the model (Default port: 5000)**  
+   Start the model using the following command:
+   ```shell
+   python app.py
+   ```
+
+Once the model is running, it should be available on the default port: `5000`. Enjoy using the NLTK Model for Sentiment Analysis!
